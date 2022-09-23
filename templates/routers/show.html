@@ -1,0 +1,129 @@
+{% extends 'layouts/app.html' %}
+
+{% block 'content' %}
+<div class="container">
+    {% if router %}
+    <div class="row">
+        <h1>{{ router }}</h1>
+        <div class="col m5">
+            <p><b>NOMBRE DEL EQUIPO:</b> {{ identity.0.name | upper }}</p>
+            <p><b>INTERFACES:</b> {{ interfaces | length }}</p>
+            <p><b>UPTIME:</b> {{ resource.0.uptime }}</p>
+            <p><b>VERSION:</b> {{ resource.0.version }}</p>
+        </div>
+        <div class="col m7">
+            {% load static %}
+            <iframe class="responsive" src="{% static 'map.html' %}" frameborder="0" width="100%" ></iframe>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12">
+            <ul class="collapsible">
+                <li>
+                    <div class="collapsible-header">QUEUES SIMPLES</div>
+                    <div class="collapsible-body">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>NOMBRE</th>
+                                    <th>TARGET</th>
+                                    <th>PARENT</th>
+                                    <th>QUEUE</th>
+                                    <th>PRIORITY</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for queue in queues %}    
+                                    {% if queue.dynamic == 'false' %}
+                                    <tr>
+                                        <td>{{queue.name}}</td>
+                                        <td>{{queue.target}}</td>
+                                        <td>{{queue.parent}}</td>
+                                        <td>{{queue.queue}}</td>
+                                        <td>{{queue.priority}}</td>
+                                    </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    
+        <div class="col s12">
+            <ul class="collapsible">
+                <li>
+                    <div class="collapsible-header">PPP SECRET</div>
+                    <div class="collapsible-body">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>NOMBRE</th>
+                                    <th>PERFIL</th>
+                                    <th>COMENTARIO</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in usuarios %}
+                                    <tr>
+                                        <td>{{user.name}}</td>
+                                        <td>{{user.profile}}</td>
+                                        <td>{{ user.comment }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col s12">
+            <ul class="collapsible">
+                <li>
+                    <div class="collapsible-header">IP ADDRESS</div>
+                    <div class="collapsible-body">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ADDRESS</th>
+                                    <th>NETWORK</th>
+                                    <th>INTERFACE</th>
+                                    <th>ENABLE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ip in ips %}
+                                    <tr>
+                                        <td>{{ip.address}}</td>
+                                        <td>{{ip.network}}</td>
+                                        <td>{{ip.interface}}</td>
+                                        {% if queue.disabled == 'true' %}
+                                        <td>Desabilitado</td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+    {% else %}
+        <h5 class="center">{{ message }}</h5>
+    {% endif %}
+
+</div>
+{% endblock %}
+
+{% block 'javascript' %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.collapsible');
+        var instances = M.Collapsible.init(elems, '');
+    });
+</script>
+{% endblock %}

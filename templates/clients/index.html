@@ -1,0 +1,11 @@
+{% extends "layouts/app.html" %}
+
+{% block 'content' %}
+    <div class="container">
+        <div class="row">
+            <div class="col s12">
+                <a href="{% url 'clients.create' %}" class="waves-effect waves-teal btn-flat">Agregar Cliente</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

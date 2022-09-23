@@ -1,0 +1,43 @@
+{% extends "layouts/app.html" %}
+
+{% block 'content' %}
+<div class="container">
+    <div class="row">
+        <div class="col s12">
+            <a href="{% url 'routers.create' %}" class="waves-effect waves-teal btn-flat">Agregar Router</a>
+        </div>
+    </div>
+    <div class="divider"></div>
+    <div class="row">
+        <div class="col s12">
+            {% if routers %}
+                <h6>Routers</h6>
+                <table class="responsive-table">
+                    <tbody>
+                        {% for router in routers %}
+                            <tr>
+                                <td><a href="{% url 'routers.show' router.id %}">{{ router }}</a></td>
+                                <td class="right-align">
+                                    <a href="#router-{{ router.id }}" onclick="document.getElementById('router-{{ router.id }}').submit()">Eliminar</a>
+                                    &nbsp; &nbsp; &nbsp; &nbsp;
+                                    <a href="#router-edit-{{ router.id }}" onclick="document.getElementById('router-edit-{{ router.id }}').submit()">Editar</a>
+                                </td>
+                            </tr>
+                            <form id="router-{{ router.id }}" action="{% url 'routers.delete' router.id %}" method="POST" hidden>
+                                {% csrf_token %}
+                                <input name="router" value="{{router.id}}" hidden>
+                            </form>
+                            <form id="router-edit-{{ router.id }}" action="{% url 'routers.edit' router.id %}" method="POST" hidden>
+                                {% csrf_token %}
+                                <input name="id" value="{{router.id}}" hidden>
+                            </form>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <h6 class="center">NO HAY ROUTERS REGISTRADOS</h6>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
