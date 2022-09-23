@@ -22,6 +22,10 @@
                 <li>
                     <div class="collapsible-header">QUEUES SIMPLES</div>
                     <div class="collapsible-body">
+                        <div class="right-align">
+                            <a href="{% url 'routers.queue.add' %}" class="btn btn-small">Agregar queue</a>
+                        </div>
+                        <br>
                         <table>
                             <thead>
                                 <tr>
@@ -33,7 +37,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for queue in queues %}    
+                                {% for queue in queues %}
                                     {% if queue.dynamic == 'false' %}
                                     <tr>
                                         <td>{{queue.name}}</td>
@@ -50,12 +54,16 @@
                 </li>
             </ul>
         </div>
-    
+
         <div class="col s12">
             <ul class="collapsible">
                 <li>
                     <div class="collapsible-header">PPP SECRET</div>
                     <div class="collapsible-body">
+                        <div class="right-align">
+                            <a href="#" class="btn btn-small">Agregar ppp</a>
+                        </div>
+                        <br>
                         <table>
                             <thead>
                                 <tr>
@@ -69,7 +77,7 @@
                                     <tr>
                                         <td>{{user.name}}</td>
                                         <td>{{user.profile}}</td>
-                                        <td>{{ user.comment }}</td>
+                                        <td>{{user.comment}}</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -84,6 +92,10 @@
                 <li>
                     <div class="collapsible-header">IP ADDRESS</div>
                     <div class="collapsible-body">
+                        <div class="right-align">
+                            <a href="#" class="btn btn-small">Agregar ip</a>
+                        </div>
+                        <br>
                         <table>
                             <thead>
                                 <tr>
@@ -100,7 +112,9 @@
                                         <td>{{ip.network}}</td>
                                         <td>{{ip.interface}}</td>
                                         {% if queue.disabled == 'true' %}
-                                        <td>Desabilitado</td>
+                                        <td class="red-text">Desabilitado</td>
+                                        {% else %}
+                                        <td class="green-text">Enable</td>
                                         {% endif %}
                                     </tr>
                                 {% endfor %}

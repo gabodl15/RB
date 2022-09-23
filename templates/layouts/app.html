@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="es" dir="ltr">
     <head>
         <meta charset="utf-8">
         <!-- Compiled and minified CSS -->
@@ -22,6 +22,18 @@
         {% block 'title' %}<title>ISP</title>{% endblock%}
     </head>
     <body>
+        {% if messages %}
+            {% for message in messages%}
+                <script>
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                            M.toast({html: '{{message}}', classes: 'red'})
+                    {% endif %}
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                            M.toast({html: '{{message}}', classes: 'blue'})
+                    {% endif %}
+                </script>
+            {% endfor %}
+        {% endif %}
         <header>
             <!-- Dropdown Structure -->
             <ul id="dropdown1" class="dropdown-content">
