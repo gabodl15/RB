@@ -87,10 +87,14 @@ def show(request, router):
         return render(request, 'routers/show.html', context)
     except ObjectDoesNotExist:
         messages.error(request, 'ROUTER NO REGISTRADO')
-        return redirect('routers.index')
+
     except routeros_api.exceptions.RouterOsApiCommunicationError:
         messages.error(request, 'USUARIO O CLAVE INCORRECTOS')
-        return redirect('routers.index')
+
+    except routeros_api.exceptions.RouterOsApiConnectionError:
+        messages.error(request, 'NO PUDO CONECTAR CON EL ROUTER')
+
+    return redirect('routers.index')
 
 def store(request):
     if request.method == 'POST':

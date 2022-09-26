@@ -5,7 +5,8 @@
     <div class="row">
         <form class="" action="{% url 'routers.store' %}" method="POST">
             {% csrf_token %}
-            {{ form }}
+            {% load materializecss %}
+            {{ form|materializecss }}
             <button type="submit" class="btn btn-small" name="button">Enviar</button>
         </form>
     </div>
