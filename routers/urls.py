@@ -9,5 +9,6 @@ urlpatterns = [
     path('show/<int:router>/', views.show, name='routers.show'),
     path('store/', views.store, name='routers.store'),
     path('delete/<int:router>/', views.delete, name='routers.delete'),
-    path('queue/add/', views.addQueue, name='routers.queue.add')
+    path('queue/add/', views.addQueue, name='routers.queue.add'),
+    path('ppp/add/<int:router>', views.addPpp, name='routers.ppp.add')
 ]

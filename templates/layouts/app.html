@@ -49,7 +49,7 @@
                     <li><a href="sass.html">Sass</a></li>
                     <li><a href="badges.html">Components</a></li>
                     <!-- Dropdown Trigger -->
-                    <li><a class="dropdown-trigger" href="#!" data-target="dropdown1">Menú<i class="material-icons right">arrow_drop_down</i></a></li>
+                    <li><a class="dropdown-trigger-menu" href="#!" data-target="dropdown1">Menú<i class="material-icons right">arrow_drop_down</i></a></li>
                 </ul>
                 </div>
             </nav>
@@ -97,7 +97,7 @@
                 'constrainWidth': false,
             }
             document.addEventListener('DOMContentLoaded', function() {
-                var elems = document.querySelectorAll('.dropdown-trigger');
+                var elems = document.querySelectorAll('.dropdown-trigger-menu');
                 var instances = M.Dropdown.init(elems, options);
             });
         </script>

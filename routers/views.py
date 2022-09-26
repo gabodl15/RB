@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
 from .models import Router
-from .forms import RouterForm, QueueForm
+from .forms import RouterForm, QueueForm, PppForm
 
 import routeros_api
 
@@ -142,11 +142,50 @@ def addQueue(request):
                 # TERMINAR CONEXION
                 connection.disconnect()
 
+                messages.success(request, 'QUEUE REGISTRADO CON EXITO')
+                return redirect('routers.show', router.id)
             except ObjectDoesNotExist:
-                return render(request, 'routers/show.html', {'message': 'ROUTER NO REGISTRADO'})
+                messages.error(request, 'ROUTER NO REGISTRADO')
         else:
-            print('NO ES VALIDO')
-        messages.success(request, 'QUEUE REGISTRADO CON EXITO')
-        return redirect('routers.index')
+            messages.error(request, 'EL FORMULARIO NO ES VALIDO')
+        return redirect(request.META.get('HTTP_REFERER'))
+
+    previus_url = request.META.get('HTTP_REFERER')
+    if '/routers/show/' in previus_url:
+        get_router = previus_url.split('/routers/show/')
+        print(get_router)
     form = QueueForm()
     return render(request, 'routers/queue/add.html', {'form': form})
+
+def addPpp(request, router = False):
+    if request.method == 'POST':
+        print('POST')
+
+    form = PppForm()
+    if router:
+        try:
+            obj = Router.objects.get(id=router)
+            connection = routeros_api.RouterOsApiPool(
+                obj.ip,
+                username=obj.user,
+                password=obj.password,
+                port=obj.port,
+                plaintext_login=True,
+            )
+            api = connection.get_api()
+
+            # GET PPP PROFILES
+            profiles_ = api.get_resource('/ppp/profile')
+            profiles = profiles_.get()
+
+            # TERMINAR CONEXION
+            connection.disconnect()
+            list_ = [('default', 'default')]
+            for item in profiles:
+                list_.append((item['name'], item['name']))
+
+            form.fields['profile'].choices = list_
+        except ObjectDoesNotExist:
+            messages.error(request, 'ROUTER NO REGISTRADO')
+
+    return render(request, 'routers/ppp/add.html', {'form': form})

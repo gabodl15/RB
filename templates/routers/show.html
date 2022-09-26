@@ -1,5 +1,11 @@
 {% extends 'layouts/app.html' %}
 
+
+{% block 'head' %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'routers/css/routersTable.css' %}">
+{% endblock %}
+
 {% block 'content' %}
 <div class="container">
     {% if router %}
@@ -61,7 +67,7 @@
                     <div class="collapsible-header">PPP SECRET</div>
                     <div class="collapsible-body">
                         <div class="right-align">
-                            <a href="#" class="btn btn-small">Agregar ppp</a>
+                            <a href="{% url 'routers.ppp.add' router.id %}" class="btn btn-small">Agregar ppp</a>
                         </div>
                         <br>
                         <table>
