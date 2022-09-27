@@ -3,11 +3,14 @@
 {% block 'content' %}
     <div class="container">
         <div class="row">
-            <form class="" action="{% url 'routers.queue.add' %}" method="POST">
+            <form class="" action="{% url 'routers.queue.add' router.id %}" method="POST">
                 {% csrf_token %}
+                <div class="col s12">{{ router.name }}</div>
                 {% load materializecss %}
                 {{form|materializecss:'custom_size=s12 m6'}}
+                <div class="col s12">
                 <button type="submit" class="btn btn-small">Enviar</button>
+                </div>
             </form>
         </div>
     </div>

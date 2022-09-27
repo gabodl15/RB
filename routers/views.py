@@ -1,4 +1,3 @@
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
@@ -116,76 +115,94 @@ def delete(request, router):
 
     return redirect('routers.index')
 
-def addQueue(request):
+def addQueue(request, id):
+    try:
+        router = Router.objects.get(id=id)
+        connection = routeros_api.RouterOsApiPool(
+            router.ip,
+            username=router.user,
+            password=router.password,
+            port=router.port,
+            plaintext_login=True,
+        )
+        api = connection.get_api()
+
+    except ObjectDoesNotExist:
+        messages.error(request, 'ROUTER NO REGISTRADO')
+
     if request.method == 'POST':
         form = QueueForm(request.POST)
         if form.is_valid():
-            try:
-                router = Router.objects.get(id=request.POST['router'])
-                connection = routeros_api.RouterOsApiPool(
-                    router.ip,
-                    username=router.user,
-                    password=router.password,
-                    port=router.port,
-                    plaintext_login=True,
-                )
-                api = connection.get_api()
-
-                # REGISTRAR QUEUE
-                add_queue = api.get_resource('/queue/simple')
-                add_queue.add(
-                    name = request.POST['name'],
-                    max_limit = "512k/4M",
-                    target = request.POST['target']
-                )
-
-                # TERMINAR CONEXION
-                connection.disconnect()
-
-                messages.success(request, 'QUEUE REGISTRADO CON EXITO')
-                return redirect('routers.show', router.id)
-            except ObjectDoesNotExist:
-                messages.error(request, 'ROUTER NO REGISTRADO')
-        else:
-            messages.error(request, 'EL FORMULARIO NO ES VALIDO')
-        return redirect(request.META.get('HTTP_REFERER'))
-
-    previus_url = request.META.get('HTTP_REFERER')
-    if '/routers/show/' in previus_url:
-        get_router = previus_url.split('/routers/show/')
-        print(get_router)
-    form = QueueForm()
-    return render(request, 'routers/queue/add.html', {'form': form})
-
-def addPpp(request, router = False):
-    if request.method == 'POST':
-        print('POST')
-
-    form = PppForm()
-    if router:
-        try:
-            obj = Router.objects.get(id=router)
-            connection = routeros_api.RouterOsApiPool(
-                obj.ip,
-                username=obj.user,
-                password=obj.password,
-                port=obj.port,
-                plaintext_login=True,
+            # REGISTRAR QUEUE
+            add_queue = api.get_resource('/queue/simple')
+            add_queue.add(
+                name = request.POST['name'],
+                max_limit = "512k/4M",
+                target = request.POST['target']
             )
-            api = connection.get_api()
-
-            # GET PPP PROFILES
-            profiles_ = api.get_resource('/ppp/profile')
-            profiles = profiles_.get()
 
             # TERMINAR CONEXION
             connection.disconnect()
-            list_ = [('default', 'default')]
-            for item in profiles:
-                list_.append((item['name'], item['name']))
 
-            form.fields['profile'].choices = list_
-        except ObjectDoesNotExist:
-            messages.error(request, 'ROUTER NO REGISTRADO')
+            messages.success(request, 'QUEUE REGISTRADO CON EXITO')
+            return redirect('routers.show', router.id)
+        else:
+            messages.error(request, 'EL FORMULARIO NO ES VALIDO')
+            return redirect(request.META.get('HTTP_REFERER'))
 
-    return render(request, 'routers/ppp/add.html', {'form': form})
+    form = QueueForm()
+    context = {
+        'form': form,
+        'router': router
+    }
+    return render(request, 'routers/queue/add.html', context)
+
+def addPpp(request, id = False):
+    form = PppForm()
+    try:
+        router = Router.objects.get(id=id)
+        connection = routeros_api.RouterOsApiPool(
+            router.ip,
+            username=router.user,
+            password=router.password,
+            port=router.port,
+            plaintext_login=True,
+        )
+        api = connection.get_api()
+
+    except ObjectDoesNotExist:
+        messages.error(request, 'ROUTER NO REGISTRADO')
+
+    if request.method == 'POST':
+        # REGISTRANDO PPP
+        add_ppp = api.get_resource('/ppp/secret')
+        add_ppp.add(
+            name=request.POST['name'],
+            service='pppoe',
+            password=request.POST['password'],
+            profile=request.POST['profile'],
+        )
+
+        # TERMINAR CONEXION
+        connection.disconnect()
+        messages.success(request, 'PPP REGISTRADO CON EXITO')
+        return redirect('routers.show', id)
+
+    else:
+        # GET PPP PROFILES
+        profiles_ = api.get_resource('/ppp/profile')
+        profiles = profiles_.get()
+
+        # TERMINAR CONEXION
+        connection.disconnect()
+        list_ = [('default', 'default')]
+        for item in profiles:
+            list_.append((item['name'], item['name']))
+
+        form.fields['profile'].choices = list_
+
+        context = {
+            'form': form,
+            'router': router
+        }
+        return render(request, 'routers/ppp/add.html', context)
