@@ -2,10 +2,35 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
 from .models import Router
-from .forms import RouterForm, QueueForm, PppForm
+from .forms import RouterForm, QueueForm, PppForm, AddressFrom
 
 import routeros_api
 
+### ESTABLECEMOS CONEXION CON EL ROUTER
+def router_connection(id):
+    try:
+        router = Router.objects.get(id=id)
+        connection = routeros_api.RouterOsApiPool(
+            router.ip,
+            username=router.user,
+            password=router.password,
+            port=router.port,
+            plaintext_login=True,
+        )
+        return connection, router
+
+    except ObjectDoesNotExist:
+        messages.error(request, 'ROUTER NO REGISTRADO')
+    except routeros_api.exceptions.RouterOsApiCommunicationError:
+        messages.error(request, 'USUARIO O CLAVE INCORRECTOS')
+    except routeros_api.exceptions.RouterOsApiConnectionError:
+        messages.error(request, 'NO PUDO CONECTAR CON EL ROUTER')
+
+    return redirect(request.META.get('HTTP_REFERER'))
+
+def router_disconnection(connection):
+    # TERMINAR CONEXION
+    connection.disconnect()
 def index(request):
     routers = Router.objects.all()
     return render(request, 'routers/index.html', {'routers': routers})
@@ -28,7 +53,7 @@ def update(request, router):
 
     return redirect('routers.index')
 
-def show(request, router):
+def show(request, id):
     # ORDENAR
     # EL PRIMER PARAMETRO ES LA LISTA O DICCIONARIO A ORDENAR.
     # EL SEGUNDO PARAMETRO ES LA CLAVE POR LA QUE VA A ORDENAR
@@ -36,64 +61,46 @@ def show(request, router):
         newlist = sorted(list_, key=lambda d: d[key_])
         return newlist
 
-    try:
-        router = Router.objects.get(id=router)
-        connection = routeros_api.RouterOsApiPool(
-            router.ip,
-            username=router.user,
-            password=router.password,
-            port=router.port,
-            plaintext_login=True,
-        )
-        api = connection.get_api()
+    connection, router = router_connection(id)
+    api = connection.get_api()
+    #identity
+    identity_query = api.get_resource('/system/identity')
+    identity = identity_query.get()
 
-        #identity
-        identity_query = api.get_resource('/system/identity')
-        identity = identity_query.get()
+    #routerboard
+    resource_query = api.get_resource('/system/resource')
+    resource = resource_query.get()
 
-        #routerboard
-        resource_query = api.get_resource('/system/resource')
-        resource = resource_query.get()
+    #health
+    health_query = api.get_resource('/system/health')
+    health = health_query.get()
 
-        #health
-        health_query = api.get_resource('/system/health')
-        health = health_query.get()
+    interfaces_query = api.get_resource('/interface/ethernet')
+    interfaces = interfaces_query.get()
 
-        interfaces_query = api.get_resource('/interface/ethernet')
-        interfaces = interfaces_query.get()
+    ppp = api.get_resource('/ppp/secret')
+    usuarios = order(ppp.get(), 'name')
 
-        ppp = api.get_resource('/ppp/secret')
-        usuarios = order(ppp.get(), 'name')
+    queues_query = api.get_resource('/queue/simple')
+    queues = order(queues_query.get(), 'name')
 
-        queues_query = api.get_resource('/queue/simple')
-        queues = order(queues_query.get(), 'name')
+    ips_query = api.get_resource('/ip/address')
 
-        ips_query = api.get_resource('/ip/address')
+    ips = order(ips_query.get(), 'address')
 
-        ips = order(ips_query.get(), 'address')
+    context = {
+        'router': router,
+        'identity': identity,
+        'interfaces': interfaces,
+        'health': health,
+        'resource': resource,
+        'usuarios': usuarios,
+        'queues': queues,
+        'ips': ips
+    }
 
-        context = {
-            'router': router,
-            'identity': identity,
-            'interfaces': interfaces,
-            'health': health,
-            'resource': resource,
-            'usuarios': usuarios,
-            'queues': queues,
-            'ips': ips
-        }
-        connection.disconnect()
-        return render(request, 'routers/show.html', context)
-    except ObjectDoesNotExist:
-        messages.error(request, 'ROUTER NO REGISTRADO')
-
-    except routeros_api.exceptions.RouterOsApiCommunicationError:
-        messages.error(request, 'USUARIO O CLAVE INCORRECTOS')
-
-    except routeros_api.exceptions.RouterOsApiConnectionError:
-        messages.error(request, 'NO PUDO CONECTAR CON EL ROUTER')
-
-    return redirect('routers.index')
+    router_disconnection(connection)
+    return render(request, 'routers/show.html', context)
 
 def store(request):
     if request.method == 'POST':
@@ -116,33 +123,23 @@ def delete(request, router):
     return redirect('routers.index')
 
 def addQueue(request, id):
-    try:
-        router = Router.objects.get(id=id)
-        connection = routeros_api.RouterOsApiPool(
-            router.ip,
-            username=router.user,
-            password=router.password,
-            port=router.port,
-            plaintext_login=True,
-        )
-        api = connection.get_api()
-
-    except ObjectDoesNotExist:
-        messages.error(request, 'ROUTER NO REGISTRADO')
+    connection, router = router_connection(id)
 
     if request.method == 'POST':
         form = QueueForm(request.POST)
         if form.is_valid():
+            api = connection.get_api()
+
             # REGISTRAR QUEUE
             add_queue = api.get_resource('/queue/simple')
             add_queue.add(
                 name = request.POST['name'],
-                max_limit = "512k/4M",
+                max_limit = request.POST['upload'] + '/' + request.POST['download'],
                 target = request.POST['target']
             )
 
             # TERMINAR CONEXION
-            connection.disconnect()
+            router_disconnection(connection)
 
             messages.success(request, 'QUEUE REGISTRADO CON EXITO')
             return redirect('routers.show', router.id)
@@ -157,21 +154,9 @@ def addQueue(request, id):
     }
     return render(request, 'routers/queue/add.html', context)
 
-def addPpp(request, id = False):
-    form = PppForm()
-    try:
-        router = Router.objects.get(id=id)
-        connection = routeros_api.RouterOsApiPool(
-            router.ip,
-            username=router.user,
-            password=router.password,
-            port=router.port,
-            plaintext_login=True,
-        )
-        api = connection.get_api()
-
-    except ObjectDoesNotExist:
-        messages.error(request, 'ROUTER NO REGISTRADO')
+def addPpp(request, id):
+    connection, router = router_connection(id)
+    api = connection.get_api()
 
     if request.method == 'POST':
         # REGISTRANDO PPP
@@ -184,25 +169,48 @@ def addPpp(request, id = False):
         )
 
         # TERMINAR CONEXION
-        connection.disconnect()
+        router_disconnection(connection)
+
         messages.success(request, 'PPP REGISTRADO CON EXITO')
         return redirect('routers.show', id)
 
-    else:
-        # GET PPP PROFILES
-        profiles_ = api.get_resource('/ppp/profile')
-        profiles = profiles_.get()
+    # GET PPP PROFILES
+    profiles_ = api.get_resource('/ppp/profile')
+    profiles = profiles_.get()
 
-        # TERMINAR CONEXION
-        connection.disconnect()
-        list_ = [('default', 'default')]
-        for item in profiles:
-            list_.append((item['name'], item['name']))
+    # TERMINAR CONEXION
+    router_disconnection(connection)
+    list_ = []
+    for item in profiles:
+        list_.append((item['name'], item['name']))
 
-        form.fields['profile'].choices = list_
+    form = PppForm()
+    form.fields['profile'].choices = list_
 
-        context = {
-            'form': form,
-            'router': router
-        }
-        return render(request, 'routers/ppp/add.html', context)
+    context = {
+        'form': form,
+        'router': router
+    }
+    return render(request, 'routers/ppp/add.html', context)
+
+def addAddress(request, id):
+    connection, router = router_connection(id)
+    api = connection.get_api()
+
+    if request.method == 'POST':
+        pass
+
+    # GET INTERFACES
+    interfaces_ = api.get_resource('/interface')
+    interfaces = interfaces_.get()
+    form = AddressFrom()
+    interfaces_list_ = []
+    for item in interfaces:
+        if item['type'] != 'pppoe-in':
+            interfaces_list_.append((item['name'], item['name']))
+    form.fields['interface'].choices = interfaces_list_
+    context = {
+        'form': form,
+        'router': router
+    }
+    return render(request, 'routers/address/add.html', context)
