@@ -3,9 +3,12 @@
 {% block 'content' %}
 <div class="container">
     <div class="row">
-        <form>
+        <form action="{% url 'routers.address.add' router.id %}" method="POST">
+            {% csrf_token %}
+            <div class="col s12">{{ router }}</div>
             {% load materializecss %}
             {{ form|materializecss }}
+            <div class="col s12"><button class="btn btn-small">Enviar</button></div>
         </form>
     </div>
 </div>

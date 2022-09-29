@@ -1,13 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
+from django.http import HttpResponseRedirect
 from .models import Router
 from .forms import RouterForm, QueueForm, PppForm, AddressFrom
 
 import routeros_api
 
 ### ESTABLECEMOS CONEXION CON EL ROUTER
-def router_connection(id):
+def router_connection(request, id):
     try:
         router = Router.objects.get(id=id)
         connection = routeros_api.RouterOsApiPool(
@@ -17,16 +18,15 @@ def router_connection(id):
             port=router.port,
             plaintext_login=True,
         )
-        return connection, router
-
+        api = connection.get_api()
+        return connection, api, router
     except ObjectDoesNotExist:
         messages.error(request, 'ROUTER NO REGISTRADO')
     except routeros_api.exceptions.RouterOsApiCommunicationError:
         messages.error(request, 'USUARIO O CLAVE INCORRECTOS')
     except routeros_api.exceptions.RouterOsApiConnectionError:
         messages.error(request, 'NO PUDO CONECTAR CON EL ROUTER')
-
-    return redirect(request.META.get('HTTP_REFERER'))
+    return redirect(request.META.get('HTTP_REFERER')), 0, 0
 
 def router_disconnection(connection):
     # TERMINAR CONEXION
@@ -61,8 +61,10 @@ def show(request, id):
         newlist = sorted(list_, key=lambda d: d[key_])
         return newlist
 
-    connection, router = router_connection(id)
-    api = connection.get_api()
+    connection, api, router = router_connection(request, id)
+    if isinstance(connection, HttpResponseRedirect):
+        return connection
+
     #identity
     identity_query = api.get_resource('/system/identity')
     identity = identity_query.get()
@@ -123,12 +125,14 @@ def delete(request, router):
     return redirect('routers.index')
 
 def addQueue(request, id):
-    connection, router = router_connection(id)
+    connection, api, router = router_connection(request, id)
+    if isinstance(connection, HttpResponseRedirect):
+        return connection
 
     if request.method == 'POST':
         form = QueueForm(request.POST)
         if form.is_valid():
-            api = connection.get_api()
+
 
             # REGISTRAR QUEUE
             add_queue = api.get_resource('/queue/simple')
@@ -155,8 +159,9 @@ def addQueue(request, id):
     return render(request, 'routers/queue/add.html', context)
 
 def addPpp(request, id):
-    connection, router = router_connection(id)
-    api = connection.get_api()
+    connection, api, router = router_connection(request, id)
+    if isinstance(connection, HttpResponseRedirect):
+        return connection
 
     if request.method == 'POST':
         # REGISTRANDO PPP
@@ -194,11 +199,21 @@ def addPpp(request, id):
     return render(request, 'routers/ppp/add.html', context)
 
 def addAddress(request, id):
-    connection, router = router_connection(id)
-    api = connection.get_api()
+    connection, api, router = router_connection(request, id)
+    if isinstance(connection, HttpResponseRedirect):
+        return connection
 
     if request.method == 'POST':
-        pass
+        # REGISTRAR ADDRESS
+        add_address = api.get_resource('/ip/address')
+        add_address.add(
+            address = request.POST['address'],
+            network = request.POST['network'],
+            interface = request.POST['interface']
+        )
+
+        messages.success(request, 'ADDRESS AGREGADO CON EXITO')
+        return redirect('routers.show', id)
 
     # GET INTERFACES
     interfaces_ = api.get_resource('/interface')

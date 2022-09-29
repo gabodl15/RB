@@ -25,5 +25,5 @@ class PppForm(forms.Form):
 
 class AddressFrom(forms.Form):
     address = forms.GenericIPAddressField(label='Address')
-    network = forms.GenericIPAddressField(label='Network')
+    network = forms.GenericIPAddressField(label='Network', required=False)
     interface = forms.ChoiceField(label='Interface', widget=forms.Select)
