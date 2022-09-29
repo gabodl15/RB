@@ -2,6 +2,20 @@
 
 {% block 'content' %}
 <div class="container">
-    <p>Sistema de Gestion de routers mikrotiks</p>
+
+    <div class="row">
+        <div class="col s12">
+            <div class="row">
+                <div class="col s3 border-letf">
+                    CANTIDAD DE CLIENTES: <span>{{ clients }}</span>
+                </div>
+                <div class="col s3 border-letf">
+                    CANTIDAD DE ROUTERS: <span>{{ routers }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="divider"></div>
+    <div class="row"></div>
 </div>
 {% endblock %}

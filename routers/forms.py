@@ -5,7 +5,7 @@ from django import forms
 class RouterForm(ModelForm):
     class Meta:
         model = Router
-        fields = '__all__'
+        exclude = ('created_at',)
         widgets = {
             'password': forms.PasswordInput(),
         }
