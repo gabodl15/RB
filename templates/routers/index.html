@@ -4,33 +4,19 @@
 <div class="container">
     <div class="row">
         <div class="col s12">
-            <a href="{% url 'routers.create' %}" class="waves-effect waves-teal btn-flat">Agregar Router</a>
+            <h6>Routers</h6>
         </div>
     </div>
     <div class="divider"></div>
     <div class="row">
         <div class="col s12">
             {% if routers %}
-                <h6>Routers</h6>
                 <table class="responsive-table">
                     <tbody>
                         {% for router in routers %}
                             <tr>
                                 <td><a href="{% url 'routers.show' router.id %}">{{ router }}</a></td>
-                                <td class="right-align">
-                                    <a class="red-text" href="#router-{{ router.id }}" onclick="document.getElementById('router-{{ router.id }}').submit()"><i class="material-icons">delete_forever</i>Eliminar</a>
-                                    &nbsp; &nbsp; &nbsp; &nbsp;
-                                    <a href="#router-edit-{{ router.id }}" onclick="document.getElementById('router-edit-{{ router.id }}').submit()">Editar</a>
-                                </td>
                             </tr>
-                            <form id="router-{{ router.id }}" action="{% url 'routers.delete' router.id %}" method="POST" hidden>
-                                {% csrf_token %}
-                                <input name="router" value="{{router.id}}" hidden>
-                            </form>
-                            <form id="router-edit-{{ router.id }}" action="{% url 'routers.edit' router.id %}" method="POST" hidden>
-                                {% csrf_token %}
-                                <input name="id" value="{{router.id}}" hidden>
-                            </form>
                         {% endfor %}
                     </tbody>
                 </table>

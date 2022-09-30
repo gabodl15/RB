@@ -4,16 +4,30 @@
     <div class="container">
         <div class="row">
             <div class="col s12">
-                <a href="{% url 'clients.create' %}" class="waves-effect waves-teal btn-flat">Agregar Cliente</a>
+                <h6>Clientes</h6>
             </div>
         </div>
         <div class="divider"></div>
         <div class="row">
             {% if clients %}
-                <h6>Clientes</h6>
-                {% for client in clients %}
-                    <p>{{ client }}</p>
-                {% endfor %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre y Apellido</th>
+                            <th>Teléfono</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for client in clients %}
+                            <tr>
+                                <td><a href="{% url 'clients.show' client.id %}">{{ client.name }} {{ client.last_name }}</a></td>
+                                <td>{{ client.phone }}</td>
+                                <td>{{ client.email }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             {% endif %}
         </div>
     </div>

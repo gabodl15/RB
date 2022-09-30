@@ -3,12 +3,7 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='routers.index'),
-    path('create/', views.create, name='routers.create'),
-    path('edit/<int:id>/', views.edit, name='routers.edit'),
-    path('update/<int:router>/', views.update, name='routers.update'),
     path('show/<int:id>/', views.show, name='routers.show'),
-    path('store/', views.store, name='routers.store'),
-    path('delete/<int:router>/', views.delete, name='routers.delete'),
     path('queue/add/<int:id>/', views.addQueue, name='routers.queue.add'),
     path('ppp/add/<int:id>/', views.addPpp, name='routers.ppp.add'),
     path('address/add/<int:id>', views.addAddress, name='routers.address.add'),

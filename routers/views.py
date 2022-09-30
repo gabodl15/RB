@@ -35,24 +35,6 @@ def index(request):
     routers = Router.objects.all()
     return render(request, 'routers/index.html', {'routers': routers})
 
-def create(request):
-    form = RouterForm()
-    return render(request, 'routers/create.html', {'form': form})
-
-def edit(request, id):
-    if request.method == 'POST':
-        router = get_object_or_404(Router, id = id)
-        form = RouterForm(instance = router)
-        return render(request, 'routers/edit.html', {'form': form, 'router': router})
-
-def update(request, router):
-    router = Router.objects.get(id = router)
-    form = RouterForm(request.POST, instance = router)
-    if form.is_valid():
-        form.save()
-
-    return redirect('routers.index')
-
 def show(request, id):
     # ORDENAR
     # EL PRIMER PARAMETRO ES LA LISTA O DICCIONARIO A ORDENAR.
@@ -103,26 +85,6 @@ def show(request, id):
 
     router_disconnection(connection)
     return render(request, 'routers/show.html', context)
-
-def store(request):
-    if request.method == 'POST':
-        name = request.POST['name']
-        ip = request.POST['ip']
-        user = request.POST['user']
-        password = request.POST['password']
-        router = Router(name=name, ip=ip, user=user, password=password)
-        router.save()
-        messages.success(request, 'ROUTER GUARDADO CON EXITO')
-
-    return redirect('routers.index')
-
-def delete(request, router):
-    if request.method == 'POST':
-        router = Router.objects.get(id=router)
-        router.delete()
-        messages.success(request, 'ROUTER ELIMINADO CON EXITO')
-
-    return redirect('routers.index')
 
 def addQueue(request, id):
     connection, api, router = router_connection(request, id)

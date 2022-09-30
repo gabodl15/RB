@@ -1,1 +1,15 @@
 {% extends 'layouts/app.html' %}
+
+{% block 'content' %}
+<div class="container">
+    <div class="row">
+        <div class="col m6 s12">
+            <p>{{ client.name }} {{ client.last_name }}</p>
+            <p>{{ client.dni }}</p>
+            <p>{{ client.address }}</p>
+            <p>{{ client.phone }}</p>
+            <p>{{ client.email }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
