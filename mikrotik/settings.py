@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'materializecssform',
     'routers',
     'clients',
+    'logs',
 ]
 
 MIDDLEWARE = [

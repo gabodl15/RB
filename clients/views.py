@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Client
 from .forms import ClientForm
@@ -27,7 +27,7 @@ def store(request):
                         )
         client.save()
         messages.success(request, 'CLIENTE REGISTRADO CON EXITO')
-    return render(request, 'clients/index.html', {})
+    return redirect('clients.index')
 def show(request, id):
     client = Client.objects.get(id=id)
     return render(request, 'clients/show.html', {'client': client})
