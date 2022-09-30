@@ -3,13 +3,13 @@
 {% block 'content' %}
     <div class="container">
         <div class="row">
-            <form>
+            <form action="{% url 'clients.store' %}" method="POST">
                 {% csrf_token %}
                 {% load materializecss %}
                 {{ form|materializecss }}
-                <p>
+                <div>
                     <button type="submit" class="btn btn-small">Enviar</button>
-                </p>
+                </div>
             </form>
         </div>
     </div>

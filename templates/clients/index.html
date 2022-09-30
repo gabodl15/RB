@@ -8,5 +8,13 @@
             </div>
         </div>
         <div class="divider"></div>
+        <div class="row">
+            {% if clients %}
+                <h6>Clientes</h6>
+                {% for client in clients %}
+                    <p>{{ client }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
     </div>
 {% endblock %}
