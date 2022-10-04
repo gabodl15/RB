@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'routers',
     'clients',
     'logs',
+    'nodos',
 ]
 
 MIDDLEWARE = [
