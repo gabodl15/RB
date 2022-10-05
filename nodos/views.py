@@ -31,4 +31,8 @@ def antenna(request, ip):
     antenna = CompanyAntenna.objects.filter(ip=ip).first()
     get_station_info = ssh_connection(antenna)
     details= json.loads(get_station_info)
-    return render(request, 'nodos/antenna.html',{'details': details})
+    context = {
+        'details': details,
+        'antenna': antenna
+    }
+    return render(request, 'nodos/antenna.html', context)
