@@ -4,6 +4,15 @@
     <div class="container">
         <div class="row">
             <table class="responsive-table">
+                <thead>
+                    <tr>
+                        <th>NOMBRE</th>
+                        <th>ANTENA</th>
+                        <th>SEÑAL</th>
+                        <th>IP</th>
+                        <th>UPTIME</th>
+                    </tr>
+                </thead>
                 <tbody>
                     {% for station in details %}
                         <tr>
@@ -17,7 +26,8 @@
                                     <td><a href="http://{{ station.lastip }}" target="_blank">{{ station.lastip }}</a></td>
                                 {% endif %}
                             {# END #}
-                            <td>{{ station.remote.uptime }}</td>
+                            {% load convert_seconds %}
+                            <td>{{ station.remote.uptime|convert_seconds }}</td>
                             <td></td>
                         </tr>
                     {% endfor %}
