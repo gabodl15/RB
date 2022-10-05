@@ -1,0 +1,39 @@
+{% extends 'layouts/app.html' %}
+
+{% block 'content' %}
+    <div class="container">
+        <div class="row">
+            <table class="responsive-table">
+                <tbody>
+                    {% for station in details %}
+                        <tr>
+                            <td>{{ station.remote.hostname }}</td>
+                            <td>{{ station.remote.platform }}</td>
+                            <td>{{ station.remote.signal }}</td>
+                            {# CONDITIONAL BETWEEN M5 AND AC #}
+                                {% if station.remote.ipaddr %}
+                                    <td><a href="http://{{ station.remote.ipaddr|join:''}}" target="_blank">{{ station.remote.ipaddr|join:'' }}</a></td>
+                                {% else %}
+                                    <td><a href="http://{{ station.lastip }}" target="_blank">{{ station.lastip }}</a></td>
+                                {% endif %}
+                            {# END #}
+                            <td>{{ station.remote.uptime }}</td>
+                            <td></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+                <div class="col s3">
+                    <p></p>
+                </div>
+                <div class="col s3">
+                    <p></p>
+                </div>
+                <div class="col s3">
+                    <p></p>
+                </div>
+
+        </div>
+    </div>
+{% endblock %}

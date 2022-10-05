@@ -1,0 +1,26 @@
+{% extends 'layouts/app.html' %}
+
+{% block 'content' %}
+<div class="container">
+    <div class="row">
+        {{ nodo }}
+        <div class="divider"></div>
+        <table class="responsive-table">
+            <tbody>
+                {% for antenna in antennas %}
+                    <tr>
+                        <td><a href="{% url 'nodos.show.antenna' antenna.ip %}">{{ antenna }}</a></td>
+                        <td><a href="http://{{antenna.ip}}" target="_blank">{{ antenna.ip }}</a></td>
+                        <td>{{ antenna.frequency }}</td>
+                        <td>
+                            {% if antenna.point_to_point %}
+                                SI
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
