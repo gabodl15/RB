@@ -52,7 +52,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'global_login_required.GlobalLoginRequiredMiddleware', # AUTENTICACION GLOBAL
 ]
+
+PUBLIC_PATHS = [
+    r'^/accounts/.*', # allow public access to all django-allauth views
+]
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/accounts/login'
 
 ROOT_URLCONF = 'mikrotik.urls'
 
