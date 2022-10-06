@@ -17,3 +17,26 @@ Lancelot es un sistema para trabajar con routers mikrotik
 def get_python_value(self, bytes):
         return bytes.decode("utf-8", "ignore")
 </pre>
+
+<p>Utilizo django-fernet-fields para encriptar y desencriptar datos sencibles. Como las claves que usará la api para conectarse con los routers.</p>
+<p>En django 4.0 en adelante no existe force_text, hay que cambiarlo por force_str</p>
+
+<p>En el archivo <code>/lib/YOUR-PYTHON-VERSION/site-packages/fernet_fields/fields.py</code> la linea:</p>
+<code>from django.utils.encoding import force_bytes, force_text</code>
+<p>a</p>
+<code>from django.utils.encoding import force_bytes, force_str</code>
+<p>Y</p>
+<pre>
+    def from_db_value(self, value, expression, connection, *args):
+        if value is not None:
+            value = bytes(value)
+            return self.to_python(force_text(self.fernet.decrypt(value)))
+</pre>
+
+<p>a</p>
+<pre>
+    def from_db_value(self, value, expression, connection, *args):
+        if value is not None:
+            value = bytes(value)
+            return self.to_python(force_str(self.fernet.decrypt(value)))
+</pre>

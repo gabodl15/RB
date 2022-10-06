@@ -1,5 +1,5 @@
 from django.db import models
-
+from fernet_fields import EncryptedTextField
 class Nodo(models.Model):
     name = models.CharField(max_length=50)
     address = models.CharField(max_length=250)
@@ -24,7 +24,7 @@ class CompanyAntenna(models.Model):
     point_to_point = models.BooleanField(default=0)
     frequency = models.IntegerField()
     username = models.CharField(max_length=30, default='ubnt')
-    password = models.CharField(max_length=50)
+    password = EncryptedTextField()
 
     def __str__(self):
         return self.name
