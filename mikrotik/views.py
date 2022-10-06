@@ -13,3 +13,6 @@ def index(request):
         'routers': routers,
     }
     return render(request, 'index.html', context)
+
+def login(request):
+    return render(request, 'auth/login.html', {})
