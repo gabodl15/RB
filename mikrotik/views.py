@@ -1,16 +1,18 @@
 from django.shortcuts import render
 from routers.models import Router
 from clients.models import Client
+from nodos.models import Nodo, CompanyAntenna
 
 def index(request):
-    get_clients = Client.objects.all()
-    clients = len(get_clients)
-    get_routers = Router.objects.all()
-    routers = len(get_routers)
-
+    clients = len(Client.objects.all())
+    routers = len(Router.objects.all())
+    nodos = len(Nodo.objects.all())
+    antennas = len(CompanyAntenna.objects.all())
     context = {
         'clients': clients,
         'routers': routers,
+        'nodos': nodos,
+        'antennas': antennas,
     }
     return render(request, 'index.html', context)
 
