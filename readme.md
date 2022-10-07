@@ -1,6 +1,6 @@
 # <center>Lancelot</center>
 <hr>
-Lancelot es un sistema para trabajar con routers mikrotik
+Lancelot es un sistema para trabajo de los WISP. Un sistema de gestion para trabajar con los routers, antenas, clientes, entre otros.
 <br>
 <br>
 
