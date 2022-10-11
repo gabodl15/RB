@@ -15,3 +15,6 @@ def index(request):
         'antennas': antennas,
     }
     return render(request, 'index.html', context)
+
+# def login(request):
+#     return render(request, 'auth/login.html', {})
