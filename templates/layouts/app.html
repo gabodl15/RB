@@ -11,7 +11,7 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
         {% load static %}
-        <link rel="stylesheet" href="{% static 'css/main.css' %}">
+        <!-- <link rel="stylesheet" href="{% static 'css/main.css' %}"> -->
         <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
         <!-- <a target="_blank" href="https://icons8.com/icon/9FEC1W1imy7R/rocket">Rocket</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a> -->
 
@@ -37,54 +37,41 @@
                 </script>
             {% endfor %}
         {% endif %}
-        <header>
-            <!-- Dropdown Structure -->
-            <ul id="dropdown1" class="dropdown-content">
-                <li><a href="{% url 'nodos.index' %}">Nodos</a></li>
-                <li><a href="{% url 'routers.index' %}">Routers</a></li>
-                <li><a href="#!">Planes</a></li>
-                <li><a href="{% url 'clients.index' %}">Clientes</a></li>
-                <li class="divider"></li>
-                <li><a href="#!">Administraci&oacuten</a></li>
-                <li><a href="{% url 'logout' %}">Logout</a></li>
-            </ul>
-            <nav>
-                <div class="nav-wrapper 607d8b blue-grey">
-                <a href="{% url 'index' %}" class="brand-logo">ISP</a>
-                <ul class="right hide-on-med-and-down">
-                    {% if request.user.is_staff %}
-                        <li><a href="{% url 'admin:index' %}">Admin</a></li>
-                        <li><a href="badges.html">Components</a></li>
-                    {% endif %}
-                    <!-- Dropdown Trigger -->
-                    <li><a class="dropdown-trigger-menu" href="#!" data-target="dropdown1">Menú<i class="material-icons right">arrow_drop_down</i></a></li>
-                </ul>
-                </div>
-            </nav>
-        </header>
         <main>
-            <!--AGREGANDO SALTO PARA QUE NO ESTÉ TAN CERCA DEL NAV -->
-            <br>
-            {% block 'content' %}
-            {% endblock %}
+        <div class="row">
+
+            <div class="col s12 m4 l3"> <!-- Note that "m4 l3" was added -->
+
+                <ul id="slide-out" class="sidenav sidenav-fixed">
+                    <li><div class="user-view">
+                        <div class="background">
+                            <img src="https://picsum.photos/400" width="100%" height="100%">
+                        </div>
+                        <a href="#user"><img class="circle" src="https://picsum.photos/300" width="100%" height="100%"></a>
+                        <a href="#name"><span class="white-text name">John Doe</span></a>
+                        <a href="#email"><span class="white-text email">jdandturk@gmail.com</span></a>
+                        </div></li>
+                    {% if request.user.is_staff %}
+                        <li><a href="{% url 'admin:index' %}">Root</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'nodos.index' %}">Nodos</a></li>
+                    <li><a href="{% url 'routers.index' %}">Routers</a></li>
+                    <li><a href="#!">Planes</a></li>
+                    <li><a href="{% url 'clients.index' %}">Clientes</a></li>
+                    <li><a href="#!">Administraci&oacuten</a></li>
+                    <div class="divider"></div>
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                </ul>
+            </div>
+
+            <div class="col s12 m8 l9"> <!-- Note that "m8 l9" was added -->
+              {% block 'content' %}
+              {% endblock %}
+            </div>
+
+        </div>
         </main>
-        <footer class="page-footer 607d8b blue-grey">
-            <div class="container">
-                <div class="row">
-                    <div class="col l6 s12">
-                        <h5 class="white-text">Lancelot</h5>
-                        <p class="grey-text text-lighten-4">The future is better when we build it together.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-copyright">
-                <div class="container">
-                <a class="grey-text text-lighten-4 right" href="https://gabodl.com" target="_blank">Gabo Diaz</a>
-                </div>
-            </div>
-        </footer>
-
-
+        <footer></footer>
         {% block 'javascript' %}
         {% endblock %}
         <script type="text/javascript">

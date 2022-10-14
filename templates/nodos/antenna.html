@@ -1,50 +1,49 @@
 {% extends 'layouts/app.html' %}
 
 {% block 'content' %}
-    <div class="container">
-        <div class="row">
-            <h3>{{ antenna }} - {{ antenna.wireless_mode }}</h3>
-            <table class="responsive-table">
-                <thead>
-                    <tr>
-                        <th>NOMBRE</th>
-                        <th>ANTENA</th>
-                        <th>SEÑAL</th>
-                        <th>IP</th>
-                        <th>UPTIME</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for station in details %}
-                        <tr>
-                            <td>{{ station.remote.hostname }}</td>
-                            <td>{{ station.remote.platform }}</td>
-                            <td>{{ station.remote.signal }}</td>
-                            {# CONDITIONAL BETWEEN M5 AND AC #}
-                                {% if station.remote.ipaddr %}
-                                    <td><a href="http://{{ station.remote.ipaddr|join:''}}" target="_blank">{{ station.remote.ipaddr|join:'' }}</a></td>
-                                {% else %}
-                                    <td><a href="http://{{ station.lastip }}" target="_blank">{{ station.lastip }}</a></td>
-                                {% endif %}
-                            {# END #}
-                            {% load convert_seconds %}
-                            <td>{{ station.remote.uptime|convert_seconds }}</td>
-                            <td></td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+<div class="row">
+    <h3>{{ antenna }} - {{ antenna.wireless_mode }}</h3>
+    <table class="responsive-table">
+        <thead>
+            <tr>
+                <th>NOMBRE</th>
+                <th>ANTENA</th>
+                <th>SEÑAL</th>
+                <th>IP</th>
+                <th>UPTIME</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for station in details %}
+                <tr>
+                    <td>{{ station.remote.hostname }}</td>
+                    <td>{{ station.remote.platform }}</td>
+                    <td>{{ station.remote.signal }}</td>
+                    {# CONDITIONAL BETWEEN M5 AND AC #}
+                        {% if station.remote.ipaddr %}
+                            <td><a href="http://{{ station.remote.ipaddr|join:''}}" target="_blank">{{ station.remote.ipaddr|join:'' }}</a></td>
+                        {% else %}
+                            <td><a href="http://{{ station.lastip }}" target="_blank">{{ station.lastip }}</a></td>
+                        {% endif %}
+                    {# END #}
+                    {% load convert_seconds %}
+                    <td>{{ station.remote.uptime|convert_seconds }}</td>
+                    <td></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-                <div class="col s3">
-                    <p></p>
-                </div>
-                <div class="col s3">
-                    <p></p>
-                </div>
-                <div class="col s3">
-                    <p></p>
-                </div>
-
+        <div class="col s3">
+            <p></p>
         </div>
-    </div>
+        <div class="col s3">
+            <p></p>
+        </div>
+        <div class="col s3">
+            <p></p>
+        </div>
+
+</div>
+
 {% endblock %}

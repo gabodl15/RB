@@ -1,19 +1,23 @@
 {% extends 'layouts/app.html' %}
 
 {% block 'content' %}
-    <div class="container">
-        <div class="row">
-            {% if nodos %}
-                <table class="responsive-table">
-                    <tbody>
-                        {% for nodo in nodos %}
-                            <tr>
-                                <td><a href="{% url 'nodos.show' nodo.id %}">{{ nodo }}</a></td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% endif %}
-        </div>
+<div class="row">
+    <div class="col s12">
+        <h6>Nodos</h6>
     </div>
+</div>
+<div class="divider"></div>
+<div class="row">
+    {% if nodos %}
+        <table class="responsive-table">
+            <tbody>
+                {% for nodo in nodos %}
+                    <tr>
+                        <td><a href="{% url 'nodos.show' nodo.id %}">{{ nodo }}</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+  </div>
 {% endblock %}
