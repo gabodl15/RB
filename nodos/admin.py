@@ -4,6 +4,8 @@ from django import forms
 # Register your models here.
 
 class NodoAdmin(admin.ModelAdmin):
+    list_display = ('name', 'address', 'comment')
+
     def map(self, coordinates):
         print('It have set coordinates')
     def save_model(self, request, obj, form, change):
