@@ -27,6 +27,7 @@ class CompanyAntennaAdminForm(forms.ModelForm):
         fields = '__all__'
 
 class CompanyAntennaAdmin(admin.ModelAdmin):
+    list_display = ('name', 'ip', 'wireless_mode', 'frequency')
     form = CompanyAntennaAdminForm
 
 admin.site.register(CompanyAntenna, CompanyAntennaAdmin)
