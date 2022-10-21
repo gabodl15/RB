@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-from .models import Router
+from .models import Router, Plan
 from .forms import RouterForm, QueueForm, PppForm, AddressFrom
 
 import routeros_api
@@ -36,6 +36,8 @@ def index(request):
     return render(request, 'routers/index.html', {'routers': routers})
 
 def show(request, id):
+    # planes = Plan.objects.filter(routers=id)
+    # print (planes)
     # ORDENAR
     # EL PRIMER PARAMETRO ES LA LISTA O DICCIONARIO A ORDENAR.
     # EL SEGUNDO PARAMETRO ES LA CLAVE POR LA QUE VA A ORDENAR

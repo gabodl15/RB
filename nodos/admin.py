@@ -5,7 +5,7 @@ from django import forms
 
 class NodoAdmin(admin.ModelAdmin):
     list_display = ('name', 'address', 'comment')
-
+    search_fields = ('name', 'address')
     def map(self, coordinates):
         print('It have set coordinates')
     def save_model(self, request, obj, form, change):
@@ -27,6 +27,7 @@ class CompanyAntennaAdminForm(forms.ModelForm):
         fields = '__all__'
 
 class CompanyAntennaAdmin(admin.ModelAdmin):
+    list_display = ('name', 'ip', 'wireless_mode', 'frequency')
     form = CompanyAntennaAdminForm
 
 admin.site.register(CompanyAntenna, CompanyAntennaAdmin)
