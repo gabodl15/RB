@@ -17,9 +17,17 @@ class Client(models.Model):
         return self.name
 
 class Profile(models.Model):
+    OF = 'OF' # OPTICAL FIBER
+    WA = 'WA' # WIFI ANTENNA
+    CHOICES = [
+        (OF, 'Fibra Optica'),
+        (WA, 'Antena WiFi')
+    ]
+
     name = models.CharField(max_length=30)
     password = EncryptedTextField()
     mac = models.CharField(max_length=20, null=True, blank=True)
+    connection_mode = models.CharField(max_length=2, choices=CHOICES, default=WA)
     # cutoff_date
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     router = models.ForeignKey(Router, on_delete=models.RESTRICT)

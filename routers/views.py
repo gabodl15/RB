@@ -31,13 +31,12 @@ def router_connection(request, id):
 def router_disconnection(connection):
     # TERMINAR CONEXION
     connection.disconnect()
+    
 def index(request):
     routers = Router.objects.all()
     return render(request, 'routers/index.html', {'routers': routers})
 
 def show(request, id):
-    # planes = Plan.objects.filter(routers=id)
-    # print (planes)
     # ORDENAR
     # EL PRIMER PARAMETRO ES LA LISTA O DICCIONARIO A ORDENAR.
     # EL SEGUNDO PARAMETRO ES LA CLAVE POR LA QUE VA A ORDENAR

@@ -26,7 +26,7 @@
         <div class="col s12">
             <ul class="collapsible">
                 <li>
-                    <div class="collapsible-header">QUEUES SIMPLES</div>
+                    <div class="collapsible-header">QUEUES SIMPLES <span class="badge">{{ queues | length }}</span></div>
                     <div class="collapsible-body">
                         <div class="right-align">
                             <a href="{% url 'routers.queue.add' router.id %}" class="btn btn-small">Agregar queue</a>
@@ -64,7 +64,7 @@
         <div class="col s12">
             <ul class="collapsible">
                 <li>
-                    <div class="collapsible-header">PPP SECRET</div>
+                    <div class="collapsible-header">PPP SECRET <span class="badge">{{ usuarios | length }}</span></div>
                     <div class="collapsible-body">
                         <div class="right-align">
                             <a href="{% url 'routers.ppp.add' router.id %}" class="btn btn-small">Agregar ppp</a>
@@ -96,7 +96,7 @@
         <div class="col s12">
             <ul class="collapsible">
                 <li>
-                    <div class="collapsible-header">IP ADDRESS</div>
+                    <div class="collapsible-header">IP ADDRESS <span class="badge">{{ ips | length }}</span></div>
                     <div class="collapsible-body">
                         <div class="right-align">
                             <a href="{% url 'routers.address.add' router.id %}" class="btn btn-small">Agregar ip</a>

@@ -1,7 +1,12 @@
 {% extends "layouts/app.html" %}
 
+{% block 'head' %}
+    {# ARCHIVOS CSS DATATABLE #}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+{% endblock %}
+
 {% block 'content' %}
-    <div class="container">
+    <div class="">
         <div class="row">
             <div class="col s12">
                 <h6>Clientes</h6>
@@ -10,7 +15,7 @@
         <div class="divider"></div>
         <div class="row">
             {% if clients %}
-                <table>
+                <table id="clientTable" class="display" style="width:100%">
                     <thead>
                         <tr>
                             <th>Nombre y Apellido</th>
@@ -27,8 +32,38 @@
                             </tr>
                         {% endfor %}
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Nombre y Apellido</th>
+                            <th>Teléfono</th>
+                            <th>Email</th>
+                        </tr>
+                    </tfoot>
                 </table>
+            {% else %}
+                <center><h3>No hay clientes registrados</h3></center>
             {% endif %}
         </div>
     </div>
+{% endblock %}
+
+{% block 'javascript' %}
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#clientTable').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+    });
+</script>
 {% endblock %}
