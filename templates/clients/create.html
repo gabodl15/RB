@@ -1,0 +1,22 @@
+{% extends 'layouts/app.html' %}
+
+{% block 'content' %}
+    <div class="row">
+        <div class="col s3">
+            <h6>Crear Cliente</h6>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12">
+            <form method="post">
+                {% csrf_token %}
+
+                {% load materializecss %}
+                {{ form|materializecss }}
+
+                <button type="submit" class="btn btn-small blue">Crear</button>
+
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -10,10 +10,19 @@
 <div class="row">
     {% if nodos %}
         <table class="responsive-table">
+            <thead>
+                <tr>
+                    <td>Nodo</td>
+                    <td>Antenas</td>
+                    <td>Dirección</td>
+                </tr>
+            </thead>
             <tbody>
                 {% for nodo in nodos %}
                     <tr>
                         <td><a href="{% url 'nodos.show' nodo.id %}">{{ nodo }}</a></td>
+                        <td>{{ nodo.companyantenna_set.all | length }}</td>
+                        <td>{{ nodo.address }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

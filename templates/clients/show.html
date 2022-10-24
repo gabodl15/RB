@@ -2,12 +2,41 @@
 
 {% block 'content' %}
     <div class="row">
+            <div class="col s3">
+                <h6>Cliente</h6>
+            </div>
+            <div class="col s9">
+                <div class="right-align">
+                    <a class="btn-flat">Agregar Perfil</a>
+                </div>
+            </div>
+    </div>
+    <div class="divider"></div>
+    <div class="row">
         <div class="col m6 s12">
             <p>{{ client.name }} {{ client.last_name }}</p>
             <p>{{ client.dni }}</p>
             <p>{{ client.address }}</p>
             <p>{{ client.phone }}</p>
             <p>{{ client.email }}</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12">
+            {% if client.profile_set.all %}
+            <table>
+                <tbody>
+                    {% for profile in client.profile_set.all %}
+                        <tr>
+                            <td>{{ profile }}</td>
+                            <td>{{ profile.plan }}</td>
+                            <td>{{ profile.cutoff_date }}</td>
+                            <td><a class="btn-flat">Editar</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

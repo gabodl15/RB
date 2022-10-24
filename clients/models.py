@@ -28,13 +28,13 @@ class Profile(models.Model):
     password = EncryptedTextField()
     mac = models.CharField(max_length=20, null=True, blank=True)
     connection_mode = models.CharField(max_length=2, choices=CHOICES, default=WA)
-    # cutoff_date
+    cutoff_date = models.DateField(null=True, blank=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     router = models.ForeignKey(Router, on_delete=models.RESTRICT)
     plan = models.ForeignKey(Plan, on_delete=models.RESTRICT)
     agreement = models.BooleanField(default=False)
-    created = models.DateField(auto_now_add=True)
-    updated = models.DateField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     def __str__(self):
         return self.name
     

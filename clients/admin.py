@@ -17,7 +17,7 @@ class ProfileAdminForm(forms.ModelForm):
         }
         fields = '__all__'
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('name', 'client', 'password', 'router', 'plan', 'agreement')
+    list_display = ('name', 'client', 'password', 'router', 'plan', 'cutoff_date', 'agreement')
     search_fields = ('client__name', 'name', 'router__name', 'plan__name')
 
     form = ProfileAdminForm

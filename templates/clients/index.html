@@ -8,8 +8,13 @@
 {% block 'content' %}
     <div class="">
         <div class="row">
-            <div class="col s12">
+            <div class="col s2">
                 <h6>Clientes</h6>
+            </div>
+            <div class="col s10">
+                <div class="right-align">
+                    <a href="{% url 'clients.create' %}" class="btn-flat">Agregar cliente</a>
+                </div>
             </div>
         </div>
         <div class="divider"></div>
