@@ -11,15 +11,6 @@ class ClientCreateView(CreateView):
     template_name = 'clients/create.html'
     success_url = '/clients'
 
-    def post(self, request, *args, **kwargs):
-        form = ClientForm(request.POST)
-        if form.is_valid():
-            client = form.save()
-            if client.coordinates != '':
-                print('Trae coordenadas')
-            client.save()
-        return redirect('clients.index')
-
 def index(request):
     clients = Client.objects.all()
     return render(request, 'clients/index.html', {'clients': clients})
@@ -36,6 +27,6 @@ def show(request, id):
         map_render = None
     context = {
         'client': client,
-        'map_render': map_render
+        'map_render': map_render,
     }
     return render(request, 'clients/show.html', context)
