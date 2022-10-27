@@ -1,0 +1,25 @@
+{% extends 'layouts/app.html' %}
+
+{% block 'content' %}
+  <div class="row">
+      <form class="" action="{% url 'clients.profile.add' id=client.id %}" method="post">
+          {% csrf_token %}
+          <input type="number" name="" value="{{ client.id }}" hidden>
+          {% load materializecss %}
+          {{ form | materializecss }}
+
+          <button type="submit" class="btn btn-small blue right" name="submit">Enviar</button>
+      </form>
+  </div>
+{% endblock %}
+
+{% block 'javascript' %}
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('select');
+        var instances = M.FormSelect.init(elems, {
+            classes: 'browser-default'
+        });
+    });
+</script>
+{% endblock %}

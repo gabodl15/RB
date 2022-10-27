@@ -2,7 +2,7 @@ from django.views.generic.edit import CreateView
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Client
-from .forms import ClientForm
+from .forms import ClientForm, ProfileForm
 import folium
 
 class ClientCreateView(CreateView):
@@ -30,3 +30,17 @@ def show(request, id):
         'map_render': map_render,
     }
     return render(request, 'clients/show.html', context)
+
+def addProfile(request, id):
+    if request.method == 'POST':
+        return redirect('clients.show', id=id)
+    client = Client.objects.get(id=id)
+    form = ProfileForm()
+    context = {
+        'form': form,
+        'client': client,
+    }
+    return render(request, 'clients/add_profile.html', context)
+
+def addProfilePost(request):
+    return redirect('clients.show', request.POST['client'])
