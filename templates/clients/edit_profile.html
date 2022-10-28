@@ -1,0 +1,25 @@
+{% extends 'layouts/app.html' %}
+
+{% block 'content' %}
+    <h1>EDITAR</h1>
+    <div class="divider"></div>
+    <br>
+    <form action="{% url 'clients.profile.edit' id=profile.id %}" method='POST'>
+        <input type="text" name="client" value="{{ profile.client.id }}" hidden>
+        {% csrf_token %}
+        {% load materializecss %}
+        {{ form|materializecss }}
+        <button type="submit" class="right btn btn-small blue" name="button">Enviar</button>
+    </form>
+{% endblock %}
+
+{% block 'javascript' %}
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('select');
+        var instances = M.FormSelect.init(elems, {
+            classes: 'browser-default'
+        });
+    });
+</script>
+{% endblock %}

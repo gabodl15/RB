@@ -4,7 +4,7 @@
   <div class="row">
       <form class="" action="{% url 'clients.profile.add' id=client.id %}" method="post">
           {% csrf_token %}
-          <input type="number" name="" value="{{ client.id }}" hidden>
+          <input type="number" name="client" value="{{ client.id }}" hidden>
           {% load materializecss %}
           {{ form | materializecss }}
 

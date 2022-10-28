@@ -36,8 +36,9 @@
                         <tr>
                             <td>{{ profile }}</td>
                             <td>{{ profile.plan }}</td>
+                            <td>{{ profile.router }}</td>
                             <td>{{ profile.cutoff_date }}</td>
-                            <td><a class="btn-flat">Editar</a></td>
+                            <td><a href="{% url 'clients.profile.edit' id=profile.id %}" class="btn-flat">Editar</a></td>
                         </tr>
                     {% endfor %}
                 </tbody>

@@ -1,7 +1,9 @@
+import routeros_api.api
 from django.views.generic.edit import CreateView
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import Client
+from .models import Client, Profile
+from routers.models import Router, Plan
 from .forms import ClientForm, ProfileForm
 import folium
 
@@ -32,9 +34,59 @@ def show(request, id):
     return render(request, 'clients/show.html', context)
 
 def addProfile(request, id):
-    if request.method == 'POST':
-        return redirect('clients.show', id=id)
     client = Client.objects.get(id=id)
+    if request.method == 'POST':
+        form = ProfileForm(request.POST)
+        router = Router.objects.get(id=request.POST['router'])
+        plan = Plan.objects.get(id=request.POST['plan'])
+
+        #SETIANDO LOS VALORES DEL FORMULARIO
+        profile_name = request.POST['name']
+        profile_password = request.POST['password']
+        profile_mac = request.POST['mac']
+        connection_mode = request.POST['connection_mode']
+        cutoff_date = request.POST['cutoff_date']
+
+        try:
+            connection = routeros_api.api.RouterOsApiPool(
+                router.ip,
+                username=router.user,
+                password=router.password,
+                port=router.port,
+                plaintext_login=True,
+            )
+            api = connection.get_api()
+
+            ### AGREGAR EL PPP AL MIKROTIK
+            add_ppp = api.get_resource('/ppp/secret')
+            add_ppp.add(
+                name=profile_name,
+                password=profile_password,
+                service='pppoe',
+                profile=plan.name
+            )
+        except routeros_api.exceptions.RouterOsApiCommunicationError:
+            messages.error(request, 'USUARIO O CLAVE INCORRECTOS')
+            return redirect(request.META.get('HTTP_REFERER'))
+        except routeros_api.exceptions.RouterOsApiConnectionError:
+            messages.error(request, 'NO PUDO CONECTAR CON EL ROUTER')
+            return redirect(request.META.get('HTTP_REFERER'))
+
+        if form.is_valid():
+            profile = Profile(
+                name=profile_name,
+                password=profile_password,
+                mac=profile_mac,
+                connection_mode=connection_mode,
+                cutoff_date=cutoff_date,
+                router=router,
+                plan=plan,
+                client=client
+            )
+            profile.save()
+        else:
+            print('El formulario no es valido')
+        return redirect('clients.show', id=id)
     form = ProfileForm()
     context = {
         'form': form,
@@ -42,5 +94,40 @@ def addProfile(request, id):
     }
     return render(request, 'clients/add_profile.html', context)
 
-def addProfilePost(request):
-    return redirect('clients.show', request.POST['client'])
+def editProfile(request, id):
+    profile = Profile.objects.get(id=id)
+    if request.method == 'POST':
+        client = request.POST['client']
+        new_name = request.POST['name']
+        new_password = request.POST['password']
+        new_mac = request.POST['mac']
+        new_router = Router.objects.get(id=request.POST['router'])
+        new_plan = Plan.objects.get(id=request.POST['plan'])
+        new_agreement = request.POST.get('agreement', False)
+        if profile.name != new_name:
+            profile.name = new_name
+            
+        if profile.password != new_password:
+            profile.password = new_password
+
+        if profile.mac != new_mac:
+            profile.mac = new_mac
+
+        if profile.router != new_router:
+            profile.router = new_router
+
+        if profile.plan != new_plan:
+            profile.plan = new_plan
+
+        if profile.agreement != new_agreement:
+            profile.agreement = True if new_agreement == 'on' else False
+
+        profile.save()
+        return redirect('clients.show', id=client)
+
+    form = ProfileForm(instance=profile)
+    context = {
+        'profile': profile,
+        'form': form
+    }
+    return render(request, 'clients/edit_profile.html', context)
