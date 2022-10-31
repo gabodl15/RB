@@ -10,7 +10,7 @@ class Router(models.Model):
     user = models.CharField(max_length=100)
     password = EncryptedTextField()
     port = models.IntegerField(default=8728)
-    nodo = models.OneToOneField(Nodo, blank=True, null=True, on_delete=models.RESTRICT)
+    nodo = models.ForeignKey(Nodo, blank=True, null=True, on_delete=models.RESTRICT)
     created = models.DateTimeField(default=now)
 
     def __str__(self):
