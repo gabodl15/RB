@@ -2,17 +2,33 @@ from django.shortcuts import render
 from routers.models import Router
 from clients.models import Client
 from nodos.models import Nodo, CompanyAntenna
+import folium
 
 def index(request):
-    clients = len(Client.objects.all())
-    routers = len(Router.objects.all())
-    nodos = len(Nodo.objects.all())
-    antennas = len(CompanyAntenna.objects.all())
+    map = folium.Map(location=[11.78701807156271, -70.08361994751114], zoom_start=11)
+    nodes = Nodo.objects.all()
+
+    for node in nodes:
+        coordinates = node.coordinates
+        if coordinates:
+            x = coordinates.split(',')
+            folium.Marker(
+                location=[float(x[0]), float(x[1])],
+                tooltip=node.name
+            ).add_to(map)
+    map_render = map.get_root().render()
+    len_clients = len(Client.objects.all())
+    len_routers = len(Router.objects.all())
+    len_nodos = len(nodes)
+    len_antennas = len(CompanyAntenna.objects.all())
+
+
     context = {
-        'clients': clients,
-        'routers': routers,
-        'nodos': nodos,
-        'antennas': antennas,
+        'clients': len_clients,
+        'routers': len_routers,
+        'nodos': len_nodos,
+        'antennas': len_antennas,
+        'map': map_render
     }
     return render(request, 'index.html', context)
 
