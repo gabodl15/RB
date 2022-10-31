@@ -76,11 +76,14 @@ def show(request, id):
     ips = order(ips_query.get(), 'address')
 
     if router.nodo:
-        coordinates = router.nodo.coordinates
-        x = coordinates.split(',')
-        map = folium.Map(location=[float(x[0]), float(x[1])], zoom_start=16)
-        folium.Marker([float(x[0]), float(x[1])], tooltip='Clip aqui').add_to(map)
-        map_render = map.get_root().render()
+        if router.nodo.coordinates:
+            coordinates = router.nodo.coordinates
+            x = coordinates.split(',')
+            map = folium.Map(location=[float(x[0]), float(x[1])], zoom_start=16)
+            folium.Marker([float(x[0]), float(x[1])], tooltip='Clip aqui').add_to(map)
+            map_render = map.get_root().render()
+        else:
+            map_render = None
     else:
         map_render = None
 
