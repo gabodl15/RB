@@ -15,7 +15,8 @@
                     <tbody>
                         {% for router in routers %}
                             <tr>
-                                <td><a href="{% url 'routers.show' router.id %}">{{ router }}</a>{{ router.plan_set.all | length }}</td>
+                                <td><a href="{% url 'routers.show' router.id %}">{{ router }}</a></td>
+                                <td>Planes: {{ router.plan_set.all | length }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>

@@ -45,7 +45,7 @@ def addProfile(request, id):
         profile_password = request.POST['password']
         profile_mac = request.POST['mac']
         connection_mode = request.POST['connection_mode']
-        cutoff_date = request.POST['cutoff_date']
+        cutoff_date = request.POST['cutoff_date'] if request.POST['cutoff_date'] != '' else None
 
         try:
             connection = routeros_api.api.RouterOsApiPool(
@@ -66,7 +66,7 @@ def addProfile(request, id):
                 profile=plan.name
             )
         except routeros_api.exceptions.RouterOsApiCommunicationError:
-            messages.error(request, 'USUARIO O CLAVE INCORRECTOS')
+            messages.error(request, 'ERROR EN LA COMUNICACION CON EL ROUTER')
             return redirect(request.META.get('HTTP_REFERER'))
         except routeros_api.exceptions.RouterOsApiConnectionError:
             messages.error(request, 'NO PUDO CONECTAR CON EL ROUTER')
@@ -101,12 +101,13 @@ def editProfile(request, id):
         new_name = request.POST['name']
         new_password = request.POST['password']
         new_mac = request.POST['mac']
+        new_cutoff_date = request.POST['cutoff_date']
         new_router = Router.objects.get(id=request.POST['router'])
         new_plan = Plan.objects.get(id=request.POST['plan'])
         new_agreement = request.POST.get('agreement', False)
         if profile.name != new_name:
             profile.name = new_name
-            
+
         if profile.password != new_password:
             profile.password = new_password
 
@@ -118,6 +119,8 @@ def editProfile(request, id):
 
         if profile.plan != new_plan:
             profile.plan = new_plan
+
+        print(new_cutoff_date)
 
         if profile.agreement != new_agreement:
             profile.agreement = True if new_agreement == 'on' else False

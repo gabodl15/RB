@@ -63,12 +63,13 @@
             {% endif %}
             <li><a href="{% url 'nodos.index' %}">Nodos</a></li>
             <li><a href="{% url 'routers.index' %}">Routers</a></li>
-            <li><a href="#!">Planes</a></li>
+            <li><a href="{% url 'routers.plans.index' %}">Planes</a></li>
             <li><a href="{% url 'clients.index' %}">Clientes</a></li>
             <li><a href="#!">Administraci&oacuten</a></li>
             <div class="divider"></div>
             <li><a href="{% url 'logout' %}">Logout</a></li>
         </ul>
+        <a href="#" data-target="slide-out" class="sidenav-trigger hide-on-med-and-up"><i class="material-icons">menu</i></a>
         </header>
         <main>
               <div class="row">
@@ -86,15 +87,19 @@
         {% block 'javascript' %}
         {% endblock %}
         <script type="text/javascript">
-            options = {
-                'alignment': 'left',
-                'closeOnClick': true,
-                'coverTrigger': false,
-                'constrainWidth': false,
-            }
+            document.addEventListener('DOMContentLoaded', function() {
+                var elems = document.querySelectorAll('.sidenav');
+                var instances = M.Sidenav.init(elems, {});
+            });
+
             document.addEventListener('DOMContentLoaded', function() {
                 var elems = document.querySelectorAll('.dropdown-trigger-menu');
-                var instances = M.Dropdown.init(elems, options);
+                var instances = M.Dropdown.init(elems, {
+                    'alignment': 'left',
+                    'closeOnClick': true,
+                    'coverTrigger': false,
+                    'constrainWidth': false,
+                });
             });
         </script>
     </body>

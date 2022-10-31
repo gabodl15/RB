@@ -2,12 +2,15 @@ from django.db import models
 from django.utils.timezone import now
 from fernet_fields import EncryptedTextField
 
+from nodos.models import Nodo
+
 class Router(models.Model):
     name = models.CharField(max_length=50)
     ip = models.GenericIPAddressField(protocol='both', unpack_ipv4=False)
     user = models.CharField(max_length=100)
     password = EncryptedTextField()
     port = models.IntegerField(default=8728)
+    nodo = models.OneToOneField(Nodo, blank=True, null=True, on_delete=models.RESTRICT)
     created = models.DateTimeField(default=now)
 
     def __str__(self):

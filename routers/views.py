@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from .models import Router, Plan
 from .forms import RouterForm, QueueForm, PppForm, AddressFrom
 
-import routeros_api
+import routeros_api, folium
 
 ### ESTABLECEMOS CONEXION CON EL ROUTER
 def router_connection(request, id):
@@ -31,15 +31,17 @@ def router_connection(request, id):
 def router_disconnection(connection):
     # TERMINAR CONEXION
     connection.disconnect()
-    
+
 def index(request):
     routers = Router.objects.all()
     return render(request, 'routers/index.html', {'routers': routers})
 
 def show(request, id):
     # ORDENAR
-    # EL PRIMER PARAMETRO ES LA LISTA O DICCIONARIO A ORDENAR.
-    # EL SEGUNDO PARAMETRO ES LA CLAVE POR LA QUE VA A ORDENAR
+    """
+    - EL PRIMER PARAMETRO ES LA LISTA O DICCIONARIO A ORDENAR.
+    - EL SEGUNDO PARAMETRO ES LA CLAVE POR LA QUE VA A ORDENAR
+    """
     def order(list_, key_):
         newlist = sorted(list_, key=lambda d: d[key_])
         return newlist
@@ -73,6 +75,15 @@ def show(request, id):
 
     ips = order(ips_query.get(), 'address')
 
+    if router.nodo:
+        coordinates = router.nodo.coordinates
+        x = coordinates.split(',')
+        map = folium.Map(location=[float(x[0]), float(x[1])], zoom_start=16)
+        folium.Marker([float(x[0]), float(x[1])], tooltip='Clip aqui').add_to(map)
+        map_render = map.get_root().render()
+    else:
+        map_render = None
+
     context = {
         'router': router,
         'identity': identity,
@@ -81,7 +92,8 @@ def show(request, id):
         'resource': resource,
         'usuarios': usuarios,
         'queues': queues,
-        'ips': ips
+        'ips': ips,
+        'map': map_render
     }
 
     router_disconnection(connection)
@@ -192,3 +204,10 @@ def addAddress(request, id):
         'router': router
     }
     return render(request, 'routers/address/add.html', context)
+
+def plans(request):
+    plans = Plan.objects.all()
+    context = {
+        'plans': plans
+    }
+    return render(request, 'routers/plans/index.html', context)
