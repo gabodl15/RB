@@ -1,1 +1,30 @@
 {% extends 'layouts/app.html' %}
+
+{% block 'content' %}
+    <div class="row">
+        <div class="col s12">
+            <h3>Planes</h3>
+        </div>
+    </div>
+    <div class="divider"></div>
+    <div class="row">
+        {% if plans %}
+            <table>
+                <thead>
+                    <tr>
+                        <td>Plan</td>
+                        <td>Clientes</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for plan in plans %}
+                        <tr>
+                            <td>{{ plan }}</td>
+                            <td>{{ plan.profile_set.all | length }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+{% endblock %}
