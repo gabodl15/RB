@@ -97,6 +97,7 @@ def addProfile(request, id):
 def editProfile(request, id):
     profile = Profile.objects.get(id=id)
     if request.method == 'POST':
+
         client = request.POST['client']
         new_name = request.POST['name']
         new_password = request.POST['password']
@@ -105,27 +106,53 @@ def editProfile(request, id):
         new_router = Router.objects.get(id=request.POST['router'])
         new_plan = Plan.objects.get(id=request.POST['plan'])
         new_agreement = request.POST.get('agreement', False)
-        if profile.name != new_name:
-            profile.name = new_name
 
-        if profile.password != new_password:
-            profile.password = new_password
+        try:
+            connection = routeros_api.api.RouterOsApiPool(
+                profile.router.ip,
+                username=profile.router.user,
+                password=profile.router.password,
+                port=profile.router.port,
+                plaintext_login=True,
+            )
+            api = connection.get_api()
+            get_user = api.get_resource('/ppp/secret').get(name=profile.name)
 
-        if profile.mac != new_mac:
-            profile.mac = new_mac
+            if profile.name != new_name:
+                api.get_resource('/ppp/secret').set(id=get_user[0]['id'], name=new_name)
+                profile.name = new_name
 
-        if profile.router != new_router:
-            profile.router = new_router
+            if profile.password != new_password:
+                api.get_resource('/ppp/secret').set(id=get_user[0]['id'], password=new_password)
+                profile.password = new_password
 
-        if profile.plan != new_plan:
-            profile.plan = new_plan
+            if profile.mac != new_mac:
+                profile.mac = new_mac
 
-        print(new_cutoff_date)
+            if profile.router != new_router:
+                profile.router = new_router
 
-        if profile.agreement != new_agreement:
-            profile.agreement = True if new_agreement == 'on' else False
+            if profile.plan != new_plan:
+                api.get_resource('/ppp/secret').set(id=get_user[0]['id'], profile=new_plan.name)
+                profile.plan = new_plan
 
-        profile.save()
+            if new_cutoff_date != '':
+                profile.cutoff_date = new_cutoff_date
+
+            if profile.agreement != new_agreement:
+                profile.agreement = True if new_agreement == 'on' else False
+
+            profile.save()
+
+            connection.disconnect()
+        except routeros_api.exceptions.RouterOsApiCommunicationError:
+            messages.error(request, 'ERROR EN LA COMUNICACION CON EL ROUTER')
+            return redirect(request.META.get('HTTP_REFERER'))
+        except routeros_api.exceptions.RouterOsApiConnectionError:
+            messages.error(request, 'NO PUDO CONECTAR CON EL ROUTER')
+            return redirect(request.META.get('HTTP_REFERER'))
+
+
         return redirect('clients.show', id=client)
 
     form = ProfileForm(instance=profile)

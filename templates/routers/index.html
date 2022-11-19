@@ -17,6 +17,7 @@
                             <tr>
                                 <td><a href="{% url 'routers.show' router.id %}">{{ router }}</a></td>
                                 <td>Planes: {{ router.plan_set.all | length }}</td>
+                                <td>Profiles: {{ router.profile_set.all | length }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
