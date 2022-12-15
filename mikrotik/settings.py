@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'clients',
     'logs',
     'nodos',
+    'users',
+    'administration',
 ]
 
 MIDDLEWARE = [

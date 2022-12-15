@@ -5,10 +5,10 @@ from fernet_fields import EncryptedTextField
 # Create your models here.
 class Client(models.Model):
     name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100, null=True, blank=True)
     dni = models.CharField(max_length=20, unique=True)
-    phone = models.CharField(max_length=15)
-    email = models.EmailField(max_length=100)
+    phone = models.CharField(max_length=15, null=True, blank=True)
+    email = models.EmailField(max_length=100, null=True, blank=True)
     address = models.TextField()
     coordinates = models.CharField(max_length=100, default=None, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)

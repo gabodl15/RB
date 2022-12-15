@@ -26,4 +26,6 @@ urlpatterns = [
     path('clients/', include('clients.urls')),
     path('nodos/', include('nodos.urls')),
     path('routers/', include('routers.urls')),
+    path('users/', include('users.urls')),
+    path('administration/', include('administration.urls')),
 ]

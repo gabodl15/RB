@@ -42,10 +42,20 @@
         <ul id="slide-out" class="sidenav sidenav-fixed">
             <li><div class="user-view">
                 <div class="background">
-                    <img src="https://picsum.photos/400" width="100%" height="100%">
+                    {% if user.background %}
+                        <img src="https://picsum.photos/400" width="100%" height="100%">
+                    {% else %}
+                        {% load static %}
+                        <img src="{% static '/img/default2.jpg' %}" width="100%" height="100%">
+                    {% endif %}
                 </div>
-                <a href="#user"><img class="circle" src="https://picsum.photos/300" width="100%" height="100%"></a>
-                <a href="#name"><span class="white-text name">{{ user }}</span></a>
+                {% if user.picture %}
+                    <a href="#user"><img class="circle" src="https://picsum.photos/300" width="100%" height="100%"></a>
+                {% else %}
+                    {% load static %}
+                    <a href="#user"><img class="circle" src="{% static '/img/user_default.png' %}" width="100%" height="100%"></a>
+                {% endif %}
+                <a href="{% url 'users.profile' %}"><span class="white-text name">{{ user }}</span></a>
                 <a href="#email"><span class="white-text email">{{ user.email }}</span></a>
                 </div>
             </li>
@@ -65,7 +75,7 @@
             <li><a href="{% url 'routers.index' %}">Routers</a></li>
             <li><a href="{% url 'routers.plans.index' %}">Planes</a></li>
             <li><a href="{% url 'clients.index' %}">Clientes</a></li>
-            <li><a href="#!">Administraci&oacuten</a></li>
+            <li><a href="{% url 'administrations.index' %}">Administraci&oacuten</a></li>
             <div class="divider"></div>
             <li><a href="{% url 'logout' %}">Logout</a></li>
         </ul>

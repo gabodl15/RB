@@ -1,0 +1,45 @@
+{% extends 'layouts/app.html' %}
+
+{% block 'content' %}
+    <div class="row">
+        <div class="col s12">
+            <h6>Administraci&oacute;n</h6>
+        </div>
+    </div>
+    <div class="divider"></div>
+    <div class="row">
+        <div class="col s12 m8">
+            {% if profiles %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                COBRANZA
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for profile in profiles %}
+                            <tr>
+                                <td>
+                                    {{ profile.client }}
+                                </td>
+                                <td>
+                                    {{profile}}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                Ningun usuario para este corte.
+            {% endif %}
+        </div>
+        <div class="col s12 m4">
+            <h6>Resumen</h6>
+            <p>Clientes a pagar: {{ profiles | length }}</p>
+            {% load sum_price %}
+            <p>Monto: {{ profiles | sum_price }}</p>
+        </div>
+    </div>
+{% endblock %}
