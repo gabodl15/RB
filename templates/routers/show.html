@@ -51,7 +51,7 @@
                                     {% if queue.dynamic == 'false' %}
                                     <tr>
                                         <td>{{queue.name}}</td>
-                                        <td>{{queue.target}}</td>
+                                        <td>{{queue.target|truncatechars:18}}</td>
                                         <td>{{queue.parent}}</td>
                                         <td>{{queue.queue}}</td>
                                         <td>{{queue.priority}}</td>

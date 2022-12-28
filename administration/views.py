@@ -9,7 +9,7 @@ def index(request):
     collection = date.today()
     td = timedelta(5)
 
-    profiles_from_database = Profile.objects.all()
+    profiles_from_database = Profile.objects.all().order_by('client__name')
     filter_profile_in_list = []
 
     # RECORREMOS EL OBJETO PROFILE
@@ -24,3 +24,10 @@ def index(request):
 
 
     return render(request, 'administration/index.html', context)
+
+def payment(request, id):
+    client = Client.objects.get(id=id)
+    context = {
+        'client': client
+    }
+    return render(request, 'administration/client/payment.html', context)

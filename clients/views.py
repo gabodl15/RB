@@ -7,6 +7,17 @@ from routers.models import Router, Plan
 from .forms import ClientForm, ProfileForm
 import folium
 
+"""
+ORDEN DEL ARCHIVO
+- CLASES
+    - ClientCreateView
+- FUNCIONES
+    - index
+    - show
+    - addProfile
+    - editProfile
+"""
+
 class ClientCreateView(CreateView):
     model = Client
     fields = '__all__'

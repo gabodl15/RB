@@ -29,7 +29,7 @@
     </div>
     <div class="row">
         <div class="col s12">
-            {% if client.profile_set.all %}
+            {% if client.profile_set %}
             <table>
                 <tbody>
                     {% for profile in client.profile_set.all %}
@@ -38,7 +38,6 @@
                             <td>{{ profile.plan }}</td>
                             <td>{{ profile.router }}</td>
                             <td>{{ profile.cutoff_date }}</td>
-                            <td><a href="{% url 'clients.profile.edit' id=profile.id %}" class="btn-flat">Editar</a></td>
                         </tr>
                     {% endfor %}
                 </tbody>
