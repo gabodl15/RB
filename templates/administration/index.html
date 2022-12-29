@@ -49,7 +49,7 @@
 
 {% block 'javascript' %}
 <script>
-    var accent_map = {'á':'a', 'é':'e', 'è':'e', 'í':'i','ó':'o','ú':'u','Á':'a', 'É':'e', 'è':'e', 'Í':'i','Ó':'o','Ú':'u'};
+    var accent_map = {'á':'a', 'é':'e', 'è':'e', 'í':'i','ó':'o','ú':'u','Á':'A', 'É':'E', 'è':'E', 'Í':'I','Ó':'O','Ú':'U'};
     function accent_fold (s) {
     if (!s) { return ''; }
     var ret = '';
@@ -62,7 +62,7 @@
     function searchListClient(){
         var input, filter, table, tr, td, i, txtValue;
         input = document.getElementById('lista');
-        filter = accent_fold(input.value).toUpperCase();
+        filter = accent_fold(input.value.toUpperCase());
         table = document.getElementById("table");
         tr = table.getElementsByTagName("tr");
 
