@@ -37,26 +37,26 @@
         </div>
     </div>
 
-    <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+    <canvas id="myChart" width="100%"></canvas>
 {% endblock %}
 
 {% block 'javascript' %}
-<script>
-    var xValues = {{ graph.months|safe }};
-    var yValues = {{ graph.records }};
-    var barColors = ["Silver", "Gray","Black","Red","Maroon", "Yellow", "Olive", "Lime", "Green", "Aqua", "Teal", "Blue"];
+    <script>
+        var xValues = {{ graph.months|safe }};
+        var yValues = {{ graph.records }};
+        var barColors = ["Silver", "Gray","Black","Red","Maroon", "Yellow", "Olive", "Lime", "Green", "Aqua", "Teal", "Blue"];
 
-    new Chart("myChart", {
-    type: "bar",
-    data: {
-        labels: xValues,
-            datasets: [{
-                label: 'Ventas',
-                backgroundColor: barColors,
-            data: yValues
-        }]
-    },
-    options: {}
-    });
-</script>
+        new Chart("myChart", {
+        type: "bar",
+        data: {
+            labels: xValues,
+                datasets: [{
+                    label: 'Ventas',
+                    backgroundColor: barColors,
+                data: yValues
+            }]
+        },
+        options: {}
+        });
+    </script>
 {% endblock %}

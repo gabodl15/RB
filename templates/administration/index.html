@@ -49,17 +49,27 @@
 
 {% block 'javascript' %}
 <script>
+    var accent_map = {'á':'a', 'é':'e', 'è':'e', 'í':'i','ó':'o','ú':'u','Á':'a', 'É':'e', 'è':'e', 'Í':'i','Ó':'o','Ú':'u'};
+    function accent_fold (s) {
+    if (!s) { return ''; }
+    var ret = '';
+    for (var i = 0; i < s.length; i++) {
+        ret += accent_map[s.charAt(i)] || s.charAt(i);
+    }
+    return ret;
+    };
+
     function searchListClient(){
         var input, filter, table, tr, td, i, txtValue;
         input = document.getElementById('lista');
-        filter = input.value.toUpperCase();
+        filter = accent_fold(input.value).toUpperCase();
         table = document.getElementById("table");
         tr = table.getElementsByTagName("tr");
 
         for (i = 0; i < tr.length; i++) {
             td = tr[i].getElementsByTagName("td")[0];
             if (td) {
-                txtValue = td.textContent || td.innerText;
+                txtValue = accent_fold(td.textContent || td.innerText);
                 if (txtValue.toUpperCase().indexOf(filter) > -1) {
                     tr[i].style.display = "";
                 } else {
