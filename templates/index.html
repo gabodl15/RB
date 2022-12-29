@@ -1,5 +1,11 @@
 {% extends 'layouts/app.html'%}
 
+{% block 'head' %}
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+    </script>
+{% endblock %}
+
 {% block 'content' %}
     <div class="row">
         <div class="col s12">
@@ -30,4 +36,27 @@
             {% endif %}
         </div>
     </div>
+
+    <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+{% endblock %}
+
+{% block 'javascript' %}
+<script>
+    var xValues = {{ graph.months|safe }};
+    var yValues = {{ graph.records }};
+    var barColors = ["Silver", "Gray","Black","Red","Maroon", "Yellow", "Olive", "Lime", "Green", "Aqua", "Teal", "Blue"];
+
+    new Chart("myChart", {
+    type: "bar",
+    data: {
+        labels: xValues,
+            datasets: [{
+                label: 'Ventas',
+                backgroundColor: barColors,
+            data: yValues
+        }]
+    },
+    options: {}
+    });
+</script>
 {% endblock %}

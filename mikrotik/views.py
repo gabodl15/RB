@@ -1,7 +1,11 @@
 from django.shortcuts import render
 from routers.models import Router
-from clients.models import Client
+from clients.models import Client, Profile
 from nodos.models import Nodo, CompanyAntenna
+
+from django.db.models.functions import TruncMonth
+from django.db.models import Count
+
 import folium
 
 def index(request):
@@ -22,13 +26,22 @@ def index(request):
     len_nodos = len(nodes)
     len_antennas = len(CompanyAntenna.objects.all())
 
+    _ = Profile.objects.annotate(month=TruncMonth('created')).values('month').annotate(c=Count('id')).values('month', 'c')
+    months = []
+    records = []
+    for p in _:
+        months.append(p['month'].strftime('%B'))
+        records.append(p['c'])
+    
+    profile_registration_chart = {'months': months, 'records': records}
 
     context = {
         'clients': len_clients,
         'routers': len_routers,
         'nodos': len_nodos,
         'antennas': len_antennas,
-        'map': map_render
+        'map': map_render,
+        'graph': profile_registration_chart
     }
     return render(request, 'index.html', context)
 
