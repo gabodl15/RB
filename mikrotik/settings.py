@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'nodos',
     'users',
     'administration',
+    'alerts',
 ]
 
 MIDDLEWARE = [

@@ -3,6 +3,7 @@ db.sqlite3
 crontab/*
 !crontab/ExampleCron.py
 mikrotik/conf.py
+__pycache__
 */__pycache__
 */migrations/00*
 */migrations/__pycache__*
