@@ -1,29 +1,4 @@
-import importlib.util, os, sys
-from pathlib import Path
-from alerts.models import Alert
-
-
-def check_if_a_package_is_installed(list_of_packages):
-    BASE_DIR = Path(__file__).resolve().parent
-    packages_not_installed = "{}/{}".format(BASE_DIR, 'packages_not_installed.txt')
-    if os.path.exists(packages_not_installed):
-        os.remove(packages_not_installed)
-    for package_name in list_of_packages:
-        spec = importlib.util.find_spec(package_name)
-        if spec is None:
-            with open(packages_not_installed, 'a') as f:
-                f.write('{} is no installed!\n'.format(package_name))
-                f.close
-    if os.path.exists(packages_not_installed):
-        return False
-    else:
-        return True
-
-def alerts_record(alert, message):
-    previous_records = Alert.objects.filter(message=message, status__in=['WT', 'AT'])
-    if len(previous_records) == 0:
-        alert_ = Alert(alert=alert, message=message)
-        alert_.save()
+from cronjobs.CronFunctions import check_if_a_package_is_installed, alerts_record
 
 def ppp_records():
     list_of_packages = [
@@ -60,5 +35,4 @@ def ppp_records():
                 # TERMINAR CONEXION
                 connection.disconnect()
             except:
-                print('NO CONECTO EL ROUTER {}'.format(router.name))
-
+                alerts_record('Sin Conexión', 'No fue posible conectar con el router {}'.format(router.name))

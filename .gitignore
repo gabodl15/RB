@@ -1,6 +1,6 @@
 .idea/
 db.sqlite3
-crontab/*
+cronjobs/*
 !crontab/ExampleCron.py
 mikrotik/conf.py
 __pycache__

@@ -41,7 +41,7 @@ def antenna(request, ip):
     if isinstance(get_station_info, HttpResponseRedirect):
         return get_station_info
 
-    details= json.loads(get_station_info)
+    details = json.loads(get_station_info)
     context = {
         'details': details,
         'antenna': antenna
