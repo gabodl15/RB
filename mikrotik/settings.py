@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-talh9o_d(y(zsbmbo*mhbz2(-wz_m*((ik%h49t=kjv#8^ej0m'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = CONF_DEBUG
 
 ALLOWED_HOSTS = ['*']
 
@@ -64,7 +64,7 @@ PUBLIC_PATHS = [
     r'^/accounts/.*', # allow public access to all django-allauth views
 ]
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = CONF_LOGIN_REDIRECT_URL
 LOGOUT_REDIRECT_URL = '/accounts/login'
 
 ROOT_URLCONF = 'mikrotik.urls'

@@ -28,4 +28,5 @@ urlpatterns = [
     path('routers/', include('routers.urls')),
     path('users/', include('users.urls')),
     path('administration/', include('administration.urls')),
+    path('alerts/', include('alerts.urls')),
 ]

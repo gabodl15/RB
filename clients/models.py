@@ -35,6 +35,22 @@ class Profile(models.Model):
     agreement = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    
     def __str__(self):
         return self.name
     
+class Inspection(models.Model):
+    YES = 'YES'
+    NOT = 'NOT'
+    DEC = 'DEC' # DECLINED
+    CHOICES = [
+        (YES, 'SI'),
+        (NOT, 'NO'),
+        (DEC, 'DECLINÓ')
+    ]
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    address = models.TextField()
+    inspection = models.CharField(max_length=3, choices=CHOICES, default=NOT)
+    comment = models.TextField(null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)

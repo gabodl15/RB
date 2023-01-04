@@ -1,0 +1,43 @@
+{% extends 'layouts/app.html' %}
+
+{% block 'content' %}
+    <div class="row">
+        <h4>Alerts</h4>
+            <p>Estas son notificaciones generadas por las tareas automaticas que realiza el sistema.</p>
+    </div>
+    
+    <div class="row">
+        {% if alerts %}
+            {% for alert in alerts %}
+                <a href="#Alert-{{alert.id}}" class="modal-trigger">
+                    <div class="alert card {{alert.color}} white-text">
+                        <div class="card-content">
+                            <p class="truncate"><i class="material-icons">info</i><span>{{alert}}:</span>{{alert.message}}</p>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Modal Structure -->
+                <div id="Alert-{{alert.id}}" class="modal center">
+                    <div class="modal-content">
+                        <h4>{{ alert }}</h4>
+                        <br>
+                        <p>{{ alert.message }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block 'javascript' %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.modal');
+        var instances = M.Modal.init(elems, {});
+    });
+</script>
+{% endblock %}

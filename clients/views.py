@@ -2,9 +2,11 @@ import routeros_api.api
 from django.views.generic.edit import CreateView
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django import http
 from .models import Client, Profile
 from routers.models import Router, Plan
 from .forms import ClientForm, ProfileForm
+from logs.models import Log
 import folium
 
 """
@@ -23,6 +25,21 @@ class ClientCreateView(CreateView):
     fields = '__all__'
     template_name = 'clients/create.html'
     success_url = '/clients'
+
+    def get_success_url(self):
+        return super().get_success_url()
+    # def form_valid(self, form):
+    #     """
+    #         CANCELO EL GUARDADO AUTOMATICO DEL FORMULARIO
+    #         GUARDO EL OBJECTO Y ASÍ OBTENGO EL ID
+    #     """
+    #     self.object = form.save(commit=False)
+    #     self.object.save()
+    #     #return super().form_valid(form)
+    #     return http.HttpResponseRedirect(self.get_success_url())
+
+def createInspection():
+    pass
 
 def index(request):
     clients = Client.objects.all()
@@ -57,46 +74,52 @@ def addProfile(request, id):
         profile_mac = request.POST['mac']
         connection_mode = request.POST['connection_mode']
         cutoff_date = request.POST['cutoff_date'] if request.POST['cutoff_date'] != '' else None
-
-        try:
-            connection = routeros_api.api.RouterOsApiPool(
-                router.ip,
-                username=router.user,
-                password=router.password,
-                port=router.port,
-                plaintext_login=True,
-            )
-            api = connection.get_api()
-
-            ### AGREGAR EL PPP AL MIKROTIK
-            add_ppp = api.get_resource('/ppp/secret')
-            add_ppp.add(
-                name=profile_name,
-                password=profile_password,
-                service='pppoe',
-                profile=plan.name
-            )
-        except routeros_api.exceptions.RouterOsApiCommunicationError:
-            messages.error(request, 'ERROR EN LA COMUNICACION CON EL ROUTER')
-            return redirect(request.META.get('HTTP_REFERER'))
-        except routeros_api.exceptions.RouterOsApiConnectionError:
-            messages.error(request, 'NO PUDO CONECTAR CON EL ROUTER')
-            return redirect(request.META.get('HTTP_REFERER'))
-
         if form.is_valid():
-            profile = Profile(
-                name=profile_name,
-                password=profile_password,
-                mac=profile_mac,
-                connection_mode=connection_mode,
-                cutoff_date=cutoff_date,
-                router=router,
-                plan=plan,
-                client=client
-            )
-            profile.save()
+            try:
+                connection = routeros_api.api.RouterOsApiPool(
+                    router.ip,
+                    username=router.user,
+                    password=router.password,
+                    port=router.port,
+                    plaintext_login=True,
+                )
+                api = connection.get_api()
+
+                ### AGREGAR EL PPP AL MIKROTIK
+                add_ppp = api.get_resource('/ppp/secret')
+                add_ppp.add(
+                    name=profile_name,
+                    password=profile_password,
+                    service='pppoe',
+                    profile=plan.name
+                )
+                profile = Profile(
+                    name=profile_name,
+                    password=profile_password,
+                    mac=profile_mac,
+                    connection_mode=connection_mode,
+                    cutoff_date=cutoff_date,
+                    router=router,
+                    plan=plan,
+                    client=client
+                )
+                profile.save()
+                log = Log(
+                    user=request.user,
+                    action='Add PPP',
+                    message='Perfil {} ha sido creado con exito'.format(profile_name),
+                )
+                log.save()
+            except routeros_api.exceptions.RouterOsApiCommunicationError:
+                messages.error(request, 'ERROR EN LA COMUNICACION CON EL ROUTER')
+                return redirect(request.META.get('HTTP_REFERER'))
+            except routeros_api.exceptions.RouterOsApiConnectionError:
+                messages.error(request, 'NO PUDO CONECTAR CON EL ROUTER')
+                return redirect(request.META.get('HTTP_REFERER'))
+
         else:
-            print('El formulario no es valido')
+            messages.error(request, 'FORMULARIO NO VALIDO')
+            return redirect(request.META.get('HTTP_REFERER'))
         return redirect('clients.show', id=id)
     form = ProfileForm()
     context = {
