@@ -3,12 +3,13 @@ from clients.models import Client, Profile
 from datetime import date, timedelta
 
 # Create your views here.
-def index(request):
-    # OBTENEMOS EL DIA EN EL QUE ESTAMOS, PARA FILTRAR EL COBRO.
-    # ESTABLECEMOS UN MAXIMO DE 5 DIAS DE LA FECHA DE CORTE DEL CLIENTE
-    collection = date.today()
-    td = timedelta(5)
 
+# OBTENEMOS EL DIA EN EL QUE ESTAMOS, PARA FILTRAR EL COBRO.
+# ESTABLECEMOS UN MAXIMO DE 5 DIAS DE LA FECHA DE CORTE DEL CLIENTE
+collection = date.today()
+td = timedelta(5)
+
+def index(request):
     profiles_from_database = Profile.objects.all().order_by('client__name')
     filter_profile_in_list = []
 
@@ -27,7 +28,10 @@ def index(request):
 
 def payment(request, id):
     client = Client.objects.get(id=id)
+    profiles = Profile.objects.filter(client_id=client)
+    
     context = {
-        'client': client
+        'client': client,
+        'profiles': profiles,
     }
     return render(request, 'administration/client/payment.html', context)

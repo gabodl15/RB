@@ -2,12 +2,47 @@
 
 {% block 'content' %}
     <div class="row">
-        <div class="col s12">
-            <h6>Pago Mensualidad</h6>
+        <div class="col s12 m4">
+            <h6>Pago Mensualidad:</h6>
         </div>
     </div>
     <div class="divider"></div>
     <div class="row">
-        {{client}}
+        <div class="col s12">
+            <br>
+            {{client}}
+            <br>
+        </div>
+        <div class="col s12">
+            {% if profiles %}
+                <form action="" method="POST">
+                    <table id="table">
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Plan</th>
+                                <th>Monto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for profile in profiles %}
+                                <tr>
+                                    <td>
+                                        <p>
+                                            <label>
+                                                <input name="profiles[]" type="checkbox" value="{{ profile.id }}"/>
+                                                <span class="black-text">{{ profile }}</span>
+                                            </label>
+                                        </p>
+                                    </td>
+                                    <td>{{ profile.plan.name }}</td>
+                                    <td>{{ profile.plan.price }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </form>
+            {% endif %}
+        </div>
     </div>
 {% endblock %}

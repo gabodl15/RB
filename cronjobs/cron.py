@@ -1,5 +1,7 @@
 from cronjobs.CronFunctions import check_if_a_package_is_installed, alerts_record
 
+DESCRIPTION = 'COMPROBAR QUE LOS USUARIOS REGISTRADOS EN BASE DE DATOS ESTÉN EN LOS ROUTERS Y VISEVERSA'
+
 def ppp_records():
     list_of_packages = [
         'routeros_api',
