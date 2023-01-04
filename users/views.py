@@ -24,7 +24,7 @@ def changePassword(request):
         current_password=request.POST['current_password']
         new_password = request.POST['new_password']
         repeat_password = request.POST['repeat_new_password']
-        non_empty_key = True if new_password is not '' and repeat_password is not '' else False
+        non_empty_key = True if new_password != '' and repeat_password != '' else False
         if new_password == repeat_password and non_empty_key:
             user = authenticate(username=request.user, password=current_password)
             if user is not None:
