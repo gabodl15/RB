@@ -2,6 +2,7 @@ import routeros_api.api
 from django.views.generic.edit import CreateView
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.urls import reverse
 from django import http
 from .models import Client, Profile
 from routers.models import Router, Plan
@@ -27,7 +28,7 @@ class ClientCreateView(CreateView):
     success_url = '/clients'
 
     def get_success_url(self):
-        return super().get_success_url()
+        return reverse('clients.create.inspection', kwargs={'id': self.object.id})
     # def form_valid(self, form):
     #     """
     #         CANCELO EL GUARDADO AUTOMATICO DEL FORMULARIO
@@ -38,8 +39,12 @@ class ClientCreateView(CreateView):
     #     #return super().form_valid(form)
     #     return http.HttpResponseRedirect(self.get_success_url())
 
-def createInspection():
-    pass
+def createInspection(request, id):
+    if request.method == 'POST':
+        pass
+    else:
+        pass
+    return redirect('clients.show', id=id)
 
 def index(request):
     clients = Client.objects.all()
