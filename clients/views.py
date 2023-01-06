@@ -2,6 +2,7 @@ import routeros_api.api
 from django.views.generic.edit import CreateView
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.urls import reverse
 from django import http
 from .models import Client, Profile
@@ -41,9 +42,11 @@ def addInspection(request, id):
             messages.success(request, 'INSPECCION GUARDADA CON EXITO')
             return redirect('clients.show', id=id)
     form = InspectionForm(initial={'client': client, 'address': address, 'coordinates': coordinate})
+    referring_user = User.objects.all()
     context = {
         'client': client,
         'form': form,
+        'referring_user': referring_user
     }
     return render(request, 'clients/add_inspection.html', context)
 

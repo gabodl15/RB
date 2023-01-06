@@ -2,20 +2,19 @@
 
 {% block 'content' %}
     <div class="row">
-        <div class="col s3">
-            <h6>Crear Cliente</h6>
+        <div class="col s12">
+            <h6>VENTAS</h6>
         </div>
     </div>
+    <div class="divider"></div>
     <div class="row">
         <div class="col s12">
-            <form method="post">
+            <form action="{% url 'ventas.add.client' %}" method="POST">
                 {% csrf_token %}
-                
                 {% load materializecss %}
                 {{ form|materializecss }}
-
-                <button type="submit" class="btn btn-small blue">Crear</button>
-
+                <br>
+                <button class="btn btn-small">Enviar</button>
             </form>
         </div>
     </div>

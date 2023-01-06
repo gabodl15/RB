@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.db import models
 from routers.models import Router, Plan
 from fernet_fields import EncryptedTextField
@@ -56,7 +55,6 @@ class Inspection(models.Model):
     inspection = models.CharField(max_length=3, choices=INSPECTION_CHOICES, default=NOT)
     coordinates = models.CharField(max_length=100, default=None, null=True, blank=True)
     comment = models.TextField(null=True, blank=True)
-    registered_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

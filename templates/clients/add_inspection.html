@@ -12,6 +12,13 @@
         <dov class="col s12">
             {% load materializecss %}
             <form action="{% url 'clients.inspection.add' id=client.id%}" method="POST">
+                <div class="input-field">
+                    <select name="" id="">
+                        {% for u in referring_user %}
+                            <option value="{{ u.id }}">{{u}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
                 {% csrf_token %}
                 {{ form|materializecss }}
                 <button class="btn btn-small">Enviar</button>
