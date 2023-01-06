@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import Client, Profile, Inspection
+from .models import Client, Profile
 
 class ClientForm(ModelForm):
     class Meta:
@@ -11,9 +11,5 @@ class ProfileForm(ModelForm):
         model = Profile
         exclude = ('client', 'created', 'updated',)
 
-class InspectionForm(ModelForm):
-    class Meta:
-        model = Inspection
-        exclude = ('created', 'updated', 'inspection')
-        
+
         

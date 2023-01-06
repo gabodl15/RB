@@ -6,9 +6,10 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django import http
 from .models import Client, Profile
-from routers.models import Router, Plan
-from .forms import ClientForm, ProfileForm, InspectionForm
 from logs.models import Log
+from routers.models import Router, Plan
+from ventas.models import Referred
+from .forms import ClientForm, ProfileForm
 import folium
 
 """
@@ -28,27 +29,20 @@ class ClientCreateView(CreateView):
     template_name = 'clients/create.html'
     success_url = '/clients'
 
-    def get_success_url(self):
-        return reverse('clients.inspection.add', kwargs={'id': self.object.id})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)    
+        context['referring_user'] = User.objects.all()
+        return context
 
-def addInspection(request, id):
-    client = Client.objects.get(id=id)
-    address = client.address if len(client.profile_set.all()) == 0 else ''
-    coordinate = client.coordinates if len(client.profile_set.all()) == 0 else ''
-    if request.method == 'POST':
-        form = InspectionForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'INSPECCION GUARDADA CON EXITO')
-            return redirect('clients.show', id=id)
-    form = InspectionForm(initial={'client': client, 'address': address, 'coordinates': coordinate})
-    referring_user = User.objects.all()
-    context = {
-        'client': client,
-        'form': form,
-        'referring_user': referring_user
-    }
-    return render(request, 'clients/add_inspection.html', context)
+    def get_success_url(self):
+        client = Client.objects.get(id=self.object.id)
+        referred = self.request.POST.get('referred', 0)
+        if referred:
+            user = User.objects.get(id=referred)
+            r = Referred(referred = user, client = client)
+            r.save()
+        return reverse('ventas.inspection.add', kwargs={'id': client.id})
+
 
 def index(request):
     clients = Client.objects.all()

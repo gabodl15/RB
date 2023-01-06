@@ -11,6 +11,15 @@
             <form method="post">
                 {% csrf_token %}
                 
+                <div class="input-field">
+                    <select name="referred" class="browser-default">
+                            <option value="0" disabled selected>REFERIDO</option>
+                        {% for u in referring_user %}
+                            <option value="{{ u.id }}">{{ u }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
                 {% load materializecss %}
                 {{ form|materializecss }}
 
@@ -19,4 +28,15 @@
             </form>
         </div>
     </div>
+{% endblock %}
+
+{% block 'javascript' %}
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        var elems = document.querySelectorAll('select');
+        var instances = M.FormSelect.init(elems, {
+            classes: 'browser-default'
+        });
+    });
+</script>
 {% endblock %}
