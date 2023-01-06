@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Client, Profile
+from .models import Client, Profile, Inspection
 from django import forms
 
 class ClientAdmin(admin.ModelAdmin):
@@ -23,3 +23,10 @@ class ProfileAdmin(admin.ModelAdmin):
     form = ProfileAdminForm
 
 admin.site.register(Profile, ProfileAdmin)
+
+class InspectionAdmin(admin.ModelAdmin):
+    list_display = ('client', 'address', 'inspection_type', 'comment')
+    search_fields = ('client__name', 'inspection_type',)
+    ordering = ('client',)
+
+admin.site.register(Inspection, InspectionAdmin)

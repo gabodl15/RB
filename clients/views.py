@@ -6,7 +6,7 @@ from django.urls import reverse
 from django import http
 from .models import Client, Profile
 from routers.models import Router, Plan
-from .forms import ClientForm, ProfileForm
+from .forms import ClientForm, ProfileForm, InspectionForm
 from logs.models import Log
 import folium
 
@@ -28,23 +28,24 @@ class ClientCreateView(CreateView):
     success_url = '/clients'
 
     def get_success_url(self):
-        return reverse('clients.create.inspection', kwargs={'id': self.object.id})
-    # def form_valid(self, form):
-    #     """
-    #         CANCELO EL GUARDADO AUTOMATICO DEL FORMULARIO
-    #         GUARDO EL OBJECTO Y ASÍ OBTENGO EL ID
-    #     """
-    #     self.object = form.save(commit=False)
-    #     self.object.save()
-    #     #return super().form_valid(form)
-    #     return http.HttpResponseRedirect(self.get_success_url())
+        return reverse('clients.inspection.add', kwargs={'id': self.object.id})
 
-def createInspection(request, id):
+def addInspection(request, id):
+    client = Client.objects.get(id=id)
+    address = client.address if len(client.profile_set.all()) == 0 else ''
+    coordinate = client.coordinates if len(client.profile_set.all()) == 0 else ''
     if request.method == 'POST':
-        pass
-    else:
-        pass
-    return redirect('clients.show', id=id)
+        form = InspectionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'INSPECCION GUARDADA CON EXITO')
+            return redirect('clients.show', id=id)
+    form = InspectionForm(initial={'client': client, 'address': address, 'coordinates': coordinate})
+    context = {
+        'client': client,
+        'form': form,
+    }
+    return render(request, 'clients/add_inspection.html', context)
 
 def index(request):
     clients = Client.objects.all()

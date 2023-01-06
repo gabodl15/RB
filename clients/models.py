@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from routers.models import Router, Plan
 from fernet_fields import EncryptedTextField
@@ -16,13 +17,14 @@ class Client(models.Model):
     def __str__(self):
         return self.name
 
+
+OF = 'OF' # OPTICAL FIBER
+WA = 'WA' # WIFI ANTENNA
+CHOICES = [
+    (OF, 'Fibra Optica'),
+    (WA, 'Antena WiFi')
+]
 class Profile(models.Model):
-    OF = 'OF' # OPTICAL FIBER
-    WA = 'WA' # WIFI ANTENNA
-    CHOICES = [
-        (OF, 'Fibra Optica'),
-        (WA, 'Antena WiFi')
-    ]
 
     name = models.CharField(max_length=30)
     password = EncryptedTextField()
@@ -43,14 +45,20 @@ class Inspection(models.Model):
     YES = 'YES'
     NOT = 'NOT'
     DEC = 'DEC' # DECLINED
-    CHOICES = [
+    INSPECTION_CHOICES = [
         (YES, 'SI'),
         (NOT, 'NO'),
         (DEC, 'DECLINÓ')
     ]
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     address = models.TextField()
-    inspection = models.CharField(max_length=3, choices=CHOICES, default=NOT)
+    inspection_type = models.CharField(max_length=2, choices=CHOICES, default=WA)
+    inspection = models.CharField(max_length=3, choices=INSPECTION_CHOICES, default=NOT)
+    coordinates = models.CharField(max_length=100, default=None, null=True, blank=True)
     comment = models.TextField(null=True, blank=True)
+    registered_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.client.name
