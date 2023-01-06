@@ -27,6 +27,16 @@ def index(request):
     return render(request, 'administration/index.html', context)
 
 def payment(request, id):
+    if request.method == 'POST':
+        operation = request.POST['operation']
+        profiles_id = request.POST['profiles[]']
+        transaction = request.POST['transaction']
+        dolars = reqeuest.POST['dolars'] # CAN BE NULL
+        bolivares = request.POST['bolivares'] # CAN BE NULL
+        bank = request.POST['bank'] # CAN BE NULL
+        rate = request.POST['rate'] # CAN BE NULL
+        transaction_reference = request.POST['transaction_reference'] # CAN BE NULL
+
     client = Client.objects.get(id=id)
     profiles = Profile.objects.filter(client_id=client)
     

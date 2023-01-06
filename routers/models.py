@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils.timezone import now
 from fernet_fields import EncryptedTextField
 
 from nodos.models import Nodo
@@ -11,7 +10,8 @@ class Router(models.Model):
     password = EncryptedTextField()
     port = models.IntegerField(default=8728)
     nodo = models.ForeignKey(Nodo, blank=True, null=True, on_delete=models.RESTRICT)
-    created = models.DateTimeField(default=now)
+    created = models.DateTimeField(auto_now_add=True)
+    #updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name

@@ -1,0 +1,85 @@
+<form action="" method="POST">
+    <label>Operación</label>
+    <select name="operation" class="browser-default">
+        <option value="payment">Pago de Mensualidad</option>
+        <option value="credit">Abonar</option>
+        <option value="not_suspend">No Cortar</option>
+    </select>
+    <br>
+    <table id="table">
+        <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Plan</th>
+                <th>Monto</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for profile in profiles %}
+                <tr>
+                    <td>
+                        <p>
+                            <label>
+                                <input name="profiles[]" type="checkbox" value="{{ profile.id }}"/>
+                                <span class="black-text">{{ profile }}</span>
+                            </label>
+                        </p>
+                    </td>
+                    <td>{{ profile.plan.name }}</td>
+                    <td>{{ profile.plan.price }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div class="row">
+        <div class="input-field col s12 m4">
+            <p>
+                <label>
+                    <input class="with-gap" name="transaction" type="radio" value="cash"/>
+                    <span>Efectivo</span>
+                </label>
+                <label>
+                    <input class="with-gap" name="transaction" type="radio" value="digital"/>
+                    <span>Transferencia</span>
+                </label>
+              </p>
+        </div>
+        <div class="input-field col s12 m4">
+            <input type="number" id="dolars" name="dolars" step="any">
+            <label for="dolares">Dolares</label>
+        </div>
+        <div class="input-field col s12 m4">
+            <input type="number" id="bolivares" name="bolivares" step="any">
+            <label for="bolivares">Bolivares</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="input-field col s12 m4">
+            <select name="bank" class="browser-default">
+                <option>Seleccione un Banco</option>
+                <option value="Banesco">Banesco</option>
+                <option value="Banesco Panama">Banesco Panamá</option>
+                <option value="Mercantil">Mercantil</option>
+                <option value="BNC">Banco Nacional de Credito</option>
+                <option value="Provincial">Provincial</option>
+            </select>
+        </div>
+        <div class="input-field col s12 m4">
+            <input type="number" id="rate" name="rate" step="any">
+            <label for="tasa">Tasa</label>
+        </div>
+        <div class="input-field col s12 m4">
+            <input type="number" id="transaction_reference" name="transaction_reference" step="any">
+            <label for="referencia">Referencia</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="input-field col s12">
+            <textarea name="comment" id="comment" class="materialize-textarea"></textarea>
+            <label for="comment">Comentario</label>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-small">Enviar</button>
+</form>
