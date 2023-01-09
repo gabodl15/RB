@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from clients.models import Client
+from django import forms
 # Create your models here.
 class Inspection(models.Model):
 
@@ -33,14 +34,51 @@ class Inspection(models.Model):
 
 class Referred(models.Model):
     referred = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    client = models.OneToOneField(Client, on_delete=models.CASCADE)
 
-class FeasibleOrNotFeasible():
-    FA = 'FEASABLE'
-    NF = 'NOT FEASABLE'
+    def __str__(self):
+        return self.client.name
+
+class FeasibleOrNotFeasible(models.Model):
+    YES = 'YES'
+    NOT = 'NOT'
     CHOICES = [
+        (YES, 'SI'),
+        (NOT, 'NO'),
+    ]
+    FA = 'FEASIBLE'
+    NF = 'NOT FEASIBLE'
+    FEASIABLE_CHOICES = [
         (FA, 'FACTIBLE'),
         (NF, 'NO FACTIBLE')
     ]
-    inspection = models.ForeignKey(Inspection, on_delete=models.CASCADE)
-    feasible = models.CharField(max_length=10, choices=CHOICES, null=True, blank=True, default=None)
+    inspection = models.OneToOneField(Inspection, on_delete=models.CASCADE)
+    customer_informed = models.CharField(max_length=3, choices=CHOICES, default=NOT)
+    feasible = models.CharField(max_length=15, choices=FEASIABLE_CHOICES)
+
+    def __str__(self):
+        return self.inspection.client.name
+
+class Installation(models.Model):
+    YES = 'YES'
+    NOT = 'NOT'
+    DEC = 'DEC' # DECLINED
+    CHOICES = [
+        (YES, 'SI'),
+        (NOT, 'NO'),
+        (DEC, 'DECLINÓ')
+    ]
+    inspection = models.OneToOneField(Inspection, on_delete=models.CASCADE)
+    material = models.OneToOneField('supports.Material', on_delete=models.CASCADE)
+    payment = models.CharField(max_length=3, choices=CHOICES, default=NOT)
+    amount = models.IntegerField(null=True, blank=True, default=None)
+
+    def __str__(self):
+        return self.inspection.client.name
+
+class InstallationFee(models.Model):
+    installation = models.OneToOneField(Installation, on_delete=models.CASCADE)
+    installation_fee = models.IntegerField()
+
+    def __str__(self):
+        return self.installation.inspection.client.name

@@ -1,0 +1,29 @@
+{% extends 'layouts/app.html' %}
+
+{% block 'content' %}
+    <div class="row">
+        <div class="col s12">
+            <h6>Soporte</h6>
+        </div>
+    </div>
+    <div class="divider"></div>
+    <br>
+    <p>Soportes por realizar: {{ missing_inspect | length}}</p>
+    <div class="row">
+        <div class="col s12 m6">
+            {% if missing_inspect %}
+                {% for missing in missing_inspect%}
+                    <div class="card">
+                        <div class="card-content">
+                            <span class="card-title truncate">{{ missing }}</span>
+                            <p class="truncate">{{ missing.address }}</p>
+                        </div>
+                        <div class="card-action">
+                            <a href="{% url 'supports.inspection.update' id=missing.id %}" class="blue-grey-text">Update</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

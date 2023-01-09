@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'administration',
     'alerts',
     'ventas',
+    'supports',
 ]
 
 MIDDLEWARE = [

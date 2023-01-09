@@ -1,0 +1,42 @@
+{% extends 'layouts/app.html' %}
+
+{% block 'content' %}
+<div class="row">
+    <div class="col s12">
+        <h6>Actalizar Inspección</h6>
+    </div>
+</div>
+<div class="divider"></div>
+<br>
+<div class="row">
+    <div class="col s12">
+        <!-- CLIENTE, SELECT(FACTIBLE, NO FACTIBLE), MATERIALES A UTILIZAR, COMENTARIO.  -->
+        <form action="">
+            {% load materializecss %}
+            <div class="input-field">
+                {{ form.client|materializecss }}
+            </div>
+            <div class="input-field">
+                {{ form.inspection|materializecss }}
+            </div>
+            <div class="input-field">
+                {{ form.comment|materializecss }}
+            </div>
+            <button type="submit" class="btn btn-small">Update</button>
+        </form>
+        
+    </div>
+</div>
+{% endblock %}
+
+
+{% block 'javascript' %}
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        var elems = document.querySelectorAll('select');
+        var instances = M.FormSelect.init(elems, {
+            classes: 'browser-default'
+        });
+    });
+</script>
+{% endblock %}
