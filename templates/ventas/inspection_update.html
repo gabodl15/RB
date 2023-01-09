@@ -11,7 +11,8 @@
 <div class="row">
     <div class="col s12">
         <!-- CLIENTE, SELECT(FACTIBLE, NO FACTIBLE), MATERIALES A UTILIZAR, COMENTARIO.  -->
-        <form action="">
+        <form action="{% url 'ventas.inspection.update' id=inspection.id %}" method="POST">
+            {% csrf_token %}
             {% load materializecss %}
             <div class="input-field">
                 {{ form.client|materializecss }}

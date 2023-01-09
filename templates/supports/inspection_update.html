@@ -11,10 +11,19 @@
 <div class="row">
     <div class="col s12">
         <form action="{% url 'supports.inspection.update' id=inspect.id %}" method="POST">
-            {% csrf_token %}
-            {% load materializecss %}
-            {{ form|materializecss }}
-            <button type="submit" class="btn btn-small">Actualizar</button>
+            <div class="row">
+                {% csrf_token %}
+                <div class="s12">
+                    {% load materializecss %}
+                    {{ form|materializecss }}
+                </div>
+                <div class="col s12">
+                    {{ material_form|materializecss:'m4' }}    
+                </div>
+                <div class="col s12">
+                    <button type="submit" class="btn btn-small">Actualizar</button>
+                </div>
+            </div>
         </form>
     </div>
 </div>

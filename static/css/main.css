@@ -30,3 +30,7 @@ header, main, footer {
 	top: 5px;
 	margin-right: 0.5em;
 }	
+
+.read_only {
+  cursor: not-allowed;
+}

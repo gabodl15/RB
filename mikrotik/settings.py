@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'materializecssform',
+    'django_seed',
     'django_crontab',
     'routers',
     'clients',

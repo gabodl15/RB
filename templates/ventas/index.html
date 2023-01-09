@@ -19,17 +19,25 @@
         <div class="col s12 m6">
             <p>Inspecciones Por Realizar: {{ missing_inspect|length }}</p>
             {% if missing_inspect %}
-                {% for missing in missing_inspect %}
-                    <div class="card">
-                        <div class="card-content">
-                            <span class="card-title truncate">{{ missing }}</span>
-                            <p class="truncate">{{ missing.address }}</p>
-                        </div>
-                        <div class="card-action">
-                            <a href="{% url 'ventas.inspection.update' id=missing.id %}" class="blue-grey-text">Update</a>
-                        </div>
-                    </div>
-                {% endfor %}
+                
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        
+                        <th></th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for missing in missing_inspect %}
+                            <tr>
+                                <td>{{ missing }} {{ missing.client.last_name }}</td>
+                                <td><a href="{% url 'ventas.inspection.update' id=missing.id %}" class="card-action blue-grey-text">UPDATE</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             {% endif %}
         </div>
         <div class="col s12 m6">
@@ -48,7 +56,7 @@
                                 <td>{{ f }}</td>
                                 <td>{{ f.get_feasible_display }}</td>
                                 <td>
-                                    <a href="#" class="card-action">ACTUALIZAR</a>
+                                    <a href="{% url 'ventas.inspection.inform' id=f.id %}" class="card-action">ACTUALIZAR</a>
                                 </td>
                             </tr>
                         {% endfor %}

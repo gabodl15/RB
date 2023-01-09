@@ -1,0 +1,46 @@
+{% extends 'layouts/app.html' %}
+
+{% block 'content' %}
+<div class="row">
+    <div class="col s12">
+        <h6>INFORMAR AL CLIENTE</h6>
+    </div>
+</div>
+<div class="row">
+    <div class="col s12">
+        <table>
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Teléfono</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ feasible }}</td>
+                    <td>{{ feasible.inspection.client.phone }}</td>
+                    <td>{{ feasible.inspection.client.email }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+        <textarea id="comment" class="materialize-textarea" readonly>{{ feasible.comment }}</textarea>
+        <label for="comment">Comentario</label>
+    </div>
+</div>
+{% if feasible.feasible == 'FEASIBLE' %}
+    <div class="row">
+        <div class="col s12">
+            <h6>MATERIALES</h6>
+        </div>
+        <div class="col s12">
+            {% if feasible.inspection.inspect.material %}
+                lo que sea
+            {% else %}
+                {{ feasible.comment }}
+            {% endif %}
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

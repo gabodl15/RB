@@ -54,9 +54,27 @@ def addInspection(request, id):
 def updateInspection(request, id):
     inspection = Inspection.objects.get(id=id)
     if request.method == 'POST':
-        pass
+        form = UpdateInspectionForm(request.POST)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            if inspection.inspection != obj.inspection:
+                if obj.inspection == 'DEC':
+                    if obj.comment != '':
+                        obj.save()
+                    else:
+                        messages.error(request, 'DEBE HABER UN MOTIVO POR EL CUAL DECLINÓ')
+        else:
+            messages.error(request, 'NO ES CORRECTO EL FORMULARIO')
     form = UpdateInspectionForm(instance=inspection)
     context ={
-        'form': form
+        'form': form,
+        'inspection': inspection
     }
     return render(request, 'ventas/inspection_update.html', context)
+
+def informInspection(request, id):
+    feasible = FeasibleOrNotFeasible.objects.get(id=id)
+    context = {
+        'feasible': feasible,
+    }
+    return render(request, 'ventas/inspection_inform.html', context)

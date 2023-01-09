@@ -10,7 +10,7 @@ CHOICES = [
     (NOT, 'NO'),
 ]
 
-class Inspect(models.Model):   
+class Inspect(models.Model):
     inspect = models.OneToOneField(VI, on_delete=models.CASCADE)
     realized = models.CharField(max_length=3, choices=CHOICES, default=NOT)
 
@@ -18,7 +18,7 @@ class Inspect(models.Model):
         return self.inspect.client.name
 
 class FeasibleOrNotFeasible(models.Model):
-    FA = 'FEASABLE'
+    FA = 'FEASIBLE'
     NF = 'NOT FEASIBLE'
     FEASIABLE_CHOICES = [
         (FA, 'FACTIBLE'),
@@ -39,7 +39,7 @@ class Instalation(models.Model):
         return self.inspect
 
 class Material(models.Model):
-    instalation = models.OneToOneField(Instalation, on_delete=models.CASCADE)
+    inspect = models.OneToOneField(Inspect, on_delete=models.CASCADE)
     cabling = models.IntegerField()
     intallation_location = models.TextField()
     pipe = models.CharField(max_length=3, null=True, blank=True)
@@ -54,4 +54,4 @@ class Material(models.Model):
     comment = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return self.instalation
+        return self.inspect.inspect.client.name

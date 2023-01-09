@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from routers.models import Router
 from clients.models import Client, Profile
 from nodos.models import Nodo, CompanyAntenna
@@ -9,6 +9,8 @@ from django.db.models import Count
 import folium
 
 def index(request):
+    if request.user.is_authenticated:
+        return redirect('users.profile')
     map = folium.Map(location=[11.78701807156271, -70.08361994751114], zoom_start=11)
     nodes = Nodo.objects.all()
 
@@ -32,7 +34,7 @@ def index(request):
     for p in _:
         months.append(p['month'].strftime('%B'))
         records.append(p['c'])
-    
+
     profile_registration_chart = {'months': months, 'records': records}
 
     context = {

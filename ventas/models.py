@@ -55,6 +55,7 @@ class FeasibleOrNotFeasible(models.Model):
     inspection = models.OneToOneField(Inspection, on_delete=models.CASCADE)
     customer_informed = models.CharField(max_length=3, choices=CHOICES, default=NOT)
     feasible = models.CharField(max_length=15, choices=FEASIABLE_CHOICES)
+    comment = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.inspection.client.name
