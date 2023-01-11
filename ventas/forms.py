@@ -10,3 +10,6 @@ class UpdateInspectionForm(ModelForm):
     class Meta:
         model = Inspection
         fields = ['client', 'inspection', 'comment']
+        widgets = {
+            'inspection': Select(attrs={'onchange':'checkValue(this.value)'})
+        }

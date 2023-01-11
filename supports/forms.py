@@ -5,6 +5,9 @@ class FeasibleOrNotFeasibleForm(ModelForm):
     class Meta:
         model = FeasibleOrNotFeasible
         fields = '__all__'
+        widgets = {
+            'feasible': Select(attrs={'onchange':'switchMaterials(this.value)'})
+        }
 
 class MaterialFiberForm(ModelForm):
     class Meta:

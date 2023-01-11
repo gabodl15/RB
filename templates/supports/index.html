@@ -12,17 +12,22 @@
     <div class="row">
         <div class="col s12 m6">
             {% if missing_inspect %}
-                {% for missing in missing_inspect%}
-                    <div class="card">
-                        <div class="card-content">
-                            <span class="card-title truncate">{{ missing }}</span>
-                            <p class="truncate">{{ missing.address }}</p>
-                        </div>
-                        <div class="card-action">
-                            <a href="{% url 'supports.inspection.update' id=missing.id %}" class="blue-grey-text">Update</a>
-                        </div>
-                    </div>
-                {% endfor %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Actualizar Inspección</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for missing in missing_inspect%}
+                            <tr>
+                                <td>{{ missing }}</td>
+                                <td><a href="{% url 'supports.inspection.update' id=missing.id %}" class="blue-grey-text">Update</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             {% endif %}
         </div>
     </div>

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Inspect, FeasibleOrNotFeasible
+from .models import Inspect, FeasibleOrNotFeasible, Material
 from ventas.models import Inspection
 
 # Register your models here.
@@ -17,3 +17,23 @@ class InspectAdmin(admin.ModelAdmin):
         return obj.inspect.inspection_type
 
 admin.site.register(Inspect, InspectAdmin)
+
+class MaterialAdmin(admin.ModelAdmin):
+    model = Material
+    list_display = (
+        'inspect',
+        'cabling',
+        'intallation_location',
+        'pipe',
+        'wire',
+        'base',
+        'anchor',
+        'welding',
+        'tensors',
+        'cable_routin',
+        'support_post',
+        'nap_code',
+        'comment',
+    )
+
+admin.site.register(Material, MaterialAdmin)

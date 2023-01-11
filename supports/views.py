@@ -17,8 +17,23 @@ def updateInspection(request, id):
     if request.method == 'POST':
         """ VALIDAMOS QUE EL FOR SEA VALIDO """
         form_feasible = FeasibleOrNotFeasibleForm(request.POST)
-        material = MaterialFiberForm(request.POST) if support_inspection.inspect.inspection_type == "OF" else MaterialWirelessForm(request.POST)
-        if form_feasible.is_valid() and material.is_valid():
+
+        if form_feasible.is_valid():
+            """ OBTENEMOS EL OBJECTO SIN GUARDARLO """
+            support_feasible = form_feasible.save(commit=False)
+            
+            """ EN EL CASO DE QUE SEA FACTIBLE """
+            if 'NOT' not in support_feasible.feasible:
+                material = MaterialFiberForm(request.POST) if support_inspection.inspect.inspection_type == "OF" else MaterialWirelessForm(request.POST)
+                if material.is_valid():
+                    """ CREAR LISTA DE MATERIALES """
+                    material.save()
+                else:
+                    messages.error(request, 'FORMULARIO DE MATERIALES NO VALIDO')
+                    return redirect('supports.inspection.update', id=id)
+            """ GUARDO EL OBJECTO UNA VEZ VERIFICADO AMBOS FORMUARIOS """
+            support_feasible.save()
+            
             ventas_inspection = Inspection.objects.get(id=support_inspection.inspect_id)
             ventas_inspection.inspection = 'YES'
             ventas_inspection.save()
@@ -27,8 +42,6 @@ def updateInspection(request, id):
             support_inspection.realized = 'YES'
             support_inspection.save()
 
-            """ FACTIBLE O NO EN SOPORTE """
-            support_feasible = form_feasible.save()
 
             """ FACTIBLE O NO EN VENTAS """
             ventas_feasible = VentasFeasibleOrNotFeasible()
@@ -36,11 +49,6 @@ def updateInspection(request, id):
             ventas_feasible.feasible = support_feasible.feasible
             ventas_feasible.comment = support_feasible.comment
             ventas_feasible.save()
-
-            """ EN EL CASO DE QUE SEA FACTIBLE """
-            if 'NOT' not in support_feasible.feasible:
-                """ CREAR LISTA DE MATERIALES """
-                material.save()
         else:
             messages.error(request, 'FORMULARIO NO VALIDO')
             return redirect('supports.inspection.update', id=id)

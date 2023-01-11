@@ -3,7 +3,7 @@
 {% block 'content' %}
 <div class="row">
     <div class="col s12">
-        <h6>Actalizar Inspección</h6>
+        <h6>Actalizar Inspección | {{ inspection }}</h6>
     </div>
 </div>
 <div class="divider"></div>
@@ -15,7 +15,7 @@
             {% csrf_token %}
             {% load materializecss %}
             <div class="input-field">
-                {{ form.client|materializecss }}
+                {{ form.client }}
             </div>
             <div class="input-field">
                 {{ form.inspection|materializecss }}
@@ -23,7 +23,7 @@
             <div class="input-field">
                 {{ form.comment|materializecss }}
             </div>
-            <button type="submit" class="btn btn-small">Update</button>
+            <button type="submit" class="btn btn-small" disabled>Update</button>
         </form>
         
     </div>
@@ -32,12 +32,30 @@
 
 
 {% block 'javascript' %}
-<script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function () {
-        var elems = document.querySelectorAll('select');
-        var instances = M.FormSelect.init(elems, {
-            classes: 'browser-default'
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            var elems = document.querySelectorAll('select');
+            var instances = M.FormSelect.init(elems, {
+                classes: 'browser-default'
+            });
         });
-    });
-</script>
+    </script>
+    <script type="text/javascript">
+        cliente = document.getElementsByName('client');
+        for (let el of cliente) { el.parentElement.hidden = true; }
+
+        function checkValue(value){
+            switch (value){
+                case 'YES':
+                    document.getElementsByTagName('button')[0].disabled = true
+                    break;
+                case 'NOT':
+                    document.getElementsByTagName('button')[0].disabled = true
+                    break;
+                case 'DEC':
+                    document.getElementsByTagName('button')[0].disabled = false
+                    break;
+            }
+        }
+    </script>
 {% endblock %}

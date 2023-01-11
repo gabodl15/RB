@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from clients.forms import ClientForm
 from clients.models import Client
-from supports.models import Inspect
+from supports.models import Inspect, Material
 from .forms import InspectionForm, UpdateInspectionForm
 from .models import Inspection, FeasibleOrNotFeasible
 import datetime
@@ -74,7 +74,25 @@ def updateInspection(request, id):
 
 def informInspection(request, id):
     feasible = FeasibleOrNotFeasible.objects.get(id=id)
+    try:
+        from supports.models import Material
+        from supports.forms import MaterialFiberForm, MaterialWirelessForm
+        m_id = feasible.inspection.inspect.material.id
+        obj = Material.objects.get(id=m_id).__dict__
+        materials_filter = [
+            '_state',
+            'id',
+            'inspect_id'
+        ]
+        material = {}
+        for el, val in obj.items():
+            if el not in materials_filter:
+                material[el] = val
+    except :
+        material = None
+    
     context = {
         'feasible': feasible,
+        'material': material,
     }
     return render(request, 'ventas/inspection_inform.html', context)

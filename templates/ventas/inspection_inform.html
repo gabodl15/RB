@@ -35,8 +35,12 @@
             <h6>MATERIALES</h6>
         </div>
         <div class="col s12">
-            {% if feasible.inspection.inspect.material %}
-                lo que sea
+            {% if material %}
+                {% for key, value in material.items %}
+                    {% if value %}
+                        <p>{{ key }}: {{ value }}</p>
+                    {% endif %}
+                {% endfor %}
             {% else %}
                 {{ feasible.comment }}
             {% endif %}
