@@ -5,7 +5,7 @@ from clients.forms import ClientForm
 from clients.models import Client
 from supports.models import Inspect, Material
 from .forms import InspectionForm, UpdateInspectionForm
-from .models import Inspection, FeasibleOrNotFeasible
+from .models import Inspection, FeasibleOrNotFeasible, Installation
 import datetime
 
 # Create your views here.
@@ -14,11 +14,13 @@ def index(request):
     this_month_inspections = Inspection.objects.filter(created__month=today.month)
     missing_inspect = Inspection.objects.filter(inspection='NOT')
     feasible = FeasibleOrNotFeasible.objects.filter(customer_informed='NOT')
+    installation = Installation.objects.filter(payment='NOT')
     context ={
         'today': today,
         'this_month_inspections': this_month_inspections,
         'missing_inspect': missing_inspect,
         'feasible': feasible,
+        'installation': installation
     }
     return render(request, 'ventas/index.html', context)
 
@@ -78,16 +80,9 @@ def informInspection(request, id):
         from supports.models import Material
         from supports.forms import MaterialFiberForm, MaterialWirelessForm
         m_id = feasible.inspection.inspect.material.id
-        obj = Material.objects.get(id=m_id).__dict__
-        materials_filter = [
-            '_state',
-            'id',
-            'inspect_id'
-        ]
-        material = {}
-        for el, val in obj.items():
-            if el not in materials_filter:
-                material[el] = val
+        inspection_type = feasible.inspection.inspection_type
+        obj = Material.objects.get(id=m_id)
+        material = MaterialWirelessForm(instance=obj) if inspection_type == 'WA' else MaterialFiberForm(instance=obj)
     except :
         material = None
     
@@ -96,3 +91,21 @@ def informInspection(request, id):
         'material': material,
     }
     return render(request, 'ventas/inspection_inform.html', context)
+
+def informedInspection(request):
+    f_id = request.POST['feasible_id']
+    feasible = FeasibleOrNotFeasible.objects.get(id=f_id)
+    feasible.customer_informed = 'YES'
+    if hasattr(feasible.inspection.inspect, 'material'):
+        material = Material.objects.get(id=feasible.inspection.inspect.material.id)
+    else:
+        material = None
+    installation = Installation(
+        inspection=feasible.inspection,
+        material=material,
+    )
+    
+    installation.save()
+    feasible.save()
+
+    return redirect('ventas.index')

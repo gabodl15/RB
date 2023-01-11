@@ -70,7 +70,7 @@ class Installation(models.Model):
         (DEC, 'DECLINÓ')
     ]
     inspection = models.OneToOneField(Inspection, on_delete=models.CASCADE)
-    material = models.OneToOneField('supports.Material', on_delete=models.CASCADE)
+    material = models.OneToOneField('supports.Material', on_delete=models.CASCADE, null=True)
     payment = models.CharField(max_length=3, choices=CHOICES, default=NOT)
     amount = models.IntegerField(null=True, blank=True, default=None)
 
