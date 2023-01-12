@@ -5,8 +5,18 @@ from clients.forms import ClientForm
 from clients.models import Client
 from supports.models import Inspect, Material
 from .forms import InspectionForm, UpdateInspectionForm
-from .models import Inspection, FeasibleOrNotFeasible, Installation
+from .models import Inspection, FeasibleOrNotFeasible, Installation, VentaLog
 import datetime
+
+
+# CREATE GENERAL FUNCTIONS HERE
+def logs(user, action, message):
+    log = VentaLog(
+        user=user,
+        action=action,
+        message=message
+    )
+    log.save()
 
 # Create your views here.
 def index(request):
@@ -45,6 +55,8 @@ def addInspection(request, id):
             support_inspect = Inspect(inspect=ventas_inspection, realized='NOT')
             support_inspect.save()
             messages.success(request, 'INSPECCION GUARDADA CON EXITO')
+            logs(request.user, 'Add Inspection', 'Se ha generado la inspección para {}'.format(client))
+            
             return redirect('clients.show', id=id)
     form = InspectionForm(initial={'client': client, 'address': address, 'coordinates': coordinate})
     context = {
@@ -63,6 +75,12 @@ def updateInspection(request, id):
                 if obj.inspection == 'DEC':
                     if obj.comment != '':
                         obj.save()
+                        logs(
+                            request.user, 
+                            'Update Inspection', 
+                            'Se ha cancelado la inspección de {} en {}'.format(inspection, inspection.address)
+                        )
+                        
                     else:
                         messages.error(request, 'DEBE HABER UN MOTIVO POR EL CUAL DECLINÓ')
         else:
@@ -107,5 +125,12 @@ def informedInspection(request):
     
     installation.save()
     feasible.save()
+
+    logs(
+        request.user, 
+        'Inform Inspection',
+        'Cliente {} ha sido informado sobre su inspección'.format(feasible)
+    )
+    
 
     return redirect('ventas.index')

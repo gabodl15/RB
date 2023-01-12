@@ -15,7 +15,6 @@
     <div class="row">
         <div class="col s12">
             <p>{{today}}</p>
-            <p>Inspecciones Por Realizar: </p>
         </div>
         <div class="col s12 m6">
             <!-- Modal Trigger -->
@@ -27,8 +26,7 @@
                     <a class="modal-trigger" href="#inspections">Ver</a>
                 </div>
             </div>
-
-            <!-- Modal Structure -->
+            <!-- Modal Structure Inspection-->
             <div id="inspections" class="modal">
                 <div class="modal-content">
                 <h4>Inspecciones</h4>
@@ -65,37 +63,74 @@
                     <a class="modal-trigger" href="#feasible">Ver</a>
                 </div>
             </div>
-            {% if feasible %}
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Cliente</th>
-                        <th>Factible</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        {% for f in feasible %}
-                            <tr class="{% if f.feasible == 'FEASIBLE' %} green-text {% else %} red-text {% endif %}">
-                                <td>{{ f }}</td>
-                                <td>{{ f.get_feasible_display }}</td>
-                                <td>
-                                    <a href="{% url 'ventas.inspection.inform' id=f.id %}" class="card-action">ACTUALIZAR</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% endif %}
+            <!-- Modal Structure Feasible -->
+            <div id="feasible" class="modal">
+                <div class="modal-content">
+                <h4>Factibles</h4>
+                {% if feasible %}
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Factible</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for f in feasible %}
+                                <tr class="{% if f.feasible == 'FEASIBLE' %} green-text {% else %} red-text {% endif %}">
+                                    <td>{{ f }}</td>
+                                    <td>{{ f.get_feasible_display }}</td>
+                                    <td>
+                                        <a href="{% url 'ventas.inspection.inform' id=f.id %}" class="card-action">ACTUALIZAR</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+                </div>
+                <div class="modal-footer">
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+                </div>
+            </div>
         </div>
         <div class="col s12 m6">
             {% if installation %}
-                <div class="card-panel">
+                <div class="card">
                     <div class="card-content">
-                        <h6>
-                            <span class="card-title activator grey-text text-darken-4">INSTALACIONES</span>
-                        </h6>
-                        <P>{{installation|length}}</P>
+                        <span class="card-title">INSTALACIONES</span> {{ installation|length }}
+                    </div>
+                    <div class="card-action">
+                        <a class="modal-trigger" href="#installation">Ver</a>
+                    </div>
+                </div>
+                <!-- Modal Structure Instalation -->
+                <div id="installation" class="modal">
+                    <div class="modal-content">
+                    <h4>Instalaciones</h4>
+                    {% if feasible %}
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in installation %}
+                                    <tr class="">
+                                        <td>{{ i }}</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
                     </div>
                 </div>
             {% endif %}
