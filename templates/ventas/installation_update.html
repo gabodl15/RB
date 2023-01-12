@@ -1,0 +1,64 @@
+{% extends 'layouts/app.html' %}
+
+{% block 'content' %}
+    <div class="row">
+        <div class="col s12">
+            <h6>INFORMACION INSTALACIÓN</h6>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12">
+            {{ installation }}
+            <form action="{% url 'ventas.installation.update' id=installation.id %}" method="POST">
+                {% csrf_token %}
+                {% load materializecss %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Monto</th>
+                            <th>Moneda</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div>
+                                    {{ form.installation }}
+                                </div>
+                                
+                            </td>
+                            <td>
+                                <div class="">
+                                    {{ form.installation_fee }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-field">
+                                    <select name="currency" class="browser-default" required>
+                                        <option value="" disabled selected>Choose your option</option>
+                                        <option value="BS">Bolivares</option>
+                                        <option value="DS">Dolares</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td><button type="submit" class="btn btn-small blue">UPDATE</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block 'javascript' %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('select');
+            var instances = M.FormSelect.init(elems, {});
+        });
+    </script>
+    <script>
+        
+    </script>
+{% endblock %}

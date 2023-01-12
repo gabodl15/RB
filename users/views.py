@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash, authenticate
 from django.shortcuts import render, redirect
 from logs.models import Log
+from .forms import UserProfileForm
 from datetime import date
 
 # Create your views here.
@@ -11,13 +12,20 @@ def profile(request):
     logs = Log.objects.order_by('-id')[:5]
     context = {
         'today': today,
-
-        'logs':logs
+        'logs': logs,
     }
     return render(request, 'users/profile.html', context)
 
 def configuration(request):
-    return render(request, 'users/configuration.html', {})
+    form = UserProfileForm(instance=request.user)
+    context = {
+        'form': form
+    }
+    return render(request, 'users/configuration.html', context)
+
+def changePhoto(request, id):
+    form = UserProfileForm(request.POST)
+    return redirect('users.configurations')
 
 def changePassword(request):
     if request.method == 'POST':

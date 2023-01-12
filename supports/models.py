@@ -31,12 +31,12 @@ class FeasibleOrNotFeasible(models.Model):
     def __str__(self):
         return self.inspect.inspect.client.name
 
-class Instalation(models.Model):
+class Install(models.Model):
     inspect = models.OneToOneField(Inspect, on_delete=models.CASCADE)
     realized = models.CharField(max_length=3, choices=CHOICES, default=NOT)
 
     def __str__(self):
-        return self.inspect
+        return self.inspect.inspect.client.name
 
 class Material(models.Model):
     inspect = models.OneToOneField(Inspect, on_delete=models.CASCADE)

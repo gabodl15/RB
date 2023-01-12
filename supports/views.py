@@ -1,16 +1,30 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import Inspect, Material
+from .models import Inspect, Material, Install
 from .forms import FeasibleOrNotFeasibleForm, MaterialFiberForm, MaterialWirelessForm
+from clients.models import Client
 from ventas.models import Inspection, FeasibleOrNotFeasible as VentasFeasibleOrNotFeasible
 
 # Create your views here.
 def index(request):
     missing_inspect = Inspect.objects.filter(realized='NOT')
+    missing_install = Install.objects.filter(realized='NOT')
     context = {
-        'missing_inspect': missing_inspect
+        'missing_inspect': missing_inspect,
+        'missing_install': missing_install,
     }
     return render(request, 'supports/index.html', context)
+
+def show(request, id):
+    installation = Install.objects.get(id=id)
+    client = installation.inspect.inspect.client
+    material = installation.inspect.material
+    context = {
+        'installation': installation,
+        'client': client,
+        'material':material
+    }
+    return render(request, 'supports/show.html', context)
 
 def updateInspection(request, id):
     support_inspection = Inspect.objects.get(id=id)

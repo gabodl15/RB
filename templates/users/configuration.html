@@ -9,8 +9,9 @@
     <div class="divider"></div>
     <div class="row">
         <div class="col s12">
-            <div class="card-panl">
+            <div class="">
                 <div class="row">
+                    <br>
                     <div class="col s12 m4">
                         {% load static %}
                         <img class="materialboxed" src="{% static '/img/user_default.png' %}" height="100px" height="100px">
@@ -20,7 +21,22 @@
                         <br> {# COLOCAMOS UN SALTO #}
                         <span>{{user.email }}</span>
                         <br><br> {# DOBLE SALTO PARA EL LINK DE CAMBIAR FOTO #}
-                        <a href="#">Cambiar foto</a>
+                        <a class="modal-trigger" href="#photo">Cambiar foto</a>
+                    </div>
+                    <div id="photo" class="modal">
+                        <form action="{% url 'users.change.photo' id=request.user.id %}" method="POST">
+                            {% csrf_token %}
+                            <div class="modal-content">
+                                <h6 class="center">CAMBIAR FOTO</h6>
+                                {% load materializecss %}
+                                {{ form|materializecss }}
+                            </div>
+                            <br><br><br><br><br><br>
+                            <div class="modal-footer">
+                                <button type="submit" class="modal-close waves-effect waves-green btn-flat">UPDATE</button>
+                            </div>
+                            
+                        </form>
                     </div>
                 </div>
             </div>
@@ -51,4 +67,13 @@
         </div>
     </div>
     <div class="divider"></div>
+{% endblock %}
+
+{% block 'javascript' %}
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.modal');
+        var instances = M.Modal.init(elems, {});
+    });
+</script>
 {% endblock %}

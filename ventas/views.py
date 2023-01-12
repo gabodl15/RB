@@ -3,9 +3,9 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from clients.forms import ClientForm
 from clients.models import Client
-from supports.models import Inspect, Material
-from .forms import InspectionForm, UpdateInspectionForm
-from .models import Inspection, FeasibleOrNotFeasible, Installation, VentaLog
+from supports.models import Inspect, Material, Install
+from .forms import InspectionForm, UpdateInspectionForm, InstallationFeeForm
+from .models import Inspection, FeasibleOrNotFeasible, Installation, InstallationFee, VentaLog
 import datetime
 
 
@@ -118,12 +118,14 @@ def informedInspection(request):
         material = Material.objects.get(id=feasible.inspection.inspect.material.id)
     else:
         material = None
-    installation = Installation(
-        inspection=feasible.inspection,
-        material=material,
-    )
+
+    if 'NOT' not in feasible.feasible:
+        installation = Installation(
+            inspection=feasible.inspection,
+            material=material,
+        )
+        installation.save()
     
-    installation.save()
     feasible.save()
 
     logs(
@@ -134,3 +136,29 @@ def informedInspection(request):
     
 
     return redirect('ventas.index')
+
+def updateInstallation(request, id):
+    installation = Installation.objects.get(id=id)
+    if request.method == 'POST':
+        i_fee = InstallationFeeForm(request.POST)
+        if i_fee.is_valid():
+            installation.payment = 'YES'
+            installation.save()
+            obj = i_fee.save()
+            
+            """ CREAMOS LA INSTALACION PARA SOPORTE """
+            support_inspect = obj.installation.inspection.inspect
+
+            support_instalation = Install(
+                inspect=support_inspect
+            )
+            support_instalation.save()
+            return redirect('ventas.index')
+        else:
+            messages.error(request,'FORMULARIO NO VALIDO')
+    form = InstallationFeeForm(initial={'installation': installation})
+    context = {
+        'installation': installation,
+        'form': form
+    }
+    return render(request, 'ventas/installation_update.html', context)

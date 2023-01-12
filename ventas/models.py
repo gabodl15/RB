@@ -78,8 +78,15 @@ class Installation(models.Model):
         return self.inspection.client.name
 
 class InstallationFee(models.Model):
+    BS = 'BS'
+    DS = 'DS'
+    CURRENCY_CHOICES=[
+        (BS, 'BOLIVARES'),
+        (DS, 'DOLARES')
+    ]
     installation = models.OneToOneField(Installation, on_delete=models.CASCADE)
-    installation_fee = models.IntegerField()
+    installation_fee = models.FloatField()
+    currency = models.CharField(max_length=2, choices=CURRENCY_CHOICES)
 
     def __str__(self):
         return self.installation.inspection.client.name

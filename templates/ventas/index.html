@@ -109,7 +109,7 @@
                 <div id="installation" class="modal">
                     <div class="modal-content">
                     <h4>Instalaciones</h4>
-                    {% if feasible %}
+                    {% if installation %}
                         <table>
                             <thead>
                             <tr>
@@ -121,8 +121,7 @@
                                 {% for i in installation %}
                                     <tr class="">
                                         <td>{{ i }}</td>
-                                        <td>
-                                        </td>
+                                        <td><a href="{% url 'ventas.installation.update' id=i.id %}">UPDATE</a></td>
                                     </tr>
                                 {% endfor %}
                             </tbody>

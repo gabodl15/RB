@@ -9,4 +9,5 @@ urlpatterns = [
     path('inspection/update/<int:id>/', views.updateInspection, name='ventas.inspection.update'),
     path('inspection/inform/<int:id>/', views.informInspection, name='ventas.inspection.inform'),
     path('inspection/informed/', views.informedInspection, name='ventas.inspection.informed'),
+    path('installation/update/<int:id>/', views.updateInstallation, name='ventas.installation.update'),
 ]

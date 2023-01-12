@@ -1,5 +1,5 @@
 from django.forms import ModelForm, Select
-from .models import Inspection
+from .models import Inspection, Installation, InstallationFee
 
 class InspectionForm(ModelForm):
     class Meta:
@@ -13,3 +13,13 @@ class UpdateInspectionForm(ModelForm):
         widgets = {
             'inspection': Select(attrs={'onchange':'checkValue(this.value)'})
         }
+
+class UpdateInstallationForm(ModelForm):
+    class Meta:
+        model = Installation
+        exclude = ('inspection','material', 'payment')
+
+class InstallationFeeForm(ModelForm):
+    class Meta:
+        model = InstallationFee
+        fields = ['installation', 'installation_fee', 'currency']
