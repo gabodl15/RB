@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 from clients.models import Client
 from ventas.models import Inspection as VI
 
@@ -55,3 +56,10 @@ class Material(models.Model):
 
     def __str__(self):
         return self.inspect.inspect.client.name
+
+class Log(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    action = models.CharField(max_length=50)
+    message = models.CharField(max_length=150)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)

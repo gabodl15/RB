@@ -24,11 +24,11 @@
         <div id="" class="col s12">
             <div class="row">
                 <div class="col s12 m8">
-                        <p>Ultimas acciones realizadas</p>
-                        {% if logs %}
+                    <p>Ultimas acciones realizadas</p>
+                    {% if logs %}
                         <ul class="collection">
                             {% for log in logs %}
-                                <li class="collection-item">{{log.action}} <span class="badge">{{log.created}}</span></li>
+                                <li class="collection-item">{{ log.action }} <span class="badge">{{ log.created }}</span></li>
                             {% endfor %}
                         </ul>
                     {% endif %}

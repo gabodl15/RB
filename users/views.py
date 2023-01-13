@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import update_session_auth_hash, authenticate
 from django.shortcuts import render, redirect
-from logs.models import Log
+from logs.models import GlobalLog
 from .forms import UserProfileForm
 from .models import UserProfile
 from datetime import date
@@ -17,7 +17,7 @@ def profile(request):
         )
         obj.save()
     today = date.today()
-    logs = Log.objects.order_by('-id')[:5]
+    logs = GlobalLog.objects.filter(user=request.user).order_by('-id')[:5]
     context = {
         'today': today,
         'logs': logs,

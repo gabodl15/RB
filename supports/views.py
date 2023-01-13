@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import Inspect, Material, Install
+from .models import Inspect, Material, Install, Log
 from .forms import FeasibleOrNotFeasibleForm, MaterialFiberForm, MaterialWirelessForm
 from clients.models import Client
 from ventas.models import Inspection, FeasibleOrNotFeasible as VentasFeasibleOrNotFeasible
@@ -55,7 +55,13 @@ def updateInspection(request, id):
             """ INSPECCION REALIZADA """
             support_inspection.realized = 'YES'
             support_inspection.save()
-
+            """ REGISTRANDO EN EL LOG QUE SE REALIZÓ LA INSPECCION """
+            support_log = Log(
+                            user=request.user,
+                            action='Inspección Realizada',
+                            message='La inspección para el cliente {} fue realizada'.format(support_inspection)
+                            )
+            support_log.save()
 
             """ FACTIBLE O NO EN VENTAS """
             ventas_feasible = VentasFeasibleOrNotFeasible()

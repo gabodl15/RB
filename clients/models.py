@@ -39,4 +39,10 @@ class Profile(models.Model):
     
     def __str__(self):
         return self.name
-    
+
+class Log(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    action = models.CharField(max_length=50)
+    message = models.CharField(max_length=150)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)

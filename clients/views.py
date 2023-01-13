@@ -5,8 +5,8 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django import http
-from .models import Client, Profile
-from logs.models import Log
+from .models import Client, Profile, Log
+from logs.models import GlobalLog
 from routers.models import Router, Plan
 from ventas.models import Referred
 from .forms import ClientForm, ProfileForm
@@ -107,12 +107,18 @@ def addProfile(request, id):
                     client=client
                 )
                 profile.save()
-                log = Log(
+                global_log = GlobalLog(
                     user=request.user,
                     action='Add PPP',
                     message='Perfil {} ha sido creado con exito'.format(profile_name),
                 )
-                log.save()
+                global_log.save()
+                client_log = Log(
+                    client=client,
+                    action='Add PPP',
+                    message='HA SIDO CREADO EL PPP {}'.format(profile),
+                )
+                client_log.save()
             except routeros_api.exceptions.RouterOsApiCommunicationError:
                 messages.error(request, 'ERROR EN LA COMUNICACION CON EL ROUTER')
                 return redirect(request.META.get('HTTP_REFERER'))
@@ -182,6 +188,19 @@ def editProfile(request, id):
             profile.save()
 
             connection.disconnect()
+
+            global_log = GlobalLog(
+                user=request.user,
+                action='Edit PPP',
+                message='PPP {} ha sido editado'.format(profile)
+            )
+            global_log.save()
+            client_log = Log(
+                client=profile.client,
+                action='Edit PPP',
+                message='PPP {} ha sido editado'.format(profile)
+            )
+            client_log.save()
         except routeros_api.exceptions.RouterOsApiCommunicationError:
             messages.error(request, 'ERROR EN LA COMUNICACION CON EL ROUTER')
             return redirect(request.META.get('HTTP_REFERER'))

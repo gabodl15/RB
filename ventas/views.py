@@ -1,9 +1,12 @@
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.db.models.functions import TruncMonth
+from django.db.models import Count
 from clients.forms import ClientForm
-from clients.models import Client
+from clients.models import Client, Profile
 from supports.models import Inspect, Material, Install
+from logs.models import GlobalLog
 from .forms import InspectionForm, UpdateInspectionForm, InstallationFeeForm
 from .models import Inspection, FeasibleOrNotFeasible, Installation, InstallationFee, VentaLog
 import datetime
@@ -22,15 +25,26 @@ def logs(user, action, message):
 def index(request):
     today = datetime.date.today()
     this_month_inspections = Inspection.objects.filter(created__month=today.month)
-    missing_inspect = Inspection.objects.filter(inspection='NOT')
-    feasible = FeasibleOrNotFeasible.objects.filter(customer_informed='NOT')
-    installation = Installation.objects.filter(payment='NOT')
+    missing_inspect = Inspection.objects.filter(inspection='NOT').order_by('-id')
+    feasible = FeasibleOrNotFeasible.objects.filter(customer_informed='NOT').order_by('-id')
+    installation = Installation.objects.filter(payment='NOT').order_by('-id')
+
+    _ = Profile.objects.annotate(month=TruncMonth('created')).values('month').annotate(c=Count('id')).values('month', 'c')
+    months = []
+    records = []
+    for p in _:
+        months.append(p['month'].strftime('%B'))
+        records.append(p['c'])
+
+    profile_registration_chart = {'months': months, 'records': records}
+
     context ={
         'today': today,
         'this_month_inspections': this_month_inspections,
         'missing_inspect': missing_inspect,
         'feasible': feasible,
-        'installation': installation
+        'installation': installation,
+        'graph': profile_registration_chart
     }
     return render(request, 'ventas/index.html', context)
 
@@ -55,8 +69,13 @@ def addInspection(request, id):
             support_inspect = Inspect(inspect=ventas_inspection, realized='NOT')
             support_inspect.save()
             messages.success(request, 'INSPECCION GUARDADA CON EXITO')
-            logs(request.user, 'Add Inspection', 'Se ha generado la inspección para {}'.format(client))
-            
+            logs(request.user, 'Add Inspection', 'Se ha generado la inspección para el cliente {}'.format(client))
+            global_log = GlobalLog(
+                user = request.user,
+                action = 'Add Inspection',
+                message = 'Se ha generado la inspección para el cliente {}'.format(client)
+            )
+            global_log.save()
             return redirect('clients.show', id=id)
     form = InspectionForm(initial={'client': client, 'address': address, 'coordinates': coordinate})
     context = {
@@ -83,6 +102,12 @@ def updateInspection(request, id):
                             'Update Inspection', 
                             'Se ha cancelado la inspección de {} en {}'.format(inspection, inspection.address)
                         )
+                        global_log = GlobalLog(
+                            request.user, 
+                            'Update Inspection', 
+                            'Se ha cancelado la inspección de {} en {}'.format(inspection, inspection.address)
+                        )
+                        global_log.save()
                     else:
                         messages.error(request, 'DEBE HABER UN MOTIVO POR EL CUAL DECLINÓ')
                     return redirect('ventas.index')
@@ -136,6 +161,12 @@ def informedInspection(request):
         'Inform Inspection',
         'Cliente {} ha sido informado sobre su inspección'.format(feasible)
     )
+    global_log = GlobalLog(
+        request.user, 
+        'Inform Inspection',
+        'Cliente {} ha sido informado sobre su inspección'.format(feasible)
+    )
+    global_log.save()
     
 
     return redirect('ventas.index')
