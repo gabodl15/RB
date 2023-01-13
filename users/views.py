@@ -1,13 +1,21 @@
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.contrib.auth import update_session_auth_hash, authenticate
 from django.shortcuts import render, redirect
 from logs.models import Log
 from .forms import UserProfileForm
+from .models import UserProfile
 from datetime import date
 
 # Create your views here.
 
 def profile(request):
+    if not hasattr(request.user, 'userprofile'):
+        user = User.objects.get(id=request.user.id)
+        obj = UserProfile.objects.create(
+            user=user
+        )
+        obj.save()
     today = date.today()
     logs = Log.objects.order_by('-id')[:5]
     context = {
@@ -24,7 +32,14 @@ def configuration(request):
     return render(request, 'users/configuration.html', context)
 
 def changePhoto(request, id):
-    form = UserProfileForm(request.POST)
+    user = UserProfile.objects.get(id=id)
+    form = UserProfileForm(request.POST, request.FILES)
+    if form.is_valid():
+        img = form.cleaned_data.get('avatar')
+        user.avatar = img
+        user.save()
+    else:
+        print(form.errors)
     return redirect('users.configurations')
 
 def changePassword(request):

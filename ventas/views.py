@@ -74,15 +74,18 @@ def updateInspection(request, id):
             if inspection.inspection != obj.inspection:
                 if obj.inspection == 'DEC':
                     if obj.comment != '':
-                        obj.save()
+                        support_inspection = Inspect.objects.get(id=inspection.inspect.id)
+                        support_inspection.delete()
+                        inspection.inspection = 'DEC'
+                        inspection.save()
                         logs(
                             request.user, 
                             'Update Inspection', 
                             'Se ha cancelado la inspección de {} en {}'.format(inspection, inspection.address)
                         )
-                        
                     else:
                         messages.error(request, 'DEBE HABER UN MOTIVO POR EL CUAL DECLINÓ')
+                    return redirect('ventas.index')
         else:
             messages.error(request, 'NO ES CORRECTO EL FORMULARIO')
     form = UpdateInspectionForm(instance=inspection)

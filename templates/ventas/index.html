@@ -1,5 +1,11 @@
 {% extends 'layouts/app.html' %}
 
+{% block 'head' %}
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+    </script>
+{% endblock %}
+
 {% block 'content' %}
     <div class="row">
         <div class="col s2">
@@ -42,7 +48,7 @@
                         {% for missing in missing_inspect %}
                             <tr>
                                 <td class="truncate">{{ missing }} {% if missing.client.last_name %} {{ missing.client.last_name }} {% endif %}</td>
-                                <td><a href="{% url 'ventas.inspection.update' id=missing.id %}" class="card-action blue-grey-text">UPDATE</a></td>
+                                <td><a href="{% url 'ventas.inspection.update' id=missing.id %}" class="btn btn-small right">UPDATE</a></td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -82,7 +88,7 @@
                                     <td>{{ f }}</td>
                                     <td>{{ f.get_feasible_display }}</td>
                                     <td>
-                                        <a href="{% url 'ventas.inspection.inform' id=f.id %}" class="card-action">ACTUALIZAR</a>
+                                        <a href="{% url 'ventas.inspection.inform' id=f.id %}" class="btn btn-small blue right">ACTUALIZAR</a>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -121,7 +127,7 @@
                                 {% for i in installation %}
                                     <tr class="">
                                         <td>{{ i }}</td>
-                                        <td><a href="{% url 'ventas.installation.update' id=i.id %}">UPDATE</a></td>
+                                        <td><a href="{% url 'ventas.installation.update' id=i.id %}" class="btn btn-small blue right">UPDATE</a></td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -135,6 +141,14 @@
             {% endif %}
         </div>
     </div>
+    <div class="divider"></div>
+    <br>
+    <div class="row">
+        <div class="col s12 m6">
+            <h6>VENTAS DE ESTE MES</h6>
+            <canvas id="myChart" width="100%"></canvas>
+        </div>
+    </div>
 {% endblock %}
 
 {% block 'javascript' %}
@@ -143,5 +157,30 @@
         var elems = document.querySelectorAll('.modal');
         var instances = M.Modal.init(elems, {});
     });
+</script>
+
+<!-- GRAFICAS -->
+<script type="text/javascript">
+    const data = {
+        labels: [
+            'Tu',
+            'Otros'
+        ],
+        datasets: [{
+            label: 'Ventas',
+            data: [50, 100],
+            backgroundColor: [
+            'rgb(54, 162, 235)',
+            'rgb(205, 205, 205)'
+            ],
+            hoverOffset: 4
+        }]
+    };
+    const config = {
+        type: 'doughnut',
+        data: data,
+    };
+
+    new Chart("myChart", config);
 </script>
 {% endblock %}
