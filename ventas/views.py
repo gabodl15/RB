@@ -28,8 +28,8 @@ def index(request):
     missing_inspect = Inspection.objects.filter(inspection='NOT').order_by('-id')
     feasible = FeasibleOrNotFeasible.objects.filter(customer_informed='NOT').order_by('-id')
     installation = Installation.objects.filter(payment='NOT').order_by('-id')
-
-    _ = Profile.objects.annotate(month=TruncMonth('created')).values('month').annotate(c=Count('id')).values('month', 'c')
+    # .filter(created__lte='2022-01-01')
+    _ = InstallationFee.objects.annotate(month=TruncMonth('created')).values('month').annotate(c=Count('id')).values('month', 'c')
     months = []
     records = []
     for p in _:

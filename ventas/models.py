@@ -87,6 +87,8 @@ class InstallationFee(models.Model):
     installation = models.OneToOneField(Installation, on_delete=models.CASCADE)
     installation_fee = models.FloatField()
     currency = models.CharField(max_length=2, choices=CURRENCY_CHOICES)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.installation.inspection.client.name
