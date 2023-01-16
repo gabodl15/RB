@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 from clients.models import Client, Profile
 
 # Create your models here.
@@ -22,10 +23,15 @@ class Debt(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
-
 class NotSuspend(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     date = models.DateField()
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
+class AdministrationLog(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    action = models.CharField(max_length=50)
+    message = models.CharField(max_length=150)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)

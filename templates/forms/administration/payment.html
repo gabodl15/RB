@@ -1,4 +1,5 @@
-<form action="" method="POST">
+<form action="{% url 'administrations.client.payment' id=client.id%}" method="POST">
+    {% csrf_token %}
     <label>Operación</label>
     <select name="operation" class="browser-default">
         <option value="payment">Pago de Mensualidad</option>
@@ -36,7 +37,7 @@
         <div class="input-field col s12 m4">
             <p>
                 <label>
-                    <input class="with-gap" name="transaction" type="radio" value="cash"/>
+                    <input class="with-gap" name="transaction" type="radio" value="cash" checked/>
                     <span>Efectivo</span>
                 </label>
                 <label>
