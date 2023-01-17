@@ -35,7 +35,7 @@ def index(request):
     year = today.year
     month = today.month
     
-    not_suspend = NotSuspend.objects.filter(date__gte=today)
+    not_suspend = NotSuspend.objects.filter(date__gte=today.replace(day=1))
 
     if today.day in range(10, 20):
         search_day = today.replace(day=15)
