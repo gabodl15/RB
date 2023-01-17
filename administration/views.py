@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from clients.models import Client, Profile
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
+from calendar import monthrange
 from .models import Payment, NotSuspend, AdministrationLog
+from logs.models import GlobalLog
 # Create your views here.
 
 # OBTENEMOS EL DIA EN EL QUE ESTAMOS, PARA FILTRAR EL COBRO.
@@ -19,19 +21,38 @@ def _log(request, action, message):
     )
     log.save()
     return None
+def _global_log(request, action, message):
+    log = GlobalLog(
+        user=request.user,
+        action=action,
+        message=message
+    )
+    log.save()
+    return None
 
 def index(request):
-    profiles_from_database = Profile.objects.all().order_by('client__name')
-    filter_profile_in_list = []
+    today = date.today()
+    year = today.year
+    month = today.month
+    
+    not_suspend = NotSuspend.objects.filter(date__gte=today)
 
-    # RECORREMOS EL OBJETO PROFILE
-    # DE EXISTIR UN PERFIL CUYA FECHA DE CORTE ESTE DENTRO DE 5 DIAS CON LA FECHA ACTUAL, LO AGREGAMOS A LA LISTA
-    for profile in profiles_from_database:
-        if abs(collection - profile.cutoff_date) <= td:
-            filter_profile_in_list.append(profile)
+    if today.day in range(10, 20):
+        search_day = today.replace(day=15)
+        profiles = Profile.objects.filter(cutoff_date=search_day).exclude(name__in=[name for name in not_suspend]).order_by('client__name')
+
+    if today.day in range(25, 31) or today.day in range(1, 5):
+        if today.day >= 25:
+            last_day = monthrange(year, month)[1]
+            search_day = today.replace(day=last_day)
+        else:
+            last_day = monthrange(year, (month - 1))
+            search_day = today.replace(day=last_day)
+        
+        profiles = Profile.objects.filter(cutoff_date=search_day).exclude(name__in=[name for name in not_suspend]).order_by('client__name')
 
     context = {
-        'profiles': filter_profile_in_list
+        'profiles': profiles
     }
 
 
@@ -63,10 +84,12 @@ def payment(request, id):
                 )
                 not_suspend.save()
             if len(profiles_id) == 1:
-                message = 'El usuario no será suspendido'
+                message = 'El usuario del cliente {} no será suspendido'.format(client)
             else:
-                message = 'Los usuarios no serán suspendidos'
+                message = 'Los usuarios del cliente no serán suspendidos'.format(client)
             messages.success(request, message)
+            _log(request, 'Do Not Suspend', 'El/Los usuario(s) del cliente {} no será(n) suspendido(s)'.format(client))
+            _global_log(request, 'Do Not Suspend', 'El/Los usuario(s) del cliente {} no será(n) suspendido(s)'.format(client))
             return redirect('administrations.index')
             
         if operation == 'payment':
@@ -87,6 +110,7 @@ def payment(request, id):
             comment = comment,
         )
         _log(request, 'payment record', 'Se ha registrado el pago del Cliente {}'.format(client))
+        _global_log(request, 'payment record', 'Se ha registrado el pago del Cliente {}'.format(client))
         return redirect('administrations.index')
 
     profiles = Profile.objects.filter(client_id=client)
@@ -96,3 +120,12 @@ def payment(request, id):
         'profiles': profiles,
     }
     return render(request, 'administration/client/payment.html', context)
+
+
+def do_not_suspend(request):
+    cutoff_date = date.today()
+    not_suspend = NotSuspend.objects.filter(date__gt=cutoff_date)
+    context = {
+        'not_suspend': not_suspend,
+    }
+    return render(request, 'administration/client/do_not_suspend.html', context)

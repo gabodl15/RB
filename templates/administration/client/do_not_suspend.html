@@ -1,0 +1,25 @@
+{% extends 'layouts/app.html' %}
+
+{% block 'content' %}
+    <div class="row">
+        <h6>No Suspender</h6>
+    </div>
+    <div class="divider"></div>
+    <div class="row">
+        <div class="col s12">
+            {% if not_suspend %}
+                <table>
+                    <thead></thead>
+                    <tbody>
+                        {% for not in not_suspend %}
+                            <tr>
+                                <td>{{ not }}</td>
+                                <td>{{ not.date }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

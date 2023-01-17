@@ -7,8 +7,11 @@
 
 {% block 'content' %}
     <div class="row">
-        <div class="col s12">
+        <div class="col s12 m4">
             <h6>Administraci&oacute;n</h6>
+        </div>
+        <div class="col s12 m8">
+            <a href="{% url 'administration.suspend.not' %}">No suspender</a>
         </div>
     </div>
     <div class="divider"></div>

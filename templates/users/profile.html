@@ -26,18 +26,26 @@
                 <div class="col s12 m8">
                     <p>Ultimas acciones realizadas</p>
                     {% if logs %}
-                        <ul class="collection">
-                            {% for log in logs %}
-                                <li class="collection-item">{{ log.action }} <span class="badge">{{ log.created }}</span></li>
-                            {% endfor %}
-                        </ul>
+                        <table>
+                            <thead>
+                                <tr>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for log in logs %}
+                                    <tr>
+                                        <td>{{ log.message }}</td>
+                                        <td class="grey-text truncate">{{ log.created }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     {% endif %}
                 </div>
                 <div class="col s12 m4">
                     <p>Notificaciones</p>
-                    <div class="card-panel">
-
-                    </div>
+                    
                 </div>
             </div>
         </div>

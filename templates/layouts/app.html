@@ -72,14 +72,9 @@
             {% if request.user.is_staff %}
                 <li><a href="{% url 'admin:index' %}">Root</a></li>
             {% endif %}
-            <li><a href="{% url 'administrations.index' %}">Administraci&oacuten</a></li>
-            <li><a href="{% url 'clients.index' %}">Clientes</a></li>
-            <li><a href="{% url 'nodos.index' %}">Nodos</a></li>
-            <li><a href="{% url 'routers.plans.index' %}">Planes</a></li>
-            <li><a href="{% url 'routers.index' %}">Routers</a></li>
-            <li><a href="{% url 'supports.index' %}">Soporte</a></li>
-            <li><a href="{% url 'ventas.index' %}">Ventas</a></li>
-            <div class="divider"></div>
+            {% for key, value in menu.items %}
+                <li><a href="{% url value %}">{{key}}</a></li>
+            {% endfor %}
             <li><a href="{% url 'logout' %}">Logout</a></li>
         </ul>
         <a href="#" data-target="slide-out" class="sidenav-trigger hide-on-med-and-up"><i class="material-icons">menu</i></a>
