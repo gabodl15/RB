@@ -35,6 +35,9 @@ class Inspection(models.Model):
 class Referred(models.Model):
     referred = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     client = models.OneToOneField(Client, on_delete=models.CASCADE)
+    cancelled = models.BooleanField(null=True, default=None)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.client.name

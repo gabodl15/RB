@@ -1,13 +1,13 @@
 def menu(request):
     menu = {
         'menu':{
-            'Administración':'administrations.index',
-            'Clientes': 'clients.index',
-            'Nodos': 'nodos.index',
-            'Planes': 'routers.plans.index',
-            'Routers': 'routers.index', 
-            'Soporte': 'supports.index',
-            'Ventas': 'ventas.index',
+            'administration':['Administración','administrations.index'],
+            'clients':['Clientes','clients.index'],
+            'nodos': ['Nodos', 'nodos.index'],
+            'plans':['Planes', 'routers.plans.index'],
+            'routers':['Routers', 'routers.index'] ,
+            'supports':['Soporte', 'supports.index'],
+            'ventas':['Ventas', 'ventas.index'],
         }
     }
     return menu

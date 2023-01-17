@@ -8,7 +8,7 @@ from clients.models import Client, Profile
 from supports.models import Inspect, Material, Install
 from logs.models import GlobalLog
 from .forms import InspectionForm, UpdateInspectionForm, InstallationFeeForm
-from .models import Inspection, FeasibleOrNotFeasible, Installation, InstallationFee, VentaLog
+from .models import Inspection, FeasibleOrNotFeasible, Installation, InstallationFee, VentaLog, Referred
 import datetime
 
 
@@ -24,10 +24,12 @@ def logs(user, action, message):
 # Create your views here.
 def index(request):
     today = datetime.date.today()
+    first_day = datetime.date.today().replace(day=1)
     this_month_inspections = Inspection.objects.filter(created__month=today.month)
     missing_inspect = Inspection.objects.filter(inspection='NOT').order_by('-id')
     feasible = FeasibleOrNotFeasible.objects.filter(customer_informed='NOT').order_by('-id')
     installation = Installation.objects.filter(payment='NOT').order_by('-id')
+    
     # .filter(created__lte='2022-01-01')
     _ = InstallationFee.objects.annotate(month=TruncMonth('created')).values('month').annotate(c=Count('id')).values('month', 'c')
     months = []
@@ -38,13 +40,19 @@ def index(request):
 
     profile_registration_chart = {'months': months, 'records': records}
 
+    sales_of_the_month = Referred.objects.filter(created__gt=first_day).exclude(cancelled=None)
+    user_referred = len(sales_of_the_month.filter(referred=request.user))
+    other_referred = len(sales_of_the_month.exclude(referred=request.user))
+
     context ={
         'today': today,
         'this_month_inspections': this_month_inspections,
         'missing_inspect': missing_inspect,
         'feasible': feasible,
         'installation': installation,
-        'graph': profile_registration_chart
+        'graph': profile_registration_chart,
+        'user_referred': user_referred,
+        'other_referred': other_referred,
     }
     return render(request, 'ventas/index.html', context)
 
@@ -111,8 +119,11 @@ def updateInspection(request, id):
                     else:
                         messages.error(request, 'DEBE HABER UN MOTIVO POR EL CUAL DECLINÓ')
                     return redirect('ventas.index')
+            else:
+                messages.error(request, 'YA SE HA REGISTRADO QUE EL CLIENTE DECLINÓ')
         else:
             messages.error(request, 'NO ES CORRECTO EL FORMULARIO')
+            return redirect('ventas.index')
     form = UpdateInspectionForm(instance=inspection)
     context ={
         'form': form,
@@ -139,37 +150,38 @@ def informInspection(request, id):
     return render(request, 'ventas/inspection_inform.html', context)
 
 def informedInspection(request):
-    f_id = request.POST['feasible_id']
-    feasible = FeasibleOrNotFeasible.objects.get(id=f_id)
-    feasible.customer_informed = 'YES'
-    if hasattr(feasible.inspection.inspect, 'material'):
-        material = Material.objects.get(id=feasible.inspection.inspect.material.id)
-    else:
-        material = None
+    if request.method == 'POST':
+        f_id = request.POST['feasible_id']
+        feasible = FeasibleOrNotFeasible.objects.get(id=f_id)
+        feasible.customer_informed = 'YES'
+        if hasattr(feasible.inspection.inspect, 'material'):
+            material = Material.objects.get(id=feasible.inspection.inspect.material.id)
+        else:
+            material = None
 
-    if 'NOT' not in feasible.feasible:
-        installation = Installation(
-            inspection=feasible.inspection,
-            material=material,
+        if 'NOT' not in feasible.feasible:
+            installation = Installation(
+                inspection=feasible.inspection,
+                material=material,
+            )
+            installation.save()
+        
+        feasible.save()
+
+        
+        global_log = GlobalLog(
+            user = request.user, 
+            action = 'Inform Inspection',
+            message = 'Cliente {} ha sido informado sobre su inspección'.format(feasible)
         )
-        installation.save()
-    
-    feasible.save()
+        global_log.save()
+        logs(
+            request.user, 
+            'Inform Inspection',
+            'Cliente {} ha sido informado sobre su inspección'.format(feasible)
+        )
 
-    logs(
-        request.user, 
-        'Inform Inspection',
-        'Cliente {} ha sido informado sobre su inspección'.format(feasible)
-    )
-    global_log = GlobalLog(
-        request.user, 
-        'Inform Inspection',
-        'Cliente {} ha sido informado sobre su inspección'.format(feasible)
-    )
-    global_log.save()
-    
-
-    return redirect('ventas.index')
+        return redirect('ventas.index')
 
 def updateInstallation(request, id):
     installation = Installation.objects.get(id=id)
@@ -187,6 +199,16 @@ def updateInstallation(request, id):
                 inspect=support_inspect
             )
             support_instalation.save()
+
+            """ CAMBIAMOS EL VALOR NONE EN REFERIDOS """
+            if hasattr(installation.inspection.client, 'referred'):
+                referred_id = installation.inspection.client.referred.id
+                referred = Referred.objects.get(id=referred_id)
+
+                if referred.cancelled == None:
+                    referred.cancelled = False
+                    referred.save()
+
             return redirect('ventas.index')
         else:
             messages.error(request,'FORMULARIO NO VALIDO')

@@ -72,8 +72,14 @@
             {% if request.user.is_staff %}
                 <li><a href="{% url 'admin:index' %}">Root</a></li>
             {% endif %}
+            
+            {# EL MENU LO TENEMOS EN EL CONTEXT PROCESSOR #}
+            {# PREGUNTAMOS SI TIENE PERMISO SOBRE ESE GRUPO #}
+            {# Y SI LO TIENE, MOSTRAMOS EN EL MENU #}
             {% for key, value in menu.items %}
-                <li><a href="{% url value %}">{{key}}</a></li>
+                {% if key in perms %}
+                    <li><a href="{% url value.1 %}">{{ value.0 }}</a></li>        
+                {% endif %}
             {% endfor %}
             <li><a href="{% url 'logout' %}">Logout</a></li>
         </ul>
