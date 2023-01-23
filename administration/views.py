@@ -34,7 +34,7 @@ def index(request):
     today = date.today()
     year = today.year
     month = today.month
-    
+    profiles = None
     not_suspend = NotSuspend.objects.filter(date__gte=today.replace(day=1))
 
     if today.day in range(10, 20):
@@ -123,8 +123,9 @@ def payment(request, id):
 
 
 def do_not_suspend(request):
-    cutoff_date = date.today()
-    not_suspend = NotSuspend.objects.filter(date__gt=cutoff_date)
+    today = date.today()
+    cutoff = today - timedelta(10)
+    not_suspend = NotSuspend.objects.filter(date__gt=cutoff)
     context = {
         'not_suspend': not_suspend,
     }

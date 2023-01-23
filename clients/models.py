@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.functions import Concat
 from routers.models import Router, Plan
 from fernet_fields import EncryptedTextField
 
@@ -40,9 +41,59 @@ class Profile(models.Model):
     def __str__(self):
         return self.name
 
+class WirelessSupportSheet(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    sheet = models.FileField(upload_to='clients/wireless/support/' + str(client))
+    order = models.IntegerField(unique=True)
+
+    def __str__(self):
+        return self.client.name
+
+class FiberSupportSheet(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    sheet = models.FileField(upload_to='clients/fiber/support/' + str(client))
+    order = models.IntegerField(unique=True)
+
+    def __str__(self):
+        return self.client.name
+
+class WirelessInstallationSheet(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    sheet = models.FileField(upload_to='clients/wireless/installation/' + str(client))
+    order = models.IntegerField(unique=True)
+
+    def __str__(self):
+        return self.client.name
+
+class FiberInstallationSheet(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    sheet = models.FileField(upload_to='clients/fiber/installation/' + str(client))
+    order = models.IntegerField(unique=True)
+
+    def __str__(self):
+        return self.client.name
+class WirelessInspectionSheet(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    sheet = models.FileField(upload_to='clients/wireless/inspection/' + str(client))
+    order = models.IntegerField(unique=True)
+
+    def __str__(self):
+        return self.client.name
+
+class FiberInspectionSheet(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    sheet = models.FileField(upload_to='clients/fiber/inspection/' + str(client))
+    order = models.IntegerField(unique=True)
+
+    def __str__(self):
+        return self.client.name
+
 class Log(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     action = models.CharField(max_length=50)
     message = models.CharField(max_length=150)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.client.name

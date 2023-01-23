@@ -11,13 +11,13 @@
             <h6>Administraci&oacute;n</h6>
         </div>
         <div class="col s12 m8">
-            <a href="{% url 'administration.suspend.not' %}">No suspender</a>
+            <a href="{% url 'administration.suspend.not' %}" class="btn-flat right">No suspender</a>
         </div>
     </div>
     <div class="divider"></div>
+    {% if profiles %}
     <div class="row">
         <div class="col s12 m8">
-            {% if profiles %}
                 <table id="table">
                     <div class="input-field">
                         <i class="material-icons prefix">search</i>
@@ -37,9 +37,6 @@
                         {% endfor %}
                     </tbody>
                 </table>
-            {% else %}
-                Ningun usuario para este corte.
-            {% endif %}
         </div>
         <div class="col s12 m4">
             <h6>Resumen</h6>
@@ -48,6 +45,11 @@
             <p>Monto: {{ profiles | sum_price }}</p>
         </div>
     </div>
+    {% else %}
+        <div class="center">
+            Ningun usuario para este corte.
+        </div>
+    {% endif %}
 {% endblock %}
 
 {% block 'javascript' %}

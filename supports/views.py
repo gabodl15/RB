@@ -1,9 +1,15 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.http import JsonResponse
+from django.conf import settings
 from .models import Inspect, Material, Install, Log
 from .forms import FeasibleOrNotFeasibleForm, MaterialFiberForm, MaterialWirelessForm
 from clients.models import Client
 from ventas.models import Inspection, FeasibleOrNotFeasible as VentasFeasibleOrNotFeasible
+
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+
 
 # Create your views here.
 def index(request):
@@ -82,3 +88,12 @@ def updateInspection(request, id):
         'material_form': material_form,
     }
     return render(request, 'supports/inspection_update.html', context)
+
+def installation_print(request):
+    media = settings.MEDIA_URL
+    support_sheet = media + 'formatos/INSPECCION_FIBRA_OPTICA.pdf'
+    
+    data = {
+            'support_sheet':support_sheet
+    }
+    return JsonResponse(data)
