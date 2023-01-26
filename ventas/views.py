@@ -111,9 +111,9 @@ def updateInspection(request, id):
                             'Se ha cancelado la inspección de {} en {}'.format(inspection, inspection.address)
                         )
                         global_log = GlobalLog(
-                            request.user, 
-                            'Update Inspection', 
-                            'Se ha cancelado la inspección de {} en {}'.format(inspection, inspection.address)
+                            user = request.user, 
+                            action= 'Update Inspection', 
+                            message = 'Se ha cancelado la inspección de {} en {}'.format(inspection, inspection.address)
                         )
                         global_log.save()
                     else:
