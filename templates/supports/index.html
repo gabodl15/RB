@@ -35,8 +35,7 @@
                                     <tr>
                                         <td>{{ missing }}</td>
                                         <td class="right">
-                                            <a href="{% url 'supports.inspection.update' id=missing.id %}" class="btn btn-small">UPDATE</a>
-                                            <a href="#" class="btn btn-small blue">IMPRIMIR</a>
+                                            <a href="{% url 'supports.inspection.update' id=missing.id %}" class="btn btn-small">VER</a>
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -68,7 +67,7 @@
                                 {% for install in missing_install %}
                                     <tr>
                                         <td>{{ install }}</td>
-                                        <td class="right"><a href="{% url 'supports.installation.show' id=install.id %}" class="btn btn-small">VER</a> <a class="btn btn-small blue">IMPRIMIR</a></td>
+                                        <td class="right"><a href="{% url 'supports.installation.show' id=install.id %}" class="btn btn-small">VER</a></td>
                                     </tr>
                                 {% endfor %}
                             </tbody>

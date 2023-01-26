@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from clients.models import Client
+from clients.models import Client, Profile
 from ventas.models import Inspection as VI
 
 # Create your models here.
@@ -63,3 +63,58 @@ class Log(models.Model):
     message = models.CharField(max_length=150)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+
+class WirelessSupportSheet(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    support = models.ForeignKey(Profile, null=True, on_delete=models.CASCADE)
+    sheet = models.CharField(max_length=100)
+    order = models.IntegerField(unique=True)
+
+    def __str__(self):
+        return self.client.name
+
+class FiberSupportSheet(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    support = models.ForeignKey(Profile, null=True, on_delete=models.CASCADE)
+    sheet = models.CharField(max_length=100)
+    order = models.IntegerField(unique=True)
+
+    def __str__(self):
+        return self.client.name
+
+class WirelessInstallationSheet(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    installation = models.OneToOneField(Install, null=True, on_delete=models.SET_NULL)
+    sheet = models.CharField(max_length=100)
+    order = models.IntegerField(unique=True)
+
+    def __str__(self):
+        return self.client.name
+
+class FiberInstallationSheet(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    installation = models.OneToOneField(Install, null=True, on_delete=models.SET_NULL)
+    sheet = models.CharField(max_length=100)
+    order = models.IntegerField(unique=True)
+
+    def __str__(self):
+        return self.client.name
+class WirelessInspectionSheet(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    inspection = models.OneToOneField(Inspect, on_delete=models.CASCADE)
+    sheet = models.CharField(max_length=100)
+    order = models.IntegerField(unique=True)
+
+    def __str__(self):
+        return self.client.name
+
+class FiberInspectionSheet(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    inspection = models.OneToOneField(Inspect, on_delete=models.CASCADE)
+    sheet = models.CharField(max_length=100)
+    order = models.IntegerField(unique=True)
+
+    def __str__(self):
+        return self.client.name
+

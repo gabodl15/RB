@@ -45,7 +45,7 @@
 <script type="text/javascript">
     
     function print_order(support){
-        url = "{% url 'supports.installation.print' %}";
+        url = "{% url 'supports.print' support='installations' id=installation.id %}";
 
         fetch(url, {
         method: 'GET',
@@ -72,21 +72,6 @@
         .catch(error => {
             console.log(error)
         })
-    // $.ajax({
-    //     type: "GET",
-    //     url: "{% url 'supports.installation.print' %}",
-    //     data: {
-    //         'id' : support,
-    //     },
-    //     success: function(data){
-            // var iframe = document.createElement('iframe');
-            // iframe.style.display = "none";
-            // iframe.src = data;
-            // document.body.appendChild(iframe);
-            // iframe.contentWindow.focus();
-            // iframe.contentWindow.print();
-        // }
-    // });
     }
 
 </script>

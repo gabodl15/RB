@@ -43,7 +43,7 @@ def index(request):
     sales_of_the_month = Referred.objects.filter(created__gt=first_day).exclude(cancelled=None)
     user_referred = len(sales_of_the_month.filter(referred=request.user))
     other_referred = len(sales_of_the_month.exclude(referred=request.user))
-
+    print(f'\n MI REFERENCIA: {user_referred}, OTROS: {other_referred}')
     context ={
         'today': today,
         'this_month_inspections': this_month_inspections,

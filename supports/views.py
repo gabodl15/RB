@@ -2,14 +2,18 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import JsonResponse
 from django.conf import settings
-from .models import Inspect, Material, Install, Log
+from .models import Inspect, Material, Install, Log, WirelessInspectionSheet, \
+    WirelessInstallationSheet, WirelessSupportSheet, FiberInspectionSheet, \
+        FiberInstallationSheet, FiberSupportSheet
 from .forms import FeasibleOrNotFeasibleForm, MaterialFiberForm, MaterialWirelessForm
+from .sheet_pdf import Pdf
 from clients.models import Client
 from ventas.models import Inspection, FeasibleOrNotFeasible as VentasFeasibleOrNotFeasible
 
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 
+import io
 
 # Create your views here.
 def index(request):
@@ -32,7 +36,7 @@ def show(request, id):
     }
     return render(request, 'supports/show.html', context)
 
-def updateInspection(request, id):
+def inspection_show(request, id):
     support_inspection = Inspect.objects.get(id=id)
     if request.method == 'POST':
         """ VALIDAMOS QUE EL FOR SEA VALIDO """
@@ -80,18 +84,31 @@ def updateInspection(request, id):
             return redirect('supports.inspection.update', id=id)
 
         return redirect('supports.index')
+    client = support_inspection.inspect.client
     form = FeasibleOrNotFeasibleForm(initial={'inspect': support_inspection})
     material_form = MaterialFiberForm(initial={'inspect': support_inspection}) if support_inspection.inspect.inspection_type == "OF" else MaterialWirelessForm(initial={'inspect': support_inspection})
     context ={
+        'client': client,
         'form': form,
         'inspect': support_inspection,
         'material_form': material_form,
     }
-    return render(request, 'supports/inspection_update.html', context)
+    return render(request, 'supports/inspection_show.html', context)
 
-def installation_print(request):
+def support_print(request, support, id):
+    if support == 'installations':
+        obj = Install.objects.get(id=id)
+        client_id = obj.inspect.inspect.client.id
+    if support == 'inspections':
+        obj = Inspect.objects.get(id=id)
+        client_id = obj.inspect.client.id
+    client = Client.objects.get(id=client_id)
     media = settings.MEDIA_URL
-    support_sheet = media + 'formatos/INSPECCION_FIBRA_OPTICA.pdf'
+
+    sheet = Pdf(obj, client, support)
+    saved_sheet = sheet.create_sheet()
+    
+    support_sheet = media + saved_sheet
     
     data = {
             'support_sheet':support_sheet

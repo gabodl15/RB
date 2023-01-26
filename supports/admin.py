@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Inspect, FeasibleOrNotFeasible, Material
+from .models import Inspect, FeasibleOrNotFeasible, Material, Install, WirelessInstallationSheet
 from ventas.models import Inspection
 
 # Register your models here.
@@ -37,3 +37,13 @@ class MaterialAdmin(admin.ModelAdmin):
     )
 
 admin.site.register(Material, MaterialAdmin)
+
+class WirelessInstallationSheetInLine(admin.StackedInline):
+    model = WirelessInstallationSheet
+
+class InstallAdmin(admin.ModelAdmin):
+    model = Install
+    list_display = ['inspect', 'realized']
+    inlines = [WirelessInstallationSheetInLine]
+
+admin.site.register(Install, InstallAdmin)
