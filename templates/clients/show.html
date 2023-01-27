@@ -33,12 +33,14 @@
             {% if client.profile_set %}
             <table>
                 <tbody>
+                    {% load check_profile %}
                     {% for profile in client.profile_set.all %}
                         <tr>
                             <td>{{ profile }}</td>
                             <td>{{ profile.plan }}</td>
                             <td>{{ profile.router }}</td>
                             <td>{{ profile.cutoff_date }}</td>
+                            <td>{{ profile | check_profile | safe }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
