@@ -24,16 +24,20 @@
                     <thead>
                         <tr>
                             <th>Nombre y Apellido</th>
+                            <th>Dirección</th>
                             <th>Teléfono</th>
                             <th>Email</th>
+                            
                         </tr>
                     </thead>
                     <tbody>
                         {% for client in clients %}
                             <tr>
                                 <td><a href="{% url 'clients.show' client.id %}">{{ client.name }} {% if client.last_name %} {{ client.last_name }} {% endif %}</a></td>
+                                <td>{{ client.address }}</td>
                                 <td>{{ client.phone }}</td>
                                 <td>{{ client.email }}</td>
+                            
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -64,6 +68,13 @@
 <script>
     $(document).ready(function () {
         $('#clientTable').DataTable({
+            columnDefs:[
+                {
+                    target: 1,
+                    visible: false,
+                    searchable: false,
+                },
+            ],
             dom: 'Bfrtip',
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
