@@ -6,6 +6,9 @@ register = template.Library()
 @register.filter
 def check_profile(profile):
     conn = Connection(profile.router)
+    if conn.active is False:
+        data = f"<span class='red-text'>{conn.message}</span>"
+        return data
     active = conn.name_query('/ppp/active', profile.name)
     conn.disconnect()
     if len(active):
