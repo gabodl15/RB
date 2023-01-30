@@ -58,7 +58,6 @@
             return response.json()
         })
         .then(data => {
-            console.log(data.support_sheet);
             var iframe = document.createElement('iframe');
             iframe.style.display = "none";
             iframe.src =  data.support_sheet;

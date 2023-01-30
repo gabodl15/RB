@@ -2,9 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import JsonResponse
 from django.conf import settings
-from .models import Inspect, Material, Install, Log, WirelessInspectionSheet, \
-    WirelessInstallationSheet, WirelessSupportSheet, FiberInspectionSheet, \
-        FiberInstallationSheet, FiberSupportSheet
+from .models import Inspect, Material, Install, Log
 from .forms import FeasibleOrNotFeasibleForm, MaterialFiberForm, MaterialWirelessForm
 from .sheet_pdf import Pdf
 from clients.models import Client

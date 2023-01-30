@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.urls import reverse
-from django import http
+from django.http import JsonResponse
 from .models import Client, Profile, Log
 from logs.models import GlobalLog
 from routers.models import Router, Plan
@@ -42,6 +42,18 @@ class ClientCreateView(CreateView):
             r = Referred(referred = user, client = client)
             r.save()
         return reverse('ventas.inspection.add', kwargs={'id': client.id})
+
+
+def search_client(request, client):
+    search_profile = []
+    search_client = Client.objects.filter(name__contains=client).values()[:7]
+    if ' ' not in client:
+        search_profile = Profile.objects.filter(name__contains=client).values()[:7]
+    data = {
+        'clients': list(search_client),
+        'profiles': list(search_profile)
+    }
+    return JsonResponse(data)
 
 
 def index(request):

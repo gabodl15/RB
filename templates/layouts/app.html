@@ -63,12 +63,13 @@
             <div class="nav-wrapper transparent">
                 <form>
                     <div class="input-field">
-                        <input id="search" type="search" onkeyup="" required>
+                        <input id="search" type="search" onkeyup="search_client_ajax(this.value)">
                         <label class="label-icon" for="search"><i class="material-icons blue-text">search</i></label>
-                        <i class="material-icons">close</i>
+                        <i class="material-icons" onclick="clear_search()">close</i>
                     </div>
                 </form>
             </div>
+            <div id="show_clients"></div>
             {% if request.user.is_staff %}
                 <li><a href="{% url 'admin:index' %}">Root</a></li>
             {% endif %}
@@ -118,6 +119,66 @@
                     'constrainWidth': false,
                 });
             });
+        </script>
+        <script type="text/javascript">
+            div_search = document.getElementById('show_clients')
+            client_page = "{% url 'clients.show' 123 %}"
+            
+            function clear_search(){
+                div_search.innerHTML = "";
+            }
+
+            function search_client_ajax(value){
+                url_base = "{% url 'clients.search.ajax' client='value' %}"
+                url = url_base.replace('value', value)
+                
+                if(value.key === "Escape") {
+                    clear_search();
+                }else if(value != ''){
+                    fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    }
+                    })
+                    .then(response => {
+                        return response.json()
+                    })
+                    .then(data => {
+                        clear_search();
+                        for (let index = 0; index < data.clients.length; index++) {
+                            li = document.createElement('li');
+                            a = document.createElement('a');
+                            a.innerHTML = data.clients[index]['name'];
+                            a.href = client_page.replace('123', data.clients[index]['id']);
+                            a.classList.add('truncate');
+                            a.classList.add('blue-grey')
+                            a.classList.add('darken-3')
+                            a.classList.add('white-text')
+                            li.appendChild(a)
+                            div_search.appendChild(li)
+                        }
+                        for (let index = 0; index < data.profiles.length; index++){
+                            li = document.createElement('li');
+                            a = document.createElement('a');
+                            a.innerHTML = data.profiles[index]['name'];
+                            a.href = client_page.replace('123', data.profiles[index]['client_id']);
+                            a.classList.add('truncate');
+                            a.classList.add('blue-grey')
+                            a.classList.add('darken-1')
+                            a.classList.add('white-text')
+                            li.appendChild(a)
+                            div_search.appendChild(li)
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+                }else{
+                    clear_search()
+                }
+            }
         </script>
     </body>
 </html>
