@@ -37,11 +37,11 @@ def index(request):
     profiles = None
     not_suspend = NotSuspend.objects.filter(date__gte=today.replace(day=1))
 
-    if today.day in range(10, 20):
+    if today.day in range(10, 21):
         search_day = today.replace(day=15)
         profiles = Profile.objects.filter(cutoff_date=search_day).exclude(name__in=[name for name in not_suspend]).order_by('client__name')
 
-    if today.day in range(25, 31) or today.day in range(1, 5):
+    if today.day in range(25, 32) or today.day in range(1, 6):
         if today.day >= 25:
             last_day = monthrange(year, month)[1]
             search_day = today.replace(day=last_day)
