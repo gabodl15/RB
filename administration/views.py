@@ -46,8 +46,8 @@ def index(request):
             last_day = monthrange(year, month)[1]
             search_day = today.replace(day=last_day)
         else:
-            last_day = monthrange(year, (month - 1))
-            search_day = today.replace(day=last_day)
+            last_day = monthrange(year, (month - 1))[1]
+            search_day = today.replace(day=last_day, month=(month - 1 ))
         
         profiles = Profile.objects.filter(cutoff_date=search_day).exclude(name__in=[name for name in not_suspend]).order_by('client__name')
 
