@@ -12,6 +12,7 @@
         </div>
         <div class="col s12 m8">
             <a href="{% url 'administration.suspend.not' %}" class="btn-flat right">No suspender</a>
+            <a href="{% url 'administrations.clients.debts' %}" class="btn-flat right">Deudas Clientes</a>
         </div>
     </div>
     <div class="divider"></div>
@@ -43,6 +44,18 @@
             <p>Clientes a pagar: {{ profiles | length }}</p>
             {% load sum_price %}
             <p>Monto: {{ profiles | sum_price }}</p>
+            <div class="divider"></div>
+            <p>No suspender: {{ not_suspend | length }}</p>
+            <p>No suspendidos: {{ not_suspended | length }}<span class="badge"><a href="#NotSuspended" class="modal-trigger">Ver</a></span></p>
+        </div>
+    </div>
+    <div id="NotSuspended" class="modal">
+        <div class="modal-content">
+            <ul class="collection">
+                {% for ns in not_suspended %}
+                    <li class="collection-item">{{ ns }}<span class="badge">{{ ns.cutoff_date }}</span></li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
     {% else %}
@@ -53,6 +66,12 @@
 {% endblock %}
 
 {% block 'javascript' %}
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.modal');
+        var instances = M.Modal.init(elems, {});
+    });
+</script>
 <script>
     var accent_map = {'á':'a', 'é':'e', 'è':'e', 'í':'i','ó':'o','ú':'u','Á':'A', 'É':'E', 'è':'E', 'Í':'I','Ó':'O','Ú':'U'};
     function accent_fold (s) {

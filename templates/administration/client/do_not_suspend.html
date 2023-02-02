@@ -15,11 +15,31 @@
                             <tr>
                                 <td>{{ not }}</td>
                                 <td>{{ not.date }}</td>
+                                <td><button data-target="delete-not_suspend-{{not.id}}" class="btn btn-small blue right modal-trigger">Eliminar</button></td>
                             </tr>
+                            <div id="delete-not_suspend-{{not.id}}" class="modal">
+                                <form action="{% url 'administrations.suspend.not.delete' id=not.id %}">
+                                    <div class="modal-content">
+                                        <center>ELIMINAR NO SUSPENCION DE {{not}} </center>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-small blue" type="submit">Eliminar</button>
+                                    </div>
+                                </form>
+                            </div>
                         {% endfor %}
                     </tbody>
                 </table>
             {% endif %}
         </div>
     </div>
+{% endblock %}
+
+{% block 'javascript' %}
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.modal');
+        var instances = M.Modal.init(elems, {});
+    });
+</script>
 {% endblock %}

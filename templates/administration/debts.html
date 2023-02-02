@@ -1,0 +1,55 @@
+{% extends 'layouts/app.html' %}
+
+{% block 'content' %}
+<div class="row">
+    <div class="col s12">
+        <h6>DEUDORES</h6>
+    </div>
+</div>
+<div class="divider"></div>
+<br>
+<div class="row">
+    <div class="col s12">
+        {% if debts %}
+            <!-- <ul class="collection"> -->
+            <table>
+                <tbody>
+                    {% for debt in debts %}
+                        <tr>
+                            <td>{{ debt }}</td>
+                            <td>{{ debt.amount }}$</td>
+                            <td>{{ debt.created }}</td>
+                            <td><button data-target="delete-debt-{{debt.id}}" class="btn btn-small red modal-trigger">Eliminar</button></td>
+                        </tr>
+                        <!-- <li class="collection-item">{{ debt }}</li> -->
+                        <div id="delete-debt-{{debt.id}}" class="modal">
+                            <form action="{% url 'administrations.clients.debt.delete' id=debt.id %}" method="POST">
+                                {% csrf_token %}
+                                <div class="modal-content">
+                                    <h6><center>ELIMINAR DEUDA DE {{ debt }}</center></h6>
+                                    <center>Deuda de {{ debt.amount }}$</center>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-small red center">Eliminar</button>
+                                </div>
+                            </form>
+                        </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <!-- </ul> -->
+        {% else %}
+            <center>No hay registro de deudores</center>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block 'javascript' %}
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.modal');
+        var instances = M.Modal.init(elems, {});
+    });
+</script>
+{% endblock %}

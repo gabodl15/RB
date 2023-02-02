@@ -1,10 +1,12 @@
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from clients.models import Client, Profile
+from routers.models import Plan
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from calendar import monthrange
-from .models import Payment, NotSuspend, AdministrationLog
+from .models import Payment, NotSuspend, AdministrationLog, Debt
 from logs.models import GlobalLog
 # Create your views here.
 
@@ -35,7 +37,10 @@ def index(request):
     year = today.year
     month = today.month
     profiles = None
-    not_suspend = NotSuspend.objects.filter(date__gte=today.replace(day=1))
+    cortados = Plan.objects.filter(name='CORTADOS').get()
+    not_suspend = NotSuspend.objects.all()
+
+    not_suspended = Profile.objects.filter(cutoff_date__lte=(today - timedelta(5))).filter(~Q(plan=cortados.id)).exclude(name__in=[name for name in not_suspend])
 
     if today.day in range(10, 21):
         search_day = today.replace(day=15)
@@ -52,7 +57,9 @@ def index(request):
         profiles = Profile.objects.filter(cutoff_date=search_day).exclude(name__in=[name for name in not_suspend]).order_by('client__name')
 
     context = {
-        'profiles': profiles
+        'profiles': profiles,
+        'not_suspend': not_suspend,
+        'not_suspended': not_suspended,
     }
 
 
@@ -69,6 +76,7 @@ def payment(request, id):
         bank = request.POST['bank'] # CAN BE NULL
         rate = request.POST['rate'] # CAN BE NULL
         transaction_reference = request.POST['transaction_reference'] # CAN BE NULL
+        debt = request.POST['debt'] # CAN BE NULL
         comment = request.POST['comment'] # CAN BE NULL
         
         if not profiles_id:
@@ -88,6 +96,7 @@ def payment(request, id):
             else:
                 message = 'Los usuarios del cliente no serán suspendidos'.format(client)
             messages.success(request, message)
+            
             _log(request, 'Do Not Suspend', 'El/Los usuario(s) del cliente {} no será(n) suspendido(s)'.format(client))
             _global_log(request, 'Do Not Suspend', 'El/Los usuario(s) del cliente {} no será(n) suspendido(s)'.format(client))
             return redirect('administrations.index')
@@ -98,6 +107,14 @@ def payment(request, id):
                 profile.cutoff_date = profile.cutoff_date + relativedelta(months=1)
                 profile.save()
 
+        if debt:
+            debt = Debt(
+                client = client,
+                amount = debt,
+                comment = '',
+            )
+            debt.save()
+            
         payment = Payment(
             client = client,
             operation = operation,
@@ -109,6 +126,7 @@ def payment(request, id):
             transaction_reference = transaction_reference,
             comment = comment,
         )
+
         _log(request, 'payment record', 'Se ha registrado el pago del Cliente {}'.format(client))
         _global_log(request, 'payment record', 'Se ha registrado el pago del Cliente {}'.format(client))
         return redirect('administrations.index')
@@ -125,8 +143,27 @@ def payment(request, id):
 def do_not_suspend(request):
     today = date.today()
     cutoff = today - timedelta(10)
-    not_suspend = NotSuspend.objects.filter(date__gt=cutoff)
+    not_suspend = NotSuspend.objects.all()
     context = {
         'not_suspend': not_suspend,
     }
     return render(request, 'administration/client/do_not_suspend.html', context)
+
+def do_not_suspend_delete(request, id):
+    do_not_suspend_record = NotSuspend.objects.get(id=id)
+    do_not_suspend_record.delete()
+    messages.success(request, 'PROTECCIÓN DE SUSPENCIÓN ELIMINADA')
+    return redirect('administrations.index')
+
+def debts(request):
+    debts = Debt.objects.all()
+    context = {
+        'debts': debts
+    }
+    return render(request, 'administration/debts.html', context)
+
+def debts_delete(request, id):
+    debt = Debt.objects.get(id=id)
+    debt.delete()
+    messages.success(request, 'DEUDA ELIMINADA')
+    return redirect('administrations.index')
