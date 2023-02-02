@@ -72,6 +72,7 @@
             <div id="show_clients"></div>
             {% if request.user.is_staff %}
                 <li><a href="{% url 'admin:index' %}">Root</a></li>
+                <li><a href="{% url 'alerts.index' %}">Alertas</a></li>
             {% endif %}
             
             {# EL MENU LO TENEMOS EN EL CONTEXT PROCESSOR #}
