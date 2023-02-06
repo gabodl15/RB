@@ -36,7 +36,7 @@
                     {% load check_profile %}
                     {% for profile in client.profile_set.all %}
                         <tr>
-                            <td>{{ profile }}</td>
+                            <td><a href="{% url 'clients.profile.edit' id=profile.id %}">{{ profile }}</a></td>
                             <td>{{ profile.plan }}</td>
                             <td>{{ profile.router }}</td>
                             <td>{{ profile.cutoff_date }}</td>

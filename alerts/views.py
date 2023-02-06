@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Alert
-# Create your views here.
 
+# Create your views here.
 def index(request):
     # alerts = Alert.objects.filter(status='WT').order_by('-created')[:20]
     alerts = Alert.objects.values('color').distinct()
