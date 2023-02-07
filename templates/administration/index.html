@@ -63,6 +63,27 @@
             Ningun usuario para este corte.
         </div>
     {% endif %}
+    <div class="row">
+        {% if payments %}
+            <div class="col s12">
+                <table>
+                    <tbody>
+                        {% for payment in payments %}
+                            <tr>
+                                <td>{{ payment }}</td>
+                                
+                                <td class="right">
+                                    <!-- <a href="#" class="btn btn-small green">ver</a> -->
+                                    <button class="btn btn-small green">VER</button>
+                                    <button class="btn btn-small blue" onclick="window.location='{% url 'administrations.clients.payment.support' id=payment.id %}'">DESCARGAR</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}
 
 {% block 'javascript' %}

@@ -7,5 +7,6 @@ urlpatterns = [
     path('suspend/not/', views.do_not_suspend, name='administration.suspend.not'),
     path('suspend/not/delete/<int:id>/', views.do_not_suspend_delete, name='administrations.suspend.not.delete'),
     path('debts/', views.debts, name='administrations.clients.debts'),
-    path('debts/delete/<int:id>/', views.debts_delete, name='administrations.clients.debt.delete')
+    path('debts/delete/<int:id>/', views.debts_delete, name='administrations.clients.debt.delete'),
+    path('payment/support/<int:id>/', views.payment_support, name='administrations.clients.payment.support'),
 ]

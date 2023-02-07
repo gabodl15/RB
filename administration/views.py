@@ -1,13 +1,18 @@
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.http import FileResponse
+from django.conf import settings
 from clients.models import Client, Profile
 from routers.models import Plan
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from calendar import monthrange
-from .models import Payment, NotSuspend, AdministrationLog, Debt
 from logs.models import GlobalLog
+from reportlab.pdfgen import canvas
+from .models import Payment, NotSuspend, AdministrationLog, Debt
+import os
+
 # Create your views here.
 
 # OBTENEMOS EL DIA EN EL QUE ESTAMOS, PARA FILTRAR EL COBRO.
@@ -56,8 +61,11 @@ def index(request):
         
         profiles = Profile.objects.filter(cutoff_date=search_day).exclude(name__in=[name for name in not_suspend]).order_by('client__name')
 
+    payments = Payment.objects.all()
+
     context = {
         'profiles': profiles,
+        'payments': payments,
         'not_suspend': not_suspend,
         'not_suspended': not_suspended,
     }
@@ -79,6 +87,21 @@ def payment(request, id):
         debt = request.POST['debt'] # CAN BE NULL
         comment = request.POST['comment'] # CAN BE NULL
         
+        """VALIDACIONES DE LOS CAMPOS QUE DEBEN SER FLOTANTES"""
+        def validation(number, convertion):
+            if number is not None:
+                # Convierte la cadena a un número flotante
+                try:
+                    number = float(number) if convertion == 'float' else int(number)
+                except ValueError:
+                    # Maneja el caso en que el valor no sea un número
+                    number = None
+
+        dolars = validation(dolars, 'float')
+        bolivares = validation(bolivares, 'float')
+        rate = validation(rate, 'int')
+        transaction_reference = validation(transaction_reference, 'int')
+
         if not profiles_id:
             messages.error(request, 'NO HA SELECCIONADO UN PERFIL')
             return redirect(request.META.get('HTTP_REFERER'))
@@ -105,6 +128,9 @@ def payment(request, id):
             for p in profiles_id:
                 profile = Profile.objects.get(id=p)
                 profile.cutoff_date = profile.cutoff_date + relativedelta(months=1)
+                if profile.cutoff_date.day > 20:
+                    last_day = monthrange(profile.cutoff_date.year, profile.cutoff_date.month)[1]
+                    profile.cutoff_date = profile.cutoff_date.replace(day=last_day)
                 profile.save()
 
         if debt:
@@ -126,6 +152,7 @@ def payment(request, id):
             transaction_reference = transaction_reference,
             comment = comment,
         )
+        payment.save()
 
         _log(request, 'payment record', 'Se ha registrado el pago del Cliente {}'.format(client))
         _global_log(request, 'payment record', 'Se ha registrado el pago del Cliente {}'.format(client))
@@ -167,3 +194,26 @@ def debts_delete(request, id):
     debt.delete()
     messages.success(request, 'DEUDA ELIMINADA')
     return redirect('administrations.index')
+
+def payment_support(request, id):
+    today = date.today()
+    payment = Payment.objects.get(id=id)
+    media = settings.MEDIA_ROOT
+    filename = f"Mensualidad-{today}.pdf"
+    folder_path = f"{media}/clients/{payment}/payments"
+    # CREA LA CARPETA SI NO EXISTE
+    os.makedirs(folder_path, exist_ok=True)
+    file_path = folder_path + "/" + filename
+    with open(file_path, 'wb') as pdf:
+        canvas_obj = canvas.Canvas(pdf)
+        canvas_obj.drawString(100, 100, "Hello World")
+        canvas_obj.save()
+    
+    # Devolver la respuesta con el archivo PDF
+    response = FileResponse(open(file_path, 'rb'))
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response
+
+def history(request):
+    context = {}
+    return render(request, 'administration/client/history.html', context)
