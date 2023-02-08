@@ -13,6 +13,19 @@
         <div class="col s12 m8">
             <a href="{% url 'administration.suspend.not' %}" class="btn-flat right">No suspender</a>
             <a href="{% url 'administrations.clients.debts' %}" class="btn-flat right">Deudas Clientes</a>
+            <button data-target="modal_search_for_customer" class="btn-flat modal-trigger right">Pago</button>
+        </div>
+    </div>
+    <div id="modal_search_for_customer" class="modal modal-fixed-footer">
+        <div class="modal-content">
+            <div class="input-field">
+                <input id="search" type="search" onkeyup="find_customer_to_charge_payment(this.value)">
+                <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+                <i class="material-icons">close</i>
+            </div>
+            <div class="divier"></div>
+            <br>
+            <ul id="list_match_in_search" class="collection"></ul>
         </div>
     </div>
     <div class="divider"></div>
@@ -93,6 +106,55 @@
         var instances = M.Modal.init(elems, {});
     });
 </script>
+{# SCRIPT PARA BUSCAR CLIENTES EN BASE DE DATOS Y MOSTRARLOS EN EL MODAL #}
+{# COLOCANDO LINK PARA CARGAR EL PAGO, ESTA FUNCION ES PARA UN CLIENTE #}
+{# QUE DESEA CANCELAR, PERO AUN NO ES SU FECHA DE PAGO, POR LO CUAL NO #}
+{# ESTÁ EN LA LISTA #}
+<script type="text/javascript">
+    ul = document.getElementById('list_match_in_search')
+    function find_customer_to_charge_payment(value){
+        url_base = "{% url 'clients.search.ajax' client='value' %}"
+        url = url_base.replace('value', value)
+        payment_page = "{% url 'administrations.client.payment' 123 %}"
+        fetch(url)
+        .then(response => {
+            if (response.status === 200) {
+            return response.json();
+            } else {
+            throw new Error("No se pudo obtener los datos");
+            }
+        })
+        .then(data => {
+            {# COLOCAMOS EN BLANCO LA LISTA #}
+            ul.innerHTML = ""
+            for (let index = 0; index < data.clients.length; index++) {
+                li = document.createElement('li');
+                a = document.createElement('a');
+                a.innerHTML = data.clients[index]['name'];
+                a.href = payment_page.replace('123', data.clients[index]['id']);
+                a.classList.add('truncate');
+                li.appendChild(a)
+                li.classList.add('collection-item')
+                ul.appendChild(li)
+            }
+            for (let index = 0; index < data.profiles.length; index++){
+                li = document.createElement('li');
+                a = document.createElement('a');
+                a.innerHTML = data.profiles[index]['name'];
+                a.href = payment_page.replace('123', data.profiles[index]['client_id']);
+                a.classList.add('truncate');
+                li.appendChild(a)
+                li.classList.add('collection-item')
+                ul.appendChild(li)
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    }
+</script>
+
+{# SCRIPT PARA BUSCAR CLIENTES EN LA LISTA DE LOS QUE LES TOCA CANCELAR #}
 <script>
     var accent_map = {'á':'a', 'é':'e', 'è':'e', 'í':'i','ó':'o','ú':'u','Á':'A', 'É':'E', 'è':'E', 'Í':'I','Ó':'O','Ú':'U'};
     function accent_fold (s) {
