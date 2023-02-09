@@ -66,3 +66,13 @@ class RouterProfile:
 
         # return message
         return True
+
+        def delete_ppp(self):
+            secret_profile = self.connection.query_name('/ppp/secret', self.profile)
+            if secret_profile:
+                self.connection.remove('/ppp/secret', secret_profile[0]['id'])
+            active_profile = self.connection.query_name('/ppp/secret', self.profile)
+            if active_profile:
+                self.connection.remove('/ppp/secret', active_profile[0]['id'])
+                
+            self.profile.remove()

@@ -22,4 +22,7 @@ class ProfileAdmin(admin.ModelAdmin):
 
     form = ProfileAdminForm
 
+    def save_model(self, request, obj, form, change):
+        pass
+
 admin.site.register(Profile, ProfileAdmin)
