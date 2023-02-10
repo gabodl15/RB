@@ -25,6 +25,7 @@ class ProfileAdmin(admin.ModelAdmin):
 
     form = ProfileAdminForm
 
+
     def delete_model(self, request, obj):
         # INTENTAMOS ELIMINAR EL PERFIL DEL MIKROTIK PREVIO A ELIMINARLO DE LA BASE DE DATOS.
         connection = Connection(obj.router)
