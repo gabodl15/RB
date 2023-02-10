@@ -1,4 +1,7 @@
-from django.contrib import admin
+from django.contrib import admin, messages
+from django.urls import reverse
+from django.shortcuts import redirect
+from routers.functions import Connection
 from .models import Client, Profile
 from django import forms
 
@@ -22,4 +25,11 @@ class ProfileAdmin(admin.ModelAdmin):
 
     form = ProfileAdminForm
 
+    def delete_model(self, request, obj):
+        # INTENTAMOS ELIMINAR EL PERFIL DEL MIKROTIK PREVIO A ELIMINARLO DE LA BASE DE DATOS.
+        connection = Connection(obj.router)
+        if connection.active is False:
+            self.message_user(request, connection.message, level=messages.ERROR)
+        return redirect('admin:clients_profile_change', obj.id)
+            
 admin.site.register(Profile, ProfileAdmin)

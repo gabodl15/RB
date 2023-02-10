@@ -61,7 +61,7 @@ def index(request):
         
         profiles = Profile.objects.filter(cutoff_date=search_day).exclude(name__in=[name for name in not_suspend]).order_by('client__name')
 
-    payments = Payment.objects.all()
+    payments = Payment.objects.all().order_by('-id')[:10]
 
     context = {
         'profiles': profiles,
