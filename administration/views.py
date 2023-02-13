@@ -96,6 +96,8 @@ def payment(request, id):
                 except ValueError:
                     # Maneja el caso en que el valor no sea un número
                     number = None
+                
+                return number
 
         dolars = validation(dolars, 'float')
         bolivares = validation(bolivares, 'float')

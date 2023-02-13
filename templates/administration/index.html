@@ -87,10 +87,38 @@
                                 
                                 <td class="right">
                                     <!-- <a href="#" class="btn btn-small green">ver</a> -->
-                                    <button class="btn btn-small green">VER</button>
+                                    <button class="btn btn-small green modal-trigger" data-target="payment-{{payment.id}}">VER</button>
                                     <button class="btn btn-small blue" onclick="window.location='{% url 'administrations.clients.payment.support' id=payment.id %}'">DESCARGAR</button>
                                 </td>
                             </tr>
+                            <div id="payment-{{payment.id}}" class="modal">
+                                <div class="modal-content">
+                                    <h6>{{ payment.client }}<span class="right">{{payment.created}}</span></h6>
+                                    <div class="divider"></div>
+                                    {% if payment.operation == 'payment'  %}
+                                        <h6>PAGO</h6>
+                                    {% elif payment.operration == 'credit' %}
+                                        <h6>Abono</h6>
+                                    {% endif %}
+                                    {% if payment.transaction == 'cash' %}
+                                        <p>Efectivo:</p>
+                                        {% if payment.dolars %}
+                                            <p>{{ payment.dolars }}</p>
+                                        {% endif %}
+                                        {% if payment.bolivares %}
+                                            <p>{{ payment.bolivares }}</p>
+                                        {% endif %}
+                                    {% else %}
+                                        <p>Transferencia</p>
+                                        <p>{{payment.bank}}</p>
+                                        <p>{{payment.rate}}</p>
+                                        <p>{{payment.transaction_reference}}</p>
+                                    {% endif %}
+
+                                    <div class="divider"></div>
+                                    <p>{{payment.comment}}</p>
+                                </div>
+                            </div>
                         {% endfor %}
                     </tbody>
                 </table>

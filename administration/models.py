@@ -5,14 +5,14 @@ from clients.models import Client, Profile
 # Create your models here.
 class Payment(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    operation = models.CharField(max_length=20)
-    transaction = models.CharField(max_length=10)
-    dolars = models.FloatField(null=True, blank=True)
-    bolivares = models.FloatField(null=True, blank=True)
-    bank = models.CharField(max_length=40, null=True, blank=True)
-    rate = models.FloatField(null=True, blank=True)
-    transaction_reference = models.IntegerField(null=True, blank=True)
-    comment = models.TextField(null=True, blank=True)
+    operation = models.CharField(max_length=20, verbose_name='Operación')
+    transaction = models.CharField(max_length=10, verbose_name='Transacción')
+    dolars = models.FloatField(null=True, blank=True, verbose_name='Dolares')
+    bolivares = models.FloatField(null=True, blank=True, verbose_name='Bolivares')
+    bank = models.CharField(max_length=40, null=True, blank=True, verbose_name='Banco')
+    rate = models.FloatField(null=True, blank=True, verbose_name='Tasa')
+    transaction_reference = models.IntegerField(null=True, blank=True, verbose_name='Referencia de Transacción')
+    comment = models.TextField(null=True, blank=True, verbose_name='Comentario')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
