@@ -47,9 +47,9 @@ class ClientCreateView(CreateView):
 
 def search_client(request, client):
     search_profile = []
-    search_client = Client.objects.filter(name__contains=client).values()[:7]
+    search_client = Client.objects.filter(name__icontains=client).values()[:7]
     if ' ' not in client:
-        search_profile = Profile.objects.filter(name__contains=client).values()[:7]
+        search_profile = Profile.objects.filter(name__icontains=client).values()[:7]
     data = {
         'clients': list(search_client),
         'profiles': list(search_profile)

@@ -101,18 +101,34 @@
                                         <h6>Abono</h6>
                                     {% endif %}
                                     {% if payment.transaction == 'cash' %}
-                                        <p>Efectivo:</p>
-                                        {% if payment.dolars %}
-                                            <p>{{ payment.dolars }}</p>
-                                        {% endif %}
-                                        {% if payment.bolivares %}
-                                            <p>{{ payment.bolivares }}</p>
-                                        {% endif %}
+                                        <p>
+                                            Efectivo:
+                                            {% if payment.dolars %}
+                                                {{ payment.dolars }}$
+                                            {% endif %}
+                                            {% if payment.bolivares %}
+                                                {{ payment.bolivares }} bs.
+                                            {% endif %}
+                                        </p>
                                     {% else %}
-                                        <p>Transferencia</p>
-                                        <p>{{payment.bank}}</p>
-                                        <p>{{payment.rate}}</p>
-                                        <p>{{payment.transaction_reference}}</p>
+                                        <p>
+                                            Transferencia: 
+                                            {% if payment.dolars %}
+                                                {{ payment.dolars }}$
+                                            {% endif %}
+                                            {% if payment.bolivares %}
+                                                {{ payment.bolivares }} bs.
+                                            {% endif %}
+                                        </p>
+                                        <p>
+                                            Referencia: {{ payment.transaction_reference }}
+                                        </p>
+                                        <p>
+                                            Tasa: {{payment.rate}} 
+                                        </p>
+                                        <p>
+                                            Banco: {{payment.bank}}
+                                        </p>
                                     {% endif %}
 
                                     <div class="divider"></div>
@@ -212,6 +228,15 @@
                 }
             }
         }
+    }
+</script>
+{# INTENTANDO MOSTRAR SOLO LOS PLANES DISPONIBLES. #}
+<script type="text/javascript">
+    document.getElementsByName('router')[0].addEventListener('change', function(){
+        updatePlans();
+    })
+    function updatePlans(){
+        alert('Alerta')
     }
 </script>
 {% endblock %}
