@@ -11,6 +11,7 @@ from calendar import monthrange
 from logs.models import GlobalLog
 from reportlab.pdfgen import canvas
 from .models import Payment, NotSuspend, AdministrationLog, Debt
+from .functions import Pdf
 import os
 
 # Create your views here.
@@ -129,10 +130,12 @@ def payment(request, id):
         if operation == 'payment':
             for p in profiles_id:
                 profile = Profile.objects.get(id=p)
+                _from = profile.cutoff_date
                 profile.cutoff_date = profile.cutoff_date + relativedelta(months=1)
                 if profile.cutoff_date.day > 20:
                     last_day = monthrange(profile.cutoff_date.year, profile.cutoff_date.month)[1]
                     profile.cutoff_date = profile.cutoff_date.replace(day=last_day)
+                _to = profile.cutoff_date
                 profile.save()
 
         if debt:
@@ -158,6 +161,11 @@ def payment(request, id):
 
         _log(request, 'payment record', 'Se ha registrado el pago del Cliente {}'.format(client))
         _global_log(request, 'payment record', 'Se ha registrado el pago del Cliente {}'.format(client))
+
+        if operation == 'payment':
+            solvency = Pdf(payment, client)
+            solvency.solvency(_from, _to)
+
         return redirect('administrations.index')
 
     profiles = Profile.objects.filter(client_id=client)

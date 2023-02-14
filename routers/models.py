@@ -4,9 +4,9 @@ from fernet_fields import EncryptedTextField
 from nodos.models import Nodo
 
 class Router(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, verbose_name='Nombre del Router')
     ip = models.GenericIPAddressField(protocol='both', unpack_ipv4=False)
-    user = models.CharField(max_length=100)
+    user = models.CharField(max_length=100, verbose_name='Usuario')
     password = EncryptedTextField()
     port = models.IntegerField(default=8728)
     nodo = models.ForeignKey(Nodo, blank=True, null=True, on_delete=models.RESTRICT)
@@ -16,8 +16,9 @@ class Router(models.Model):
     def __str__(self):
         return self.name
 class Plan(models.Model):
-    name = models.CharField(max_length=50)
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+    name = models.CharField(max_length=50, verbose_name='Nombre del Plan')
+    code = models.CharField(max_length=30, verbose_name='Codigo')
+    price = models.DecimalField(max_digits=6, decimal_places=2, verbose_name='Precio')
     routers = models.ManyToManyField(Router)
 
     def __str__(self):
