@@ -46,7 +46,7 @@ def index(request):
     cortados = Plan.objects.filter(name='CORTADOS').get()
     not_suspend = NotSuspend.objects.all()
 
-    not_suspended = Profile.objects.filter(cutoff_date__lte=(today - timedelta(5))).filter(~Q(plan=cortados.id)).exclude(name__in=[name for name in not_suspend])
+    not_suspended = Profile.objects.filter(cutoff_date__lte=(today - timedelta(5))).filter(~Q(plan=cortados.id)).exclude(name__in=[name for name in not_suspend]).exclude(agreement=True)
 
     if today.day in range(10, 21):
         search_day = today.replace(day=15)
