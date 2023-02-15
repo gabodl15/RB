@@ -37,6 +37,9 @@ class Pdf:
         # MES A PAGAR
         self.can.drawString(185, 560, f"{_to}")
 
+        # CODIGO
+        self.can.drawString(410, 540, f"{_to}")
+
         # GUARDAR LOS CAMBIOS
         self.can.save()
 

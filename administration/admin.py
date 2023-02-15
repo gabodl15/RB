@@ -3,7 +3,7 @@ from .models import Payment
 # Register your models here.
 class PaymentAdmin(admin.ModelAdmin):
     list_display = ('client', 'operation', 'dolars', 'bolivares', 'created')
-    search_fields = ('client', 'created')
+    search_fields = ('client__name', 'created')
     class Meta:
         ordering = ['client','lower']
 
