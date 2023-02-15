@@ -136,6 +136,7 @@ def payment(request, id):
                     last_day = monthrange(profile.cutoff_date.year, profile.cutoff_date.month)[1]
                     profile.cutoff_date = profile.cutoff_date.replace(day=last_day)
                 _to = profile.cutoff_date
+                _code = profile.plan.code
                 profile.save()
 
         if debt:
@@ -164,7 +165,7 @@ def payment(request, id):
 
         if operation == 'payment':
             solvency = Pdf(payment, client)
-            solvency.solvency(_from, _to)
+            solvency.solvency(_from, _to, _code)
 
         return redirect('administrations.index')
 
@@ -209,19 +210,11 @@ def payment_support(request, id):
     today = date.today()
     payment = Payment.objects.get(id=id)
     media = settings.MEDIA_ROOT
-    filename = f"Mensualidad-{today}.pdf"
-    folder_path = f"{media}/clients/{payment}/payments"
-    # CREA LA CARPETA SI NO EXISTE
-    os.makedirs(folder_path, exist_ok=True)
-    file_path = folder_path + "/" + filename
-    with open(file_path, 'wb') as pdf:
-        canvas_obj = canvas.Canvas(pdf)
-        canvas_obj.drawString(100, 100, "Hello World")
-        canvas_obj.save()
-    
+    filepath = f"{media}/clients/{payment.client}-{payment.client.id}/administration/SOLVENCIA-{payment.id}-{payment.created}.pdf"
+
     # Devolver la respuesta con el archivo PDF
-    response = FileResponse(open(file_path, 'rb'))
-    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    response = FileResponse(open(filepath, 'rb'))
+    response['Content-Disposition'] = f'attachment; filename="SOLVENCIA {payment}.pdf"'
     return response
 
 def history(request):

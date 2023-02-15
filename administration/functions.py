@@ -14,13 +14,13 @@ class Pdf:
         self.last_name = self.client.last_name if self.client.last_name is not None else ''
         self.obj = obj
 
-    def solvency(self, _from, _to):
+    def solvency(self, _from, _to, _code):
         self.packet = io.BytesIO()
         self.can = canvas.Canvas(self.packet, pagesize=letter)
         self.today = date.today()
+        created = self.obj.created
         self.media = settings.MEDIA_ROOT
         base = '/formatos/SOLVENCIA.pdf'
-        destination_sheet = f'clients/{self.client}-{self.client.id}/administration/SOLVENCIA.pdf'
 
         # FECHA CUANDO SE IMPRIME
         self.can.drawString(423, 730, f"{self.today}")
@@ -38,7 +38,7 @@ class Pdf:
         self.can.drawString(185, 560, f"{_to}")
 
         # CODIGO
-        self.can.drawString(410, 540, f"{_to}")
+        self.can.drawString(405, 542, f"{_code}")
 
         # GUARDAR LOS CAMBIOS
         self.can.save()
@@ -65,12 +65,12 @@ class Pdf:
                 os.makedirs(new_dir)
             except:
                 return 'No Se puede crear el archivo'
-        destination = new_dir + f"SOLVENCIA.pdf"
+        destination = new_dir + f"SOLVENCIA-{self.obj.id}-{self.obj.created}.pdf"
         output_stream = open(destination, "wb")
         output.write(output_stream)
         output_stream.close()
         
     def print_solvency(self):
-        sheet = f'clients/{self.client}-{self.client.id}/administration/SOLVENCIA.pdf'
+        sheet = f'clients/{self.client}-{self.client.id}/administration/SOLVENCIA-{self.obj.id}-{self.created}.pdf'
         return sheet
         
