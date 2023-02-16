@@ -5,7 +5,7 @@ from django.http import FileResponse
 from django.conf import settings
 from clients.models import Client, Profile
 from routers.models import Plan
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, time
 from dateutil.relativedelta import relativedelta
 from calendar import monthrange
 from logs.models import GlobalLog
@@ -232,11 +232,21 @@ def payment_support(request, id):
     return response
 
 def payment_history(request):
+    # OBTENEMOS LAS FECHAS SELECCIONADAS
     date_from_str = request.GET['from']
     date_to_str = request.GET['to']
+
+    # LOS CONVERTIMOS EN FECHAS QUE ENTIENDE PYTHON
     date_from = datetime.strptime(date_from_str, '%b %d, %Y')
-    date_to = datetime.strptime(date_to_str, '%b %d, %Y')
-    payments = Payment.objects.filter(created__gte=date_from, created__lte=date_to).order_by('-created')
+    date_to_datetime = datetime.strptime(date_to_str, '%b %d, %Y')
+
+    # INDICAMOS EN DATE_TO QUE LA HORA ES HASTA LAS 23:59:59.
+    # ASÍ LA BUSQUEDA INCLUYE EL DIA SELECCIONADO EN DATE_TO
+    date_to = datetime.combine(date_to_datetime.date(), time(23, 59, 59))
+
+    # REALIZAMOS LA BUSQUEDA
+    payments = Payment.objects.filter(created__range=[date_from, date_to]).order_by('-created')
+    
     context = {
         'payments': payments
     }
