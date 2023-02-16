@@ -1,5 +1,6 @@
 from django.contrib import admin, messages
 from django.urls import reverse
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from routers.functions import Connection
 from .models import Client, Profile
@@ -31,6 +32,16 @@ class ProfileAdmin(admin.ModelAdmin):
         connection = Connection(obj.router)
         if connection.active is False:
             self.message_user(request, connection.message, level=messages.ERROR)
-        return redirect('admin:clients_profile_change', obj.id)
+            url = reverse('admin:clients_profile_change', args=[obj.id])
+            messages.error(request, 'No se pudo eliminar el objeto.')
+            return redirect(request.META.get('HTTP_REFERER'))
+        
+        router_profile = connection.name_query('/ppp/secret', obj.name)
+        if router_profile:
+            connection.remove('/ppp/secret', router_profile[0]['id'])
+            obj.delete()
+        else:
+            messages.error(request, 'El usuario no se encuentra en el mikrotik')
+    
             
 admin.site.register(Profile, ProfileAdmin)
