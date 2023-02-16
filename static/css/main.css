@@ -34,3 +34,18 @@ header, main, footer {
 .read_only {
   cursor: not-allowed;
 }
+
+/* Estilos de los scrolls */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #f2f2f2;
+}
