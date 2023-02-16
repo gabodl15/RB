@@ -4,8 +4,14 @@ from clients.models import Client, Profile
 
 # Create your models here.
 class Payment(models.Model):
+    PA = 'payment'
+    CR = 'credit'
+    CHOICES = [
+        (PA, 'Pago de Mensualidad'),
+        (CR, 'Abono')
+    ]
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    operation = models.CharField(max_length=20, verbose_name='Operación')
+    operation = models.CharField(max_length=20, verbose_name='Operación', choices=CHOICES)
     transaction = models.CharField(max_length=10, verbose_name='Transacción')
     dolars = models.FloatField(null=True, blank=True, verbose_name='Dolares')
     bolivares = models.FloatField(null=True, blank=True, verbose_name='Bolivares')

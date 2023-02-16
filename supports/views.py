@@ -112,3 +112,6 @@ def support_print(request, support, id):
             'support_sheet':support_sheet
     }
     return JsonResponse(data)
+
+def support_add(request):
+    pass

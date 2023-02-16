@@ -15,7 +15,21 @@ from .functions import Pdf
 import os
 
 # Create your views here.
-
+"""
+ORDEN DEL ARCHIVO
+- FUNCIONES
+    - _log
+    - _global_log
+    - index
+    - payment
+    - do_not_suspend
+    - do_not_suspend_delete
+    - debt
+    - debt_delete
+    - payment_support
+    - payment_history
+    - history
+"""
 # OBTENEMOS EL DIA EN EL QUE ESTAMOS, PARA FILTRAR EL COBRO.
 # ESTABLECEMOS UN MAXIMO DE 5 DIAS DE LA FECHA DE CORTE DEL CLIENTE
 collection = date.today()
@@ -216,6 +230,17 @@ def payment_support(request, id):
     response = FileResponse(open(filepath, 'rb'))
     response['Content-Disposition'] = f'attachment; filename="SOLVENCIA {payment}.pdf"'
     return response
+
+def payment_history(request):
+    date_from_str = request.GET['from']
+    date_to_str = request.GET['to']
+    date_from = datetime.strptime(date_from_str, '%b %d, %Y')
+    date_to = datetime.strptime(date_to_str, '%b %d, %Y')
+    payments = Payment.objects.filter(created__gt=date_from, created__lt=date_to)
+    context = {
+        'payments': payments
+    }
+    return render(request, 'administration/payment_history.html', context)
 
 def history(request):
     context = {}

@@ -56,6 +56,10 @@ class Material(models.Model):
 
     def __str__(self):
         return self.inspect.inspect.client.name
+    
+class Support(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    profile = None
 
 class Log(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

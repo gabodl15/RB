@@ -2,13 +2,31 @@
 
 {% block 'content' %}
     <div class="row">
-        <div class="col s12">
+        <div class="col s12 m4">
             <h6>Soporte</h6>
+        </div>
+        <div class="col s12 m8">
+            <span class="right"><a href="#" class="btn-flat">Agregar Soporte</a></span>
         </div>
     </div>
     <div class="divider"></div>
     <br>
     <p>Soportes por realizar: {{ missing_inspect | length}}</p>
+    <div class="row">
+        <div class="col m6">
+            {% if supports %}
+                <div class="card">
+                    <div class="card-content">
+                        <span class="card-title">Soporte</span>
+                        {{ supports|length }}
+                    </div>
+                    <div class="card-action">
+                        <a href="#supports" class="modal-trigger">VER</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
     <div class="row">
         <div class="col s12 m6">
             {% if missing_inspect %}

@@ -76,7 +76,27 @@
             Ningun usuario para este corte.
         </div>
     {% endif %}
+    <div class="divider"></div>
+    <br>
     <div class="row">
+        <h6>ULTIMOS 10 REGISTROS DE PAGO</h6>
+        <div class="col s12">
+            <div class="row">
+                <form action="{% url 'administrations.payments.history' %}" method="GET">
+                    <div class="col s12 m5">
+                        <input id="from" type="text" name="from" class="datepicker" required>
+                        <label for="from">Desde</label>
+                    </div>
+                    <div class="col s12 m5">
+                        <input id="to" type="text" name="to" class="datepicker" required>
+                        <label for="to">Hasta</label>
+                    </div>
+                    <div class="col s12 m2">
+                        <button type="submit" class="btn btn-small green">Buscar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
         {% if payments %}
             <div class="col s12">
                 <table>
@@ -149,6 +169,12 @@
         var elems = document.querySelectorAll('.modal');
         var instances = M.Modal.init(elems, {});
     });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.datepicker');
+        var instances = M.Datepicker.init(elems, {});
+    });
+
 </script>
 {# SCRIPT PARA BUSCAR CLIENTES EN BASE DE DATOS Y MOSTRARLOS EN EL MODAL #}
 {# COLOCANDO LINK PARA CARGAR EL PAGO, ESTA FUNCION ES PARA UN CLIENTE #}
@@ -230,6 +256,7 @@
         }
     }
 </script>
+
 {# INTENTANDO MOSTRAR SOLO LOS PLANES DISPONIBLES. #}
 <script type="text/javascript">
     document.getElementsByName('router')[0].addEventListener('change', function(){
