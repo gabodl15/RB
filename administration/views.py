@@ -236,7 +236,7 @@ def payment_history(request):
     date_to_str = request.GET['to']
     date_from = datetime.strptime(date_from_str, '%b %d, %Y')
     date_to = datetime.strptime(date_to_str, '%b %d, %Y')
-    payments = Payment.objects.filter(created__gt=date_from, created__lt=date_to)
+    payments = Payment.objects.filter(created__gt=date_from, created__lt=date_to).order_by('-created')
     context = {
         'payments': payments
     }
