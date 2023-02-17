@@ -64,7 +64,7 @@ def index(request):
 
     if today.day in range(10, 21):
         search_day = today.replace(day=15)
-        profiles = Profile.objects.filter(cutoff_date=search_day).exclude(name__in=[name for name in not_suspend]).order_by('client__name')
+        profiles = Profile.objects.filter(cutoff_date=search_day).filter(~Q(plan=cortados.id)).exclude(name__in=[name for name in not_suspend]).order_by('client__name')
 
     if today.day in range(25, 32) or today.day in range(1, 6):
         if today.day >= 25:
@@ -74,7 +74,7 @@ def index(request):
             last_day = monthrange(year, (month - 1))[1]
             search_day = today.replace(day=last_day, month=(month - 1 ))
         
-        profiles = Profile.objects.filter(cutoff_date=search_day).exclude(name__in=[name for name in not_suspend]).order_by('client__name')
+        profiles = Profile.objects.filter(cutoff_date=search_day).filter(~Q(plan=cortados.id)).exclude(name__in=[name for name in not_suspend]).order_by('client__name')
 
     payments = Payment.objects.all().order_by('-id')[:10]
 
