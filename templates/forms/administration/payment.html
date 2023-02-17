@@ -12,6 +12,7 @@
             <tr>
                 <th>Usuario</th>
                 <th>Plan</th>
+                <th>Fecha</th>
                 <th>Monto</th>
             </tr>
         </thead>
@@ -27,6 +28,7 @@
                         </p>
                     </td>
                     <td>{{ profile.plan.name }}</td>
+                    <td>{{ profile.cutoff_date }}</td>
                     <td>{{ profile.plan.price }}</td>
                 </tr>
             {% endfor %}
