@@ -75,7 +75,7 @@ def show(request, id):
         map_render = None
 
     try:
-        logs = AdministrationLog.objects.filter(message__icontains=client)
+        logs = AdministrationLog.objects.filter(message__icontains=client).order_by('-created')
     except:
         logs = None
 
