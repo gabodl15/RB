@@ -50,11 +50,14 @@
     </div>
     <div class="row">
         {% if logs %}
+        <div class="col s12">
+            <h6>REGISTROS DE ADMINISTRACIÓN</h6>
             <ul class="collection">
                 {% for log in logs %}
                     <li class="collection-item" >{{ log.message }} <span class="badge">{{ log.created }}</span></li>
                 {% endfor %}
             </ul>
+        </div>            
         {% endif %}
     </div>
 {% endblock %}
