@@ -18,6 +18,7 @@ ORDEN DEL ARCHIVO
 - CLASES
     - ClientCreateView
 - FUNCIONES
+    - search_client
     - index
     - show
     - addProfile
@@ -71,9 +72,16 @@ def show(request, id):
         map_render = map.get_root().render()
     else:
         map_render = None
+
+    try:
+        logs = Log.objects.get(client=client)
+    except:
+        logs = None
+
     context = {
         'client': client,
         'map_render': map_render,
+        'logs': logs
     }
     return render(request, 'clients/show.html', context)
 

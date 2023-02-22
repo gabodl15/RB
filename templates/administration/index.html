@@ -29,8 +29,8 @@
         </div>
     </div>
     <div class="divider"></div>
-    {% if profiles %}
     <div class="row">
+        {% if profiles %}
         <div class="col s12 m8">
                 <table id="table">
                     <div class="input-field">
@@ -52,11 +52,16 @@
                     </tbody>
                 </table>
         </div>
+        {% else %}
+            <div class="center">
+                Ningun usuario para este corte.
+            </div>
+        {% endif %}
         <div class="col s12 m4">
             <h6>Resumen</h6>
             <p>Clientes a pagar: {{ profiles | length }}</p>
             {% load sum_price %}
-            <p>Monto: {{ profiles | sum_price }}</p>
+            <p>Monto: {% if profiles %}{{ profiles | sum_price }} {% endif %}</p>
             <div class="divider"></div>
             <p>No suspender: {{ not_suspend | length }}</p>
             <p>No suspendidos: {{ not_suspended | length }}<span class="badge"><a href="#NotSuspended" class="modal-trigger">Ver</a></span></p>
@@ -71,11 +76,6 @@
             </ul>
         </div>
     </div>
-    {% else %}
-        <div class="center">
-            Ningun usuario para este corte.
-        </div>
-    {% endif %}
     <div class="divider"></div>
     <br>
     <div class="row">
