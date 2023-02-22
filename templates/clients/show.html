@@ -49,6 +49,12 @@
         </div>
     </div>
     <div class="row">
-        {{logs}}
+        {% if logs %}
+            <ul class="collection">
+                {% for log in logs %}
+                    <li class="collection-item" >{{ log.message }} <span class="badge">{{ log.created }}</span></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
     </div>
 {% endblock %}

@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.http import JsonResponse
 from .models import Client, Profile, Log
+from administration.models import AdministrationLog
 from logs.models import GlobalLog
 from routers.models import Router, Plan
 from .functions import RouterProfile
@@ -74,7 +75,7 @@ def show(request, id):
         map_render = None
 
     try:
-        logs = Log.objects.get(client=client)
+        logs = AdministrationLog.objects.filter(message__icontains=client)
     except:
         logs = None
 
