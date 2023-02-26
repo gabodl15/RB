@@ -1,16 +1,37 @@
 from clients.models import Log
+from clients.forms import ProfileForm
 from routers.models import Router, Plan
 from routers.functions import Connection
 from logs.models import GlobalLog
 
 class RouterProfile:
     
-    def __init__(self, profile):
-        self.profile = profile
-        self.connection = Connection(self.profile.router)
+    def __init__(self, profile=None):
+        if profile:
+            self.profile = profile
+            self.connection = Connection(self.profile.router)
 
-    # def create(self):
-    #     pass
+    def conn(self, profile):
+        self.connection = Connection(profile.router)
+        return self.connection.active
+
+    def create(self, request):
+        form = ProfileForm(request.POST)
+        _profile = form.save(commit=False)
+        setattr(_profile, 'client_id', request.POST['client_id'])
+        if self.conn(_profile):
+            path = '/ppp/secret'
+            context = {
+                'name': request.POST['name'],
+                'password': request.POST['password'],
+                'plan': request.POST['plan'],
+                'router': request.POST['router'],
+                'connectio_mode': request.POST['connection_mode'],
+            }
+            self.connection.add(path, context)
+            _profile.save()
+            return True
+        return False
 
     def update(self, request):
         new_name = request.POST['name']

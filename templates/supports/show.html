@@ -16,21 +16,57 @@
         </div>
         <div class="col s12 m6">
             <div class="right">
+                <a href="#conf" class="btn btn-small blue-grey darken-3 modal-trigger">Configurar</a>
                 <a href="#" class="btn btn-small blue" onclick="print_order({{ installation.id }})">IMPRIMIR</a>
                 <a href="#realized" class="btn btn-small green modal-trigger">REALIZADO</a>
             </div>
+        </div>
+        <div id="conf" class="modal modal-fixed-footer">
+            <form action="{% url 'supports.create.ppp' %}" method="POST">
+                {% csrf_token %}
+                <div class="modal-content">
+                    <h6 class="center">Configuración</h6>
+                    {# SETIAMOS EL ID DEL CLIENTE QUE SE LE CREARÁ EL PPP #}
+                    <input type="text" name="client_id" value="{{client.id}}" readonly hidden>
+                    {# INDICAMOS EL TIPO DE INSTALACION, ANTENA O FIBRA OPTICA. #}
+                    <input type="text" name="connection_mode" value="{{installation.inspect.inspect.inspection_type}}" readonly hidden>
+                    <div class="input-field">
+                        <select name="router" id="router" class="browser-default" onchange="automatic_configuration(this.value)">
+                            <option value="" disabled selected>Seleccione un router</option>
+                            {% for router in routers %}
+                                <option value="{{ router.id }}">{{ router }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div id="configuration_result">
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="submit" class="btn btn-small blue" disabled>Enviar</button>
+                </div>
+            </form>
         </div>
         <div id="realized" class="modal">
             <div class="modal-content center">
                 <span>CONFIRMACION QUE SE HA REALIZADO LA INSTALACIÓN</span>
             </div>
             <div class="modal-footer">
-                <a href="#" class="modal-close btn-flat">ACCEPT</a>
+                <a href="{% url 'supports.intallation.realized' id=installation.id %}" class="modal-close btn-flat">ACCEPT</a>
             </div>
         </div>
     </div>
     <div class="row">
-        {{material.cabling}}
+        {% if client.profile_set %}
+            <div class="col s12 m6">
+                {% for profile in client.profile_set.all %}
+                    <p>{{ profile }} <span class="badge">Creado: {{ profile.created }}</span></p>
+                {% endfor %}
+            </div>
+        {% endif  %}
+        <div class="col s12">
+            {{material.cabling}}
+        </div>
     </div>
 {% endblock %}
 
@@ -70,6 +106,70 @@
         })
         .catch(error => {
             console.log(error)
+        })
+    }
+
+    function automatic_configuration(value){
+        url_base = "{% url 'supports.ppp.conf.ajax' name='nombre' id=123 %}";
+        unfiltered_ppp = "{{ client }} {% if client.last_name %}{{ client.last_name }} {% else  %} '' {% endif %}";
+        nombres = "{{client}}".split(' ');
+        apellidos = "{% if client.last_name %}{{ client.last_name }}{% else  %} '' {% endif %}".split(' ');
+        primer_nombre = nombres[0].toLowerCase();
+        primer_apellido = apellidos[0].toLowerCase();
+        ppp = primer_nombre + '_' + primer_apellido;
+        url = url_base.replace('123', value).replace('nombre', ppp);
+        div = document.getElementById('configuration_result');
+        fetch(url)
+        .then(response => {
+            if (response.status === 200) {
+            return response.json();
+            } else {
+            throw new Error("No se pudo obtener los datos");
+            }
+        })
+        .then(data => {
+            div.innerHTML = '';
+            if (data.success) {
+                ppp_name = document.createElement('input');
+                ppp_password = document.createElement('input');
+                ppp_plans = document.createElement('select')
+                
+                ppp_name.value = data.ppp;
+                ppp_name.name = 'name'
+                ppp_name.readonly = true;
+                ppp_name.classList.add('col', 's12', 'm6')
+                ppp_password.value = data.password;
+                ppp_password.name = 'password';
+                ppp_password.readonly = true;
+                ppp_password.classList.add('col', 's12', 'm6');
+                ppp_plans.classList.add('browser-default');
+                ppp_plans.name = 'plan';
+                if(data.plans.length == 1 && data.plans[0]['name'] === 0){
+                    let option = document.createElement("option");
+                    option.setAttribute("value", data.plans[0]['id']);
+                    let optionTexto = document.createTextNode('NO EXISTEN PLANES EN EL MIKROTIK');
+                    option.appendChild(optionTexto);
+                    option.disabled = true;
+                    option.selected = true;
+                    ppp_plans.appendChild(option);
+                    document.getElementById('submit').disabled= true;
+                }else{
+                    for(i=0; i < data.plans.length; i++){
+                        let option = document.createElement("option");
+                        option.setAttribute("value", data.plans[i]['id']);
+                        let optionTexto = document.createTextNode(data.plans[i]['name']);
+                        option.appendChild(optionTexto);
+                        ppp_plans.appendChild(option);
+                    }
+                    document.getElementById('submit').disabled= false;
+                }
+                div.appendChild(ppp_name);
+                div.appendChild(ppp_password);
+                div.appendChild(ppp_plans);
+            }
+            else{
+                alert('NO SE PUDO CONECTAR CON EL ROUTER')
+            }
         })
     }
 

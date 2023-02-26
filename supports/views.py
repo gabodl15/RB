@@ -5,7 +5,10 @@ from django.conf import settings
 from .models import Inspect, Material, Install, Log
 from .forms import FeasibleOrNotFeasibleForm, MaterialFiberForm, MaterialWirelessForm
 from .sheet_pdf import Pdf
-from clients.models import Client
+from clients.models import Client, Profile
+from clients.functions import RouterProfile
+from routers.models import Router, Plan
+from routers.functions import Connection
 from ventas.models import Inspection, FeasibleOrNotFeasible as VentasFeasibleOrNotFeasible
 
 from reportlab.pdfgen import canvas
@@ -27,12 +30,21 @@ def show(request, id):
     installation = Install.objects.get(id=id)
     client = installation.inspect.inspect.client
     material = installation.inspect.material
+    routers = Router.objects.all().order_by('name')
     context = {
         'installation': installation,
         'client': client,
-        'material':material
+        'material':material,
+        'routers': routers
     }
     return render(request, 'supports/show.html', context)
+
+def installation_realized(request, id):
+    installation = Install.objects.get(id=id)
+    installation.realized = 'YES'
+    installation.save()
+    messages.success(request, 'SE HA REALIZADO LA INSTALACIÓN')
+    return redirect('supports.index')
 
 def inspection_show(request, id):
     support_inspection = Inspect.objects.get(id=id)
@@ -115,3 +127,62 @@ def support_print(request, support, id):
 
 def support_add(request):
     pass
+
+def create_ppp(request):
+    profile = RouterProfile()
+    if profile.create(request):
+        messages.success(request, 'USUARIO CREADO SATISFACTORIAMENTE')
+        return redirect('supports.index')
+    messages.error(request, 'HUBO UN PROBLEMA AL CREAR EL USUARIO')
+    return redirect('index')
+
+def support_ppp_conf_ajax(request, name, id):
+    router = Router.objects.get(id=id)
+    connection = Connection(router)
+    username = name
+
+    if not connection.active:
+        return JsonResponse({'success': False})
+
+    # ORDENAR LA LISTA DE PERFILES POR LA CONTRASEÑA
+    profile_list = Profile.objects.filter(router=router.id)
+    if profile_list:
+        # profile_dict = {profile.id: profile for profile in profile_list}
+        sorted_profile_list = sorted(profile_list, key=lambda x: x.password)
+
+        # OBTENER EL ÚLTIMO ELEMENTO DE LA LISTA ORDENADA.
+        last_profile = sorted_profile_list[-1]
+
+        # OBTENER LA CONTRASEÑA DEL ULTIMO ELEMENTO.
+        last_password = last_profile.password
+
+        # ASIGNAMOS NUEVA CONTRASEÑA PARA EL PERFIL NUEVO.
+        assing_password = int(last_password) + 1
+    else:
+        assing_password = '0001'
+    
+    plans_mk = connection.query('/ppp/profile')
+    plans_mk_list = [plan['name'] for plan in plans_mk]
+    plans = Plan.objects.filter(name__in=plans_mk_list)
+    plans_list = []
+    if plans:
+        for plan in plans:
+            plans_list.append({'id': plan.id, 'name': plan.name})
+    else:
+        plans_list.append({'id':0, 'name':0})
+    counter = 0
+    while True:
+        search = connection.name_query('/ppp/secret', username)
+
+        if not search:
+            break
+        counter += 1
+        username = name + str(counter)
+
+    data = {
+        'success': True,
+        'ppp':username,
+        'password': assing_password,
+        'plans':plans_list
+        }
+    return JsonResponse(data)

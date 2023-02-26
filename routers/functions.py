@@ -1,4 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
+from .models import Plan
 from logs.models import GlobalLog
 import routeros_api
 
@@ -23,6 +24,12 @@ class Connection:
             self.message = 'USUARIO O CLAVE INCORRECTOS'
         except routeros_api.exceptions.RouterOsApiConnectionError:
             self.message = 'NO PUDO CONECTAR CON EL ROUTER'
+
+    def add(self, path, context):
+        plan = Plan.objects.get(id=context['plan'])
+        profiles = self.api.get_resource(path)
+        profiles.add(name=context['name'], password=context['password'], profile=plan.name, service='pppoe')
+
 
     def query(self, query):
         _query = self.api.get_resource(query)
