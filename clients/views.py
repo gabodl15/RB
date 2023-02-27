@@ -61,7 +61,15 @@ def search_client(request, client):
 
 def index(request):
     clients = Client.objects.all()
-    return render(request, 'clients/index.html', {'clients': clients})
+    plan = Plan.objects.get(name='CORTADOS')
+    active_profiles = Profile.objects.filter(agreement=False).exclude(plan=plan.id)
+    active_clients = active_profiles.values_list('client', flat=True).distinct()
+    num_active_clients = len(active_clients)
+    context = {
+        'clients': clients,
+        'num_active_clients': num_active_clients
+    }
+    return render(request, 'clients/index.html', context)
 
 def show(request, id):
     client = Client.objects.get(id=id)

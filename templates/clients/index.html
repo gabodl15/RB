@@ -7,6 +7,13 @@
 
 {% block 'content' %}
     <div class="">
+        {% if request.user.is_staff %}
+            <div class="row">
+                <div class="col s12">
+                    <p>Clientes activos: {{num_active_clients}} </p>
+                </div>
+            </div>
+        {% endif %}
         <div class="row">
             <div class="col s2">
                 <h6>Clientes</h6>
