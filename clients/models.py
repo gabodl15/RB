@@ -16,6 +16,9 @@ class Client(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        ordering = ['name']
 
 class Profile(models.Model):
 
@@ -40,6 +43,9 @@ class Profile(models.Model):
     
     def __str__(self):
         return self.name
+    
+    class Meta:
+        ordering = ['name']
 
 class Log(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)

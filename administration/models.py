@@ -24,6 +24,9 @@ class Payment(models.Model):
 
     def __str__(self):
         return self.client.name
+    
+    class Meta:
+        ordering = ['-created']
 
 class Debt(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)

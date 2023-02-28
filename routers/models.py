@@ -15,6 +15,10 @@ class Router(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        ordering = ['name']
+        
 class Plan(models.Model):
     name = models.CharField(max_length=50, verbose_name='Nombre del Plan')
     code = models.CharField(max_length=30, verbose_name='Codigo')
@@ -23,3 +27,6 @@ class Plan(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        ordering = ['name']
