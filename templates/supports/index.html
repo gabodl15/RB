@@ -11,7 +11,84 @@
     </div>
     <div class="divider"></div>
     <br>
-    <p>Soportes por realizar: {{ missing_inspect | length}}</p>
+
+    <div class="row">
+        <div class="col s12 m4">
+            {% if not missing_inspect %}
+                <b><center>NO HAY INSPECCIONES</center></b>
+            {% else %}
+                <b><center>Inspecciones</center></b>
+                {% for missing in missing_inspect %}
+                    <div class="card">
+                        <div class="card-content">
+                            <span class="card-title">{{ missing }}</span>
+                            <p>{{ missing }}</p>
+                            {% if missing.last_name %}
+                                <p>{{ missing.last_name }}</p>
+                            {% endif %}
+                            <p>{{ missing.inspect.address  }}</p>
+                        </div>
+                        <div class="card-action">
+                            <!-- <a href="#supports" class="modal-trigger">VER</a> -->
+                            <button class="btn btn-small blue" onclick="window.location='{% url 'supports.inspection.update' id=missing.id %}'" type="button" name="button">VER</button>
+                            <button class="btn btn-small red right" type="button" name="button">Eliminar</button>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="col s12 m4">
+            {% if not missing_install %}
+                <b><center>NO HAY INSTALACIONES</center></b>
+            {% else %}
+                <b><center>Instalaciones</center></b>
+                {% for missing in missing_install %}
+                    <div class="card">
+                        <div class="card-content">
+                            <span class="card-title">{{ missing }}</span>
+                            <p>{{ missing }}</p>
+                            {% if missing.last_name %}
+                                <p>{{ missing.last_name }}</p>
+                            {% endif %}
+                            <p>{{ missing.inspect.address  }}</p>
+                        </div>
+                        <div class="card-action center">
+                            <!-- <a href="#supports" class="modal-trigger">VER</a> -->
+                            <button class="btn btn-small blue" type="button" name="button">Imprimir</button>
+                            <button class="btn btn-small green" type="button" name="button">Factible</button>
+                            <button class="btn btn-small red" type="button" name="button">Eliminar</button>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="col s12 m4">
+            {% if not missing_inspect %}
+                <b><center>NO HAY SOPORTES</center></b>
+            {% else %}
+                <b><center>Soportes</center></b>
+                {% for missing in missing_support %}
+                    <div class="card">
+                        <div class="card-content">
+                            <span class="card-title">{{ missing }}</span>
+                            <p>{{ missing }}</p>
+                            {% if missing.last_name %}
+                                <p>{{ missing.last_name }}</p>
+                            {% endif %}
+                            <p>{{ missing.inspect.address  }}</p>
+                        </div>
+                        <div class="card-action center">
+                            <!-- <a href="#supports" class="modal-trigger">VER</a> -->
+                            <button class="btn btn-small blue" type="button" name="button">Imprimir</button>
+                            <button class="btn btn-small green" type="button" name="button">Factible</button>
+                            <button class="btn btn-small red" type="button" name="button">Eliminar</button>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    <!-- <p>Soportes por realizar: {{ missing_inspect | length}}</p>
     <div class="row">
         <div class="col m6">
             {% if supports %}
@@ -26,8 +103,8 @@
                 </div>
             {% endif %}
         </div>
-    </div>
-    <div class="row">
+    </div> -->
+    <!-- <div class="row">
         <div class="col s12 m6">
             {% if missing_inspect %}
                 <div class="card">
@@ -60,7 +137,7 @@
                             </tbody>
                         </table>
                     </div>
-                </div>                
+                </div>
             {% endif %}
         </div>
         <div class="col s12 m6">
@@ -68,7 +145,7 @@
                 <div class="card">
                     <div class="card-content">
                         <span class="card-title">INSTALACIONES</span> {{ missing_install|length }}
-                    </div> 
+                    </div>
                     <div class="card-action">
                         <a class="modal-trigger" href="#installation">ver</a>
                     </div>
@@ -94,7 +171,7 @@
                 </div>
             {% endif %}
         </div>
-    </div>
+    </div> -->
 {% endblock %}
 
 {% block 'javascript' %}

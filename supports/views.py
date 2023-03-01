@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import JsonResponse
 from django.conf import settings
-from .models import Inspect, Material, Install, Log
+from .models import Inspect, Material, Install, Log, Support
 from .forms import FeasibleOrNotFeasibleForm, MaterialFiberForm, MaterialWirelessForm
 from .sheet_pdf import Pdf
 from clients.models import Client, Profile
@@ -20,6 +20,7 @@ import io
 def index(request):
     missing_inspect = Inspect.objects.filter(realized='NOT')
     missing_install = Install.objects.filter(realized='NOT')
+    missing_support = Support.objects.filter(realized='NOT')
     context = {
         'missing_inspect': missing_inspect,
         'missing_install': missing_install,
@@ -55,7 +56,7 @@ def inspection_show(request, id):
         if form_feasible.is_valid():
             """ OBTENEMOS EL OBJECTO SIN GUARDARLO """
             support_feasible = form_feasible.save(commit=False)
-            
+
             """ EN EL CASO DE QUE SEA FACTIBLE """
             if 'NOT' not in support_feasible.feasible:
                 material = MaterialFiberForm(request.POST) if support_inspection.inspect.inspection_type == "OF" else MaterialWirelessForm(request.POST)
@@ -67,7 +68,7 @@ def inspection_show(request, id):
                     return redirect('supports.inspection.update', id=id)
             """ GUARDO EL OBJECTO UNA VEZ VERIFICADO AMBOS FORMUARIOS """
             support_feasible.save()
-            
+
             ventas_inspection = Inspection.objects.get(id=support_inspection.inspect_id)
             ventas_inspection.inspection = 'YES'
             ventas_inspection.save()
@@ -117,9 +118,9 @@ def support_print(request, support, id):
 
     sheet = Pdf(obj, client, support)
     saved_sheet = sheet.create_sheet()
-    
+
     support_sheet = media + saved_sheet
-    
+
     data = {
             'support_sheet':support_sheet
     }
@@ -160,7 +161,7 @@ def support_ppp_conf_ajax(request, name, id):
         assing_password = int(last_password) + 1
     else:
         assing_password = '0001'
-    
+
     plans_mk = connection.query('/ppp/profile')
     plans_mk_list = [plan['name'] for plan in plans_mk]
     plans = Plan.objects.filter(name__in=plans_mk_list)

@@ -56,10 +56,15 @@ class Material(models.Model):
 
     def __str__(self):
         return self.inspect.inspect.client.name
-    
+
 class Support(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    profile = None
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)
+    support = models.TextField()
+    realized = models.CharField(max_length=3, choices=CHOICES, default=NOT)
+
+    def __str__(self):
+        return self.client
 
 class Log(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -121,4 +126,3 @@ class FiberInspectionSheet(models.Model):
 
     def __str__(self):
         return self.client.name
-

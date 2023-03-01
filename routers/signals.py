@@ -26,11 +26,10 @@ def crear_router(sender, **kwargs):
 def create_plan(sender, **kwargs):
     if sender.name == 'routers':
         if not Plan.objects.exists():
-            routers = Router.objects.all().values_list('id')
+            # routers = list(Router.objects.all().values_list('id', flat=True))
             plan = Plan.objects.create(
                 name='CORTADOS',
                 code='CORTADO',
                 price=0.00,
             )
-
-            plan.routers.add(routers)
+            plan.routers.add(1)
