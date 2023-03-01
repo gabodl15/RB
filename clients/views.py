@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.http import JsonResponse
 from .models import Client, Profile, Log
-from administration.models import AdministrationLog
+from administration.models import AdministrationLog, Payment
 from logs.models import GlobalLog
 from routers.models import Router, Plan
 from .functions import RouterProfile
@@ -33,7 +33,7 @@ class ClientCreateView(CreateView):
     success_url = '/clients'
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)    
+        context = super().get_context_data(**kwargs)
         context['referring_user'] = User.objects.all()
         return context
 
@@ -74,6 +74,7 @@ def index(request):
 def show(request, id):
     client = Client.objects.get(id=id)
     coordinates = client.coordinates
+    payments = Payment.objects.filter(client=client)
     if coordinates:
         x = coordinates.split(',')
         map = folium.Map(location=[float(x[0]), float(x[1])], zoom_start=16)
@@ -90,7 +91,8 @@ def show(request, id):
     context = {
         'client': client,
         'map_render': map_render,
-        'logs': logs
+        'logs': logs,
+        'payments': payments
     }
     return render(request, 'clients/show.html', context)
 

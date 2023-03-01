@@ -9,6 +9,9 @@ class Nodo(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ['name']
+
 class CompanyAntenna(models.Model):
     AP = 'AP'
     STATION = 'ST'
@@ -28,6 +31,6 @@ class CompanyAntenna(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     class Meta:
         ordering = ['name']

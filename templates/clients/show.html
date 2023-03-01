@@ -49,15 +49,66 @@
         </div>
     </div>
     <div class="row">
-        {% if logs %}
+        {% if payments %}
         <div class="col s12">
             <h6>REGISTROS DE ADMINISTRACIÓN</h6>
-            <ul class="collection">
-                {% for log in logs %}
-                    <li class="collection-item" >{{ log.message }} <span class="badge">{{ log.created }}</span></li>
+            <ul class="collapsible">
+                {% for payment in payments %}
+                    <li>
+                        <div class="collapsible-header">
+                            <span>{{ payment.get_operation_display }}</span><span class="badge">{{ payment.created }}</span>
+                        </div>
+                        <div class="collapsible-body">
+                            {% if payment.transaction == 'cash' %}
+                                <h6><b>Efectivo</b></h6>
+                                {% if payment.dolars %}
+                                    <p>Dolares: {{ payment.dolars }}$</p>
+                                {% endif %}
+                                {% if payment.bolivares %}
+                                    <p>Bolivares: {{ payment.bolivares }} bs.</p>
+                                {% endif %}
+                            {% else %}
+                                <h6><b>Transferencia Bancaria</b></h6>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Moneda</th>
+                                            <th>Monto</th>
+                                            <th>Banco</th>
+                                            <th>tasa</th>
+                                            <th hidden>Commentario</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            {% if payment.dolars %}
+                                                <td>Dolares</td>
+                                                <td>{{ payment.dolars }}</td>
+                                            {% else %}
+                                                <td>Bolivares</td>
+                                                <td>{{ payment.bolivares }}</td>
+                                            {% endif %}
+                                            <td>{{ payment.bank }}</td>
+                                            <td>{% if payment.rate %} {{payment.rate}} {% else %} - {% endif %}</td>
+                                            <td>{{ payment.comment }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            {% endif %}
+                        </div>
+                    </li>
                 {% endfor %}
             </ul>
-        </div>            
+        </div>
         {% endif %}
     </div>
+{% endblock %}
+
+{% block 'javascript' %}
+    <script type="text/javascript">
+      document.addEventListener('DOMContentLoaded', function() {
+          var elems = document.querySelectorAll('.collapsible');
+          var instances = M.Collapsible.init(elems, {});
+      });
+    </script>
 {% endblock %}
