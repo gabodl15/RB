@@ -64,7 +64,7 @@ class Support(models.Model):
     realized = models.CharField(max_length=3, choices=CHOICES, default=NOT)
 
     def __str__(self):
-        return self.client
+        return self.client.name
 
 class Log(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

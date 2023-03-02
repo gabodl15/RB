@@ -9,6 +9,7 @@
                 <div class="right-align">
                     <a href="{% url 'clients.profile.add' id=client.id%}" class="btn-flat">Agregar Perfil</a>
                     <a href="{% url 'ventas.inspection.add' id=client.id%}" class="btn-flat">Nueva Inspección</a>
+                    <a href="{% url 'supports.add.support' id=client.id%}" class="btn-flat">Soporte</a>
                 </div>
             </div>
     </div>
@@ -102,13 +103,22 @@
         </div>
         {% endif %}
     </div>
+    <div class="row">
+        {% if supports %}
+            <ul class="collection">
+                {% for support in supports %}
+                    <li class="collection-item">{{ support.support }} <span class="badge">{% if support.realized == 'NOT' %} PENDIENTE {% else %} REALIZADO {% endif %}</span></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
 {% endblock %}
 
 {% block 'javascript' %}
     <script type="text/javascript">
-      document.addEventListener('DOMContentLoaded', function() {
-          var elems = document.querySelectorAll('.collapsible');
-          var instances = M.Collapsible.init(elems, {});
-      });
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.collapsible');
+            var instances = M.Collapsible.init(elems, {});
+        });
     </script>
 {% endblock %}

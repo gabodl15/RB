@@ -63,7 +63,7 @@
             {% endif %}
         </div>
         <div class="col s12 m4">
-            {% if not missing_inspect %}
+            {% if not missing_support %}
                 <b><center>NO HAY SOPORTES</center></b>
             {% else %}
                 <b><center>Soportes</center></b>
@@ -75,10 +75,9 @@
                             {% if missing.last_name %}
                                 <p>{{ missing.last_name }}</p>
                             {% endif %}
-                            <p>{{ missing.inspect.address  }}</p>
+                            <p><b>Soporte:</b> {{ missing.support  }}</p>
                         </div>
                         <div class="card-action center">
-                            <!-- <a href="#supports" class="modal-trigger">VER</a> -->
                             <button class="btn btn-small blue" type="button" name="button">Imprimir</button>
                             <button class="btn btn-small green" type="button" name="button">Factible</button>
                             <button class="btn btn-small red" type="button" name="button">Eliminar</button>

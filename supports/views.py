@@ -24,6 +24,7 @@ def index(request):
     context = {
         'missing_inspect': missing_inspect,
         'missing_install': missing_install,
+        'missing_support': missing_support,
     }
     return render(request, 'supports/index.html', context)
 
@@ -126,8 +127,33 @@ def support_print(request, support, id):
     }
     return JsonResponse(data)
 
-def support_add(request):
-    pass
+def support_add(request, id):
+    def private_add_support(request, profile):
+        support = Support(
+            client=client,
+            profile=profile,
+            support=request.POST.get('support'),
+            realized=request.POST.get('realized'),
+        )
+        support.save()
+
+    client = Client.objects.get(id=id)
+    if request.method == 'POST':
+        profiles = request.POST.getlist('profile[]')
+        if len(profiles) > 1:
+            for p in profiles:
+                profile = Profile.objects.get(id=p)
+                private_add_support(request, profile)
+        else:
+            profile = Profile.objects.get(id=profiles[0])
+            private_add_support(request, profile)
+        
+        messages.success(request, 'SE HA AÑADIDO EL SOPORTE CORRECTAMENTE')
+        return redirect('clients.show', id=client.id)
+    context = {
+        'client': client,
+    }
+    return render(request, 'supports/support_add.html', context)
 
 def create_ppp(request):
     profile = RouterProfile()

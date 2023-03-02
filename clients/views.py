@@ -9,6 +9,7 @@ from .models import Client, Profile, Log
 from administration.models import AdministrationLog, Payment
 from logs.models import GlobalLog
 from routers.models import Router, Plan
+from supports.models import Support
 from .functions import RouterProfile
 from ventas.models import Referred
 from .forms import ClientForm, ProfileForm
@@ -75,6 +76,7 @@ def show(request, id):
     client = Client.objects.get(id=id)
     coordinates = client.coordinates
     payments = Payment.objects.filter(client=client)
+    supports = Support.objects.filter(client=client, realized='NOT')
     if coordinates:
         x = coordinates.split(',')
         map = folium.Map(location=[float(x[0]), float(x[1])], zoom_start=16)
@@ -92,7 +94,8 @@ def show(request, id):
         'client': client,
         'map_render': map_render,
         'logs': logs,
-        'payments': payments
+        'payments': payments,
+        'supports': supports
     }
     return render(request, 'clients/show.html', context)
 

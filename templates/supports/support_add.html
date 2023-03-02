@@ -4,4 +4,30 @@
     <div class="row">
         <h6>AGREGAR SOPORTE</h6>
     </div>
+    <div class="row">
+        <form action="{% url 'supports.add.support' id=client.id %}" method="POST">
+            {% csrf_token %}
+            <input type="text" value="{{client.id}}" name="client" hidden>
+            <input type="text" value="NOT" name="realized" hidden>
+            <div class="col s12">
+                {% for profile in client.profile_set.all %}
+                    <p>
+                        <label>
+                        <input type="checkbox" name="profile[]" value="{{profile.id}}"/>
+                        <span>{{profile}}</span>
+                        </label>
+                    </p>
+                {% endfor %}
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <textarea id="support" name="support" class="materialize-textarea" required></textarea>
+                    <label for="support">Soporte a Realizar</label>
+                </div>
+            </div>
+            <div class="col s12">
+                <button type="submit" class="btn btn-small green right">Enviar</button>
+            </div>
+        </form>
+    </div>
 {% endblock %}

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Inspect, FeasibleOrNotFeasible, Material, Install, WirelessInstallationSheet
+from .models import Inspect, FeasibleOrNotFeasible, Material, Install, WirelessInstallationSheet, Support
 from ventas.models import Inspection
 
 # Register your models here.
@@ -47,3 +47,9 @@ class InstallAdmin(admin.ModelAdmin):
     inlines = [WirelessInstallationSheetInLine]
 
 admin.site.register(Install, InstallAdmin)
+
+class SupportAdmin(admin.ModelAdmin):
+    model = Support
+    list_display = ['client', 'profile', 'support', 'realized']
+
+admin.site.register(Support, SupportAdmin)
