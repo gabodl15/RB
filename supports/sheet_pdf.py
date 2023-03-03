@@ -1,5 +1,6 @@
 from .models import WirelessInstallationSheet, WirelessInspectionSheet, WirelessSupportSheet
 from .models import FiberInspectionSheet, FiberInstallationSheet, FiberSupportSheet
+from .models import Support
 from pypdf import PdfReader, PdfWriter
 import io, os
 from reportlab.pdfgen import canvas
@@ -33,9 +34,6 @@ class Pdf:
     def create_sheet(self):
         self.packet = io.BytesIO()
         pdfmetrics.registerFont(TTFont('Vera', 'Vera.ttf'))
-        # pdfmetrics.registerFont(TTFont('VeraBd', 'VeraBd.ttf'))
-        # pdfmetrics.registerFont(TTFont('VeraIt', 'VeraIt.ttf'))
-        # pdfmetrics.registerFont(TTFont('VeraBI', 'VeraBI.ttf'))
         self.can = canvas.Canvas(self.packet, pagesize=letter)
         self.today = date.today()
         self.media = settings.MEDIA_ROOT
@@ -113,7 +111,24 @@ class Pdf:
                 base = self.fiber_optic_inspection()
 
         if self.support == 'support':
-            pass
+            
+            check = self._check_for_existing_sheet('wirelesssupportsheet')
+            if check:
+                return self.obj.wirelesssupportsheet.sheet
+            
+            record = Support.objects.last()
+            self.order = (record.order + 1) if record is not None else 1
+            destination_sheet = f'clients/{self.client}-{self.client.id}/{self.support}/{self.order}.pdf'
+            
+            wss = WirelessSupportSheet(
+                client = self.client,
+                support = self.obj.profile,
+                sheet = destination_sheet,
+                order = self.order
+            )
+            
+            base = self.wireless_support()
+
 
     
         # SETIAMOS EL TIPO DE INSTALACION
@@ -260,9 +275,57 @@ class Pdf:
         return base
 
     def fiber_optic_support(self):
-        base = '/formatos/VISITA_TECNICA_NUEVO.pdf'
+        base = '/formatos/VISITA_TECNICA.pdf'
+        
+         # COLOCANDO NUMERO DE CONTROL
+        self.control_number = str(self.order).rjust(5, '0')
+        self.can.drawString(526, 779, f"{self.control_number}")
+
+        # FECHA CUANDO SE IMPRIME
+        self.can.drawString(500, 748, f"{self.today}")
+
+        # MARCANDO CASILLA DE FIBRA
+        self.can.drawString(462, 687, 'XXX')
+
+        # NOMBRE Y APRELLIDO
+        self.can.drawString(110, 653, f"{self.client} {self.last_name}")
+
+        # TELEFONO
+        self.can.setFont('Vera', 10)
+        self.can.drawString(473, 653, f"{self.client.phone}")
+
+        # DOCUMENTO
+        self.can.drawString(370, 653, f"{self.client.dni}")
+
+        # DIRECCION
+        self.can.drawString(68, 630, f"{self.obj.client.address}")
+
         return base
 
     def wireless_support(self):
-        base = '/formatos/VISITA_TECNICA_NUEVO.pdf'
+        base = '/formatos/VISITA_TECNICA.pdf'
+
+        # COLOCANDO NUMERO DE CONTROL
+        self.control_number = str(self.order).rjust(5, '0')
+        self.can.drawString(526, 779, f"{self.control_number}")
+
+        # FECHA CUANDO SE IMPRIME
+        self.can.drawString(500, 748, f"{self.today}")
+
+        # MARCANDO CASILLA DE FIBRA
+        self.can.drawString(462, 687, 'XXX')
+
+        # NOMBRE Y APRELLIDO
+        self.can.drawString(110, 653, f"{self.client} {self.last_name}")
+
+        # TELEFONO
+        self.can.setFont('Vera', 10)
+        self.can.drawString(473, 653, f"{self.client.phone}")
+
+        # DOCUMENTO
+        self.can.drawString(370, 653, f"{self.client.dni}")
+
+        # DIRECCION
+        self.can.drawString(68, 630, f"{self.obj.client.address}")
+
         return base

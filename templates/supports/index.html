@@ -77,10 +77,10 @@
                             {% endif %}
                             <p><b>Soporte:</b> {{ missing.support  }}</p>
                         </div>
-                        <div class="card-action center">
-                            <button class="btn btn-small blue" type="button" name="button">Imprimir</button>
-                            <button class="btn btn-small green" type="button" name="button">Factible</button>
-                            <button class="btn btn-small red" type="button" name="button">Eliminar</button>
+                        <div class="card-action">
+                            <!-- <button class="btn btn-small blue" onclick="window.location='{% url 'supports.print' support='support' id=missing.id %}'" type="button" name="button">Imprimir</button> -->
+                            <button class="btn btn-small blue" onclick="print_order({{ missing.id }})" type="button" name="button">Imprimir</button>
+                            <button class="btn btn-small red right" type="button" name="button">Eliminar</button>
                         </div>
                     </div>
                 {% endfor %}
@@ -179,5 +179,39 @@
         var elems = document.querySelectorAll('.modal');
         var instances = M.Modal.init(elems, {});
     });
+</script>
+
+<script type="text/javascript">
+    
+    function print_order(support_id){
+        url = "{% url 'supports.print' support='support' id=123456 %}";
+        url = url.replace('123456', support_id)
+        fetch(url, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+        }
+        })
+        .then(response => {
+            return response.json()
+        })
+        .then(data => {
+            console.log(data.support_sheet);
+            var iframe = document.createElement('iframe');
+            iframe.style.display = "none";
+            iframe.src =  data.support_sheet;
+            document.body.appendChild(iframe);
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+
+            // Do something with the result
+
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    }
+
 </script>
 {% endblock %}

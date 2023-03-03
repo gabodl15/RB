@@ -16,6 +16,22 @@ from reportlab.lib.pagesizes import letter
 
 import io
 
+"""
+ORDEN DEL ARCHIVO
+CLASES:
+    
+FUNCIONES:
+    - index
+    - show
+    - installation_realized
+    - inspection_show
+    - support_print
+    - support_add
+    - create_ppp
+    - support_conf_ppp_ajax
+"""
+
+
 # Create your views here.
 def index(request):
     missing_inspect = Inspect.objects.filter(realized='NOT')
@@ -114,6 +130,9 @@ def support_print(request, support, id):
     if support == 'inspections':
         obj = Inspect.objects.get(id=id)
         client_id = obj.inspect.client.id
+    if support == 'support':
+        obj = Support.objects.get(id=id)
+        client_id = obj.client.id
     client = Client.objects.get(id=client_id)
     media = settings.MEDIA_URL
 
