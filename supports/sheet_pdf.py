@@ -126,6 +126,7 @@ class Pdf:
                 sheet = destination_sheet,
                 order = self.order
             )
+            wss.save()
             
             base = self.wireless_support()
 
