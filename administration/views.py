@@ -202,8 +202,7 @@ def payment(request, id):
 
 def do_not_suspend(request):
     today = date.today()
-    cutoff = today - timedelta(10)
-    not_suspend = NotSuspend.objects.all()
+    not_suspend = NotSuspend.objects.all().order_by('-created')
     context = {
         'not_suspend': not_suspend,
     }
@@ -216,7 +215,7 @@ def do_not_suspend_delete(request, id):
     return redirect('administrations.index')
 
 def debts(request):
-    debts = Debt.objects.all()
+    debts = Debt.objects.all().order_by('created')
     context = {
         'debts': debts
     }
