@@ -50,6 +50,12 @@
             </div>
         </div>
     </div>
+    {% if request.user.is_staff %}
+        <div class="row">
+            <p>INFORMACION PRIVILEGIADA</p>
+            
+        </div>
+    {% endif %}
 
 {% endblock %}
 

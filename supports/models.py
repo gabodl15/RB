@@ -61,6 +61,7 @@ class Support(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)
     support = models.TextField()
+    order = models.IntegerField(unique=True)
     realized = models.CharField(max_length=3, choices=CHOICES, default=NOT)
 
     def __str__(self):
