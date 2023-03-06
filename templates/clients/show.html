@@ -112,6 +112,31 @@
             </ul>
         {% endif %}
     </div>
+    <div class="row">
+        {% if suspended_list %}
+        <h6>HISTORIAL DE CORTES</h6>
+        <div class="col s12">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Profile</th>
+                        <th>Cortado</th>
+                        <th>Activado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for suspended in suspended_list %}
+                        <tr>
+                            <td>{{ suspended }}</td>
+                            <td>{{ suspended.created }}</td>
+                            <td>{% if suspended.created == suspended.updated %} {{ suspended.updated }} {% else %} - {% endif %}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
 {% endblock %}
 
 {% block 'javascript' %}

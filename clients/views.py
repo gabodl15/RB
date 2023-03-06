@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.http import JsonResponse
-from .models import Client, Profile, Log
+from .models import Client, Profile, Suspended, Log
 from administration.models import AdministrationLog, Payment
 from logs.models import GlobalLog
 from routers.models import Router, Plan
@@ -77,6 +77,7 @@ def show(request, id):
     coordinates = client.coordinates
     payments = Payment.objects.filter(client=client)
     supports = Support.objects.filter(client=client, realized='NOT')
+    suspended_list = Suspended.objects.filter(profile__client=client)
     if coordinates:
         x = coordinates.split(',')
         map = folium.Map(location=[float(x[0]), float(x[1])], zoom_start=16)
@@ -95,7 +96,8 @@ def show(request, id):
         'map_render': map_render,
         'logs': logs,
         'payments': payments,
-        'supports': supports
+        'supports': supports,
+        'suspended_list': suspended_list
     }
     return render(request, 'clients/show.html', context)
 
