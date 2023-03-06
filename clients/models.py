@@ -57,6 +57,9 @@ class Suspended(models.Model):
     def __str__(self):
         return self.profile.name
     
+    class Meta:
+        ordering = ['profile__name']
+    
 class Log(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     action = models.CharField(max_length=50)

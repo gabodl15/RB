@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from routers.functions import Connection
-from .models import Client, Profile
+from .models import Client, Profile, Suspended
 from django import forms
 
 class ClientAdmin(admin.ModelAdmin):
@@ -45,3 +45,9 @@ class ProfileAdmin(admin.ModelAdmin):
     
             
 admin.site.register(Profile, ProfileAdmin)
+
+class SuspendedAdmin(admin.ModelAdmin):
+    list_display = ('profile', 'previus', 'active_cutting', 'created', 'updated')
+    search_fields = ('profile', 'previus', 'active_cutting', 'created', 'updated')
+    
+admin.site.register(Suspended, SuspendedAdmin)
