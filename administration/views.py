@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import FileResponse
 from django.conf import settings
-from clients.models import Client, Profile
+from clients.models import Client, Profile, Suspended
 from routers.models import Plan
 from datetime import date, datetime, timedelta, time
 from dateutil.relativedelta import relativedelta
@@ -65,6 +65,7 @@ def index(request):
         return redirect('index')
     
     not_suspend = NotSuspend.objects.all()    
+    suspended = Suspended.objects.all().order_by('profile__name')
         
     not_suspended = Profile.objects.filter(cutoff_date__lte=(today - timedelta(5))).filter(~Q(plan=cortados.id)).exclude(name__in=[name for name in not_suspend]).exclude(agreement=True)
 
@@ -89,6 +90,7 @@ def index(request):
         'payments': payments,
         'not_suspend': not_suspend,
         'not_suspended': not_suspended,
+        'suspended': suspended,
     }
 
 

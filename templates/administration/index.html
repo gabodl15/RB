@@ -64,7 +64,12 @@
             <p>Monto: {% if profiles %}{{ profiles | sum_price }} {% endif %}</p>
             <div class="divider"></div>
             <p>No suspender: {{ not_suspend | length }}</p>
-            <p>No suspendidos: {{ not_suspended | length }}<span class="badge"><a href="#NotSuspended" class="modal-trigger">Ver</a></span></p>
+            <p>No suspendidos: {{ not_suspended | length }}<span class="badge btn-flat"><a href="#NotSuspended" class="modal-trigger">Ver</a></span></p>
+            <p>Usuarios Suspendidos: {{ suspended | length }}
+                <span class="badge btn-flat">
+                    <a href="#Suspended" class="modal-trigger">Ver</a>
+                </span>
+            </p>
         </div>
     </div>
     <div id="NotSuspended" class="modal">
@@ -72,6 +77,18 @@
             <ul class="collection">
                 {% for ns in not_suspended %}
                     <li class="collection-item">{{ ns }}<span class="badge">{{ ns.cutoff_date }}</span></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div id="Suspended" class="modal">
+        <div class="modal-content">
+            <ul class="collection">
+                {% for s in suspended %}
+                    <li class="collection-item">
+                        <a href="{% url 'administrations.client.payment' s.profile.client.id %}">{{ s }}</a>
+                        <span class="badge">{{ s.created }}</span>
+                    </li>
                 {% endfor %}
             </ul>
         </div>
