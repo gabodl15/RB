@@ -32,6 +32,14 @@ class RouterProfile:
             _profile.save()
             return True
         return False
+    
+    def cut(self):
+        get_user = self.connection.name_query('/ppp/secret', self.profile.name)
+        self.connection.set_query('/ppp/secret', get_user[0]['id'], 'profile', 'CORTADOS')
+        remove_from_active = self.connection.name_query('/ppp/active',self.profile.name)
+        if remove_from_active:
+                self.connection.remove('/ppp/active', remove_from_active[0]['id'])
+
 
     def update(self, request):
         new_name = request.POST['name']
