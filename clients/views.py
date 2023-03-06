@@ -168,9 +168,11 @@ def addProfile(request, id):
             return redirect(request.META.get('HTTP_REFERER'))
         return redirect('clients.show', id=id)
     form = ProfileForm()
+    routers = Router.objects.all()
     context = {
         'form': form,
         'client': client,
+        'routers': routers
     }
     return render(request, 'clients/add_profile.html', context)
 

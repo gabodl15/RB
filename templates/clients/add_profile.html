@@ -1,16 +1,37 @@
 {% extends 'layouts/app.html' %}
 
 {% block 'content' %}
-  <div class="row">
-      <form class="" action="{% url 'clients.profile.add' id=client.id %}" method="post">
-          {% csrf_token %}
-          <input type="number" name="client" value="{{ client.id }}" hidden>
-          {% load materializecss %}
-          {{ form | materializecss }}
+    <div class="row">
+        <form class="" action="{% url 'clients.profile.add' id=client.id %}" method="post">
+            {% csrf_token %}
+            
+            <h6 class="center">Configuración</h6>
+            {# SETIAMOS EL ID DEL CLIENTE QUE SE LE CREARÁ EL PPP #}
+            <input type="text" name="client_id" value="{{client.id}}" readonly hidden>
+            {# INDICAMOS EL TIPO DE INSTALACION, ANTENA O FIBRA OPTICA. #}
+            <input type="text" name="connection_mode" value="{{installation.inspect.inspect.inspection_type}}" readonly hidden>
+            <div class="input-field">
+                <select name="router" id="router" class="browser-default" onchange="automatic_configuration(this.value)">
+                    <option value="" disabled selected>Seleccione un router</option>
+                    {% for router in routers %}
+                        <option value="{{ router.id }}">{{ router }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div id="configuration_result">
 
-          <button type="submit" class="btn btn-small blue right" name="submit">Enviar</button>
-      </form>
-  </div>
+            </div>
+        
+            
+            <button id="submit" class="btn btn-small blue" disabled>Enviar</button>
+            
+            <p>---------------------------------------------------------------------------</p>
+            {% load materializecss %}
+            {# form | materializecss #}
+
+            <button type="submit" class="btn btn-small blue right" name="submit">Enviar</button>
+        </form>
+    </div>
 {% endblock %}
 
 {% block 'javascript' %}
@@ -21,5 +42,70 @@
             classes: 'browser-default'
         });
     });
+</script>
+<script type="text/javascript">
+    function automatic_configuration(value){
+        url_base = "{% url 'supports.ppp.conf.ajax' name='nombre' id=123 %}";
+        unfiltered_ppp = "{{ client }} {% if client.last_name %}{{ client.last_name }} {% else  %} '' {% endif %}";
+        nombres = "{{client}}".split(' ');
+        apellidos = "{% if client.last_name %}{{ client.last_name }}{% else  %} '' {% endif %}".split(' ');
+        primer_nombre = nombres[0].toLowerCase();
+        primer_apellido = apellidos[0].toLowerCase();
+        ppp = primer_nombre + '_' + primer_apellido;
+        url = url_base.replace('123', value).replace('nombre', ppp);
+        div = document.getElementById('configuration_result');
+        fetch(url)
+        .then(response => {
+            if (response.status === 200) {
+            return response.json();
+            } else {
+            throw new Error("No se pudo obtener los datos");
+            }
+        })
+        .then(data => {
+            div.innerHTML = '';
+            if (data.success) {
+                ppp_name = document.createElement('input');
+                ppp_password = document.createElement('input');
+                ppp_plans = document.createElement('select')
+                
+                ppp_name.value = data.ppp;
+                ppp_name.name = 'name'
+                ppp_name.readonly = true;
+                ppp_name.classList.add('col', 's12', 'm6')
+                ppp_password.value = data.password;
+                ppp_password.name = 'password';
+                ppp_password.readonly = true;
+                ppp_password.classList.add('col', 's12', 'm6');
+                ppp_plans.classList.add('browser-default');
+                ppp_plans.name = 'plan';
+                if(data.plans.length == 1 && data.plans[0]['name'] === 0){
+                    let option = document.createElement("option");
+                    option.setAttribute("value", data.plans[0]['id']);
+                    let optionTexto = document.createTextNode('NO EXISTEN PLANES EN EL MIKROTIK');
+                    option.appendChild(optionTexto);
+                    option.disabled = true;
+                    option.selected = true;
+                    ppp_plans.appendChild(option);
+                    document.getElementById('submit').disabled= true;
+                }else{
+                    for(i=0; i < data.plans.length; i++){
+                        let option = document.createElement("option");
+                        option.setAttribute("value", data.plans[i]['id']);
+                        let optionTexto = document.createTextNode(data.plans[i]['name']);
+                        option.appendChild(optionTexto);
+                        ppp_plans.appendChild(option);
+                    }
+                    document.getElementById('submit').disabled= false;
+                }
+                div.appendChild(ppp_name);
+                div.appendChild(ppp_password);
+                div.appendChild(ppp_plans);
+            }
+            else{
+                alert('NO SE PUDO CONECTAR CON EL ROUTER')
+            }
+        })
+    }
 </script>
 {% endblock %}
