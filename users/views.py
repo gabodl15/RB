@@ -2,6 +2,9 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import update_session_auth_hash, authenticate
 from django.shortcuts import render, redirect
+from clients.models import Client, Profile
+from routers.models import Router, Plan
+from nodos.models import CompanyAntenna
 from logs.models import GlobalLog
 from .forms import UserProfileForm
 from .models import UserProfile
@@ -22,6 +25,23 @@ def profile(request):
         'today': today,
         'logs': logs,
     }
+
+    if request.user.is_staff:
+
+        active_profiles = Profile.objects.filter(agreement=False).exclude(plan__name='CORTADOS')
+        clients = active_profiles.values_list('client', flat=True).distinct()
+        agreements = Profile.objects.filter(agreement=True)
+        cutting = Profile.objects.filter(plan__name='CORTADOS')
+        routers = Router.objects.all()
+        plans = Plan.objects.all()
+        antennas = CompanyAntenna.objects.all()
+
+        context['clients'] = clients
+        context['agreements'] = agreements
+        context['cutting'] = cutting
+        context['routers'] = routers
+        context['plans'] = plans
+        context['antennas'] = antennas
     return render(request, 'users/profile.html', context)
 
 def configuration(request):

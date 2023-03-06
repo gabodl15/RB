@@ -52,8 +52,89 @@
     </div>
     {% if request.user.is_staff %}
         <div class="row">
-            <p>INFORMACION PRIVILEGIADA</p>
-            
+            <div class="col s12 m6">
+                <ul class="collection">
+                    <li class="collection-item"><b>Total clientes:</b> <span class="badge">{% if clients %} {{ clients | length }} {% else %} - {% endif %}</span></li>
+                    <li class="collection-item"><a href="#agreements" class="black-text modal-trigger"><b>Convenios:</b><span class="badge">{% if agreements %} {{ agreements | length }} {% else %} - {% endif %}</span></a></li>
+                    <li class="collection-item"><a href="#cutting" class="black-text modal-trigger"><b>Cortados:</b><span class="badge">{% if cutting %} {{ cutting | length }} {% else %} - {% endif %}</span></a></li>
+                    <li class="collection-item"><a href="#routers" class="black-text modal-trigger"><b>Routers:</b><span class="badge">{% if routers %} {{ routers | length }} {% else %} - {% endif %}</span></a></li>
+                    <li class="collection-item"><a href="#plans" class="black-text modal-trigger"><b>Planes:</b><span class="badge">{% if plans %} {{ plans | length }} {% else %} - {% endif %}</span></a></li>
+                    <li class="collection-item"><a href="#antennas" class="black-text modal-trigger"><b>Antenas:</b><span class="badge">{% if antennas %} {{ antennas | length }} {% else %} - {% endif %}</span></a></li>
+                </ul>
+            </div>
+            <div id="agreements" class="modal modal-fixed-footer">
+                <div class="modal-content">
+                    <table>
+                        <tbody>
+                            {% for agreement in agreements %}
+                                <tr>
+                                    <td>{{ agreement }}</td>
+                                    <td>{{ agreement.plan }}</td>
+                                    <td>{{ agreement.router }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="cutting" class="modal">
+                <div class="modal-content">
+                    <table>
+                        <tbody>
+                            {% for cut in cutting %}
+                                <tr>
+                                    <td>{{ cut }}</td>
+                                    <td>{{ cut.router }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="routers" class="modal">
+                <div class="modal-content">
+                    <table>
+                        <tbody>
+                            {% for router in routers %}
+                                <tr>
+                                    <td>{{ router }}</td>
+                                    <td>{{ router.ip }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="plans" class="modal">
+                <div class="modal-content">
+                    <table>
+                        <tbody>
+                            {% for plan in plans %}
+                                <tr>
+                                    <td>{{ plan }}</td>
+                                    <td>{{ plan.price }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="antennas" class="modal">
+                <div class="modal-content">
+                    <table>
+                        <tbody>
+                            {%for antenna in antennas %}
+                                <tr>
+                                    <td>{{ antenna }}</td>
+                                    <td>{{ antenna.nodo }}</td>
+                                    <td>{{ antenna.ip }}</td>
+                                    <td>{{ antenna.frecuency }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     {% endif %}
 
@@ -61,15 +142,21 @@
 
 {% block 'javascript' %}
 <script type="text/javascript">
-  document.addEventListener('DOMContentLoaded', function() {
-    var el = document.querySelectorAll('.tabs');
-    var instance = M.Tabs.init(el, {
-		swipeable: true
+    document.addEventListener('DOMContentLoaded', function() {
+        var el = document.querySelectorAll('.tabs');
+        var instance = M.Tabs.init(el, {
+            swipeable: true
+        });
     });
-  });
-  document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('.materialboxed');
-    var instances = M.Materialbox.init(elems, {});
-  });
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.materialboxed');
+        var instances = M.Materialbox.init(elems, {});
+    });
+</script>
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.modal');
+        var instances = M.Modal.init(elems, {});
+    });
 </script>
 {% endblock %}
