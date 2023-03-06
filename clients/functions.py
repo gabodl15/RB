@@ -1,4 +1,4 @@
-from clients.models import Log
+from clients.models import Log, Suspended
 from clients.forms import ProfileForm
 from routers.models import Router, Plan
 from routers.functions import Connection
@@ -66,6 +66,11 @@ class RouterProfile:
         #     self.profile.router = new_router
 
         if self.profile.plan != new_plan:
+            if self.profile.plan.name == 'CORTADOS':
+                profile_suspended = Suspended.objects.filter(profile=self.profile, active_cutting=True)
+                if profile_suspended:
+                    profile_suspended[0].active_cutting = False
+                    profile_suspended[0].save()
             remove_from_active = self.connection.name_query('/ppp/active',self.profile.name)
             self.connection.set_query('/ppp/secret', get_user[0]['id'], 'profile', new_plan.name)
             if remove_from_active:

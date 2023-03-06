@@ -65,7 +65,7 @@ def index(request):
         return redirect('index')
     
     not_suspend = NotSuspend.objects.all()    
-    suspended = Suspended.objects.all().order_by('profile__name')
+    suspended = Suspended.objects.filter(active_cutting=True).order_by('profile__name')
         
     not_suspended = Profile.objects.filter(cutoff_date__lte=(today - timedelta(5))).filter(~Q(plan=cortados.id)).exclude(name__in=[name for name in not_suspend]).exclude(agreement=True)
 
