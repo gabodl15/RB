@@ -13,6 +13,7 @@ from supports.models import Support
 from .functions import RouterProfile
 from ventas.models import Referred
 from .forms import ClientForm, ProfileForm
+import datetime
 import folium
 
 """
@@ -104,6 +105,16 @@ def show(request, id):
 def addProfile(request, id):
     client = Client.objects.get(id=id)
     if request.method == 'POST':
+        
+        # CALCULAMOS LA FECHA DE CORTE
+        today = datetime.date.today()
+        last_day = today.replace(day=28) + datetime.timedelta(days=4)
+        last_day = last_day - datetime.timedelta(days=last_day.day)
+        delta_15 = datetime.date(today.year, today.month, 15) - today
+        delta_last = last_day - today
+        cutoff_date = today.replace(day=15) if delta_15 < delta_last else last_day
+        cutoff_date = cutoff_date.strftime('%Y-%m-%d')
+
         form = ProfileForm(request.POST)
         router = Router.objects.get(id=request.POST['router'])
         plan = Plan.objects.get(id=request.POST['plan'])
@@ -114,7 +125,6 @@ def addProfile(request, id):
         profile_mac = request.POST.get('mac', '')
         connection_mode = request.POST['connection_mode']
         # cutoff_date = request.POST['cutoff_date'] if request.POST['cutoff_date'] != '' else None
-        cutoff_date = request.POST.get('cutoff_date', None)
         if form.is_valid():
             try:
                 connection = routeros_api.api.RouterOsApiPool(
