@@ -11,6 +11,9 @@
             {# INDICAMOS EL TIPO DE INSTALACION, ANTENA O FIBRA OPTICA. #}
             <input type="text" name="connection_mode" value="{{installation.inspect.inspect.inspection_type}}" readonly hidden>
             <div class="input-field">
+                {{form.connection_mode}}
+            </div>
+            <div class="input-field">
                 <select name="router" id="router" class="browser-default" onchange="automatic_configuration(this.value)">
                     <option value="" disabled selected>Seleccione un router</option>
                     {% for router in routers %}
@@ -18,18 +21,18 @@
                     {% endfor %}
                 </select>
             </div>
+            <p>
+                <label>
+                    {{form.agreement}}
+                    <span>{{ form.agreement.label }}</span>
+                </label>
+            </p>
             <div id="configuration_result">
 
             </div>
-        
-            
+            <br>
             <button id="submit" class="btn btn-small blue" disabled>Enviar</button>
             
-            <p>---------------------------------------------------------------------------</p>
-            {% load materializecss %}
-            {# form | materializecss #}
-
-            <button type="submit" class="btn btn-small blue right" name="submit">Enviar</button>
         </form>
     </div>
 {% endblock %}

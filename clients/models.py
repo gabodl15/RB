@@ -37,7 +37,7 @@ class Profile(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     router = models.ForeignKey(Router, on_delete=models.RESTRICT)
     plan = models.ForeignKey(Plan, on_delete=models.RESTRICT)
-    agreement = models.BooleanField(default=False)
+    agreement = models.BooleanField(default=False, verbose_name='Convenio')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     

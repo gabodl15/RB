@@ -111,9 +111,10 @@ def addProfile(request, id):
         #SETIANDO LOS VALORES DEL FORMULARIO
         profile_name = request.POST['name']
         profile_password = request.POST['password']
-        profile_mac = request.POST['mac']
+        profile_mac = request.POST.get('mac', '')
         connection_mode = request.POST['connection_mode']
-        cutoff_date = request.POST['cutoff_date'] if request.POST['cutoff_date'] != '' else None
+        # cutoff_date = request.POST['cutoff_date'] if request.POST['cutoff_date'] != '' else None
+        cutoff_date = request.POST.get('cutoff_date', None)
         if form.is_valid():
             try:
                 connection = routeros_api.api.RouterOsApiPool(
