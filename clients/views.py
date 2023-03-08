@@ -13,6 +13,7 @@ from supports.models import Support
 from .functions import RouterProfile
 from ventas.models import Referred
 from .forms import ClientForm, ProfileForm
+from dateutil.relativedelta import relativedelta
 import datetime
 import folium
 
@@ -112,8 +113,13 @@ def addProfile(request, id):
         last_day = last_day - datetime.timedelta(days=last_day.day)
         delta_15 = datetime.date(today.year, today.month, 15) - today
         delta_last = last_day - today
-        cutoff_date = today.replace(day=15) if delta_15 < delta_last else last_day
-        cutoff_date = cutoff_date.strftime('%Y-%m-%d')
+        defined_cutoff_date = today.replace(day=15) if delta_15 < delta_last else last_day
+        if defined_cutoff_date.day == 15:
+            cutoff_date = defined_cutoff_date + relativedelta(months=1)
+        elif defined_cutoff_date.day >= 28:
+            next_month = defined_cutoff_date + relativedelta(months=1)
+            cutoff_date = datetime.date(next_month.year, next_month.month, 1) + relativedelta(months=1, days=-1)
+        str_cutoff_date = cutoff_date.strftime('%Y-%m-%d')
 
         form = ProfileForm(request.POST)
         router = Router.objects.get(id=request.POST['router'])
