@@ -27,7 +27,10 @@ class CompanyAntennaAdminForm(forms.ModelForm):
         fields = '__all__'
 
 class CompanyAntennaAdmin(admin.ModelAdmin):
-    list_display = ('name', 'ip', 'wireless_mode', 'frequency')
+    list_display = ('name', 'nodo', 'ip', 'wireless_mode', 'frequency')
     form = CompanyAntennaAdminForm
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).order_by('nodo__name')
 
 admin.site.register(CompanyAntenna, CompanyAntennaAdmin)
