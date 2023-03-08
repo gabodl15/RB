@@ -48,6 +48,6 @@ admin.site.register(Profile, ProfileAdmin)
 
 class SuspendedAdmin(admin.ModelAdmin):
     list_display = ('profile', 'previus', 'active_cutting', 'created', 'updated')
-    search_fields = ('profile', 'previus', 'active_cutting', 'created', 'updated')
+    search_fields = ('profile__name', 'previus', 'active_cutting', 'created', 'updated')
     
 admin.site.register(Suspended, SuspendedAdmin)
