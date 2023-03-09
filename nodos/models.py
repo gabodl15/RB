@@ -34,3 +34,12 @@ class CompanyAntenna(models.Model):
 
     class Meta:
         ordering = ['name']
+
+class ClientAntenna(models.Model):
+    nodo = models.ForeignKey(Nodo, on_delete=models.SET_NULL, null=True)
+    profile = models.ForeignKey('clients.Profile', on_delete=models.CASCADE, null=True)
+    user = models.CharField(max_length=20, default='ubnt')
+    password = EncryptedTextField()
+    brand = models.CharField(max_length=20, default='Ubiquiti')
+    model = models.CharField(max_length=20)
+    firmware = models.CharField(max_length=40)
