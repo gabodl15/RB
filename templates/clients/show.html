@@ -43,6 +43,12 @@
                             <td>{{ profile.cutoff_date }}</td>
                             <td>{{ profile | check_profile | safe }}</td>
                         </tr>
+                        {% if profile.clientantenna %}
+                            <tr>
+                                <td>{{profile.clientantenna.model}}</td>
+                                <td>{{profile.clientantenna.firmware}}</td>
+                            </tr>
+                        {% endif %}
                     {% endfor %}
                 </tbody>
             </table>
