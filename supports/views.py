@@ -14,7 +14,7 @@ from ventas.models import Inspection, FeasibleOrNotFeasible as VentasFeasibleOrN
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 
-import io
+import os
 
 """
 ORDEN DEL ARCHIVO
@@ -148,10 +148,12 @@ def support_print(request, support, id):
 
 def support_add(request, id):
     def private_add_support(request, profile):
+        last_order = Support.objects.last()
         support = Support(
             client=client,
             profile=profile,
             support=request.POST.get('support'),
+            order=last_order.order + 1 if last_order else 1,
             realized=request.POST.get('realized'),
         )
         support.save()
@@ -165,6 +167,7 @@ def support_add(request, id):
                 private_add_support(request, profile)
         else:
             profile = Profile.objects.get(id=profiles[0])
+            print(profile)
             private_add_support(request, profile)
         
         messages.success(request, 'SE HA AÑADIDO EL SOPORTE CORRECTAMENTE')
@@ -173,6 +176,53 @@ def support_add(request, id):
         'client': client,
     }
     return render(request, 'supports/support_add.html', context)
+
+def support_update(request, id):
+    support = Support.objects.get(id=id)
+    # VERIFICAMOS EL METODO DEL FORMULARIO
+    if request.method == 'POST':
+        # SETIAMOS VARIABLES, 
+        # MEDIA: CARPETA MEDIA,
+        # DESTINATION_IMAGES: DONDE GUARDAREMOS LAS IMAGENES, 
+        # NEW_DIR: EL PATH DEL DIRECTORIO
+        media = settings.MEDIA_ROOT
+        destination_images = f'/clients/{support.client}-{support.client.id}/'
+        image_folder = media + destination_images + 'support/' + str(support.order) + '/'
+
+        # DE NO EXISTIR EL DIRECTORIO LO CREAMOS
+        if not os.path.exists(image_folder):
+            try:
+                os.makedirs(image_folder)
+            except:
+                # EN CASO DE ERROR AL CREAR EL DIRECTORIO, REDIRECCIONAMOS AL INDEX
+                messages.error(request, 'NO SE PUDO CREAR EL DIRECTORIO')
+                return redirect('supports.update.support', id=id)
+        
+        images = request.FILES.getlist('images')
+        if images:
+            for image in images:
+                # OBTENEMOS EL NOMBRE DE LA IMAGEN
+                filename = image.name
+                with open(image_folder + filename, 'wb+') as destination_folder:
+                    for chunk in image.chunks():
+                        destination_folder.write(chunk)
+            support.images = image_folder
+        support.realized = 'YES'
+        support.save()
+        messages.success(request, 'SE HA ACTUALIZADO EL SOPORTE')
+        return redirect('supports.index')
+    
+    context = {
+        'support': support,
+    }
+    if support.images:
+        images_dir = support.images
+        images = []
+        for file_name in os.listdir(images_dir):
+            if file_name.endswith('.jpg') or file_name.endswith('.jpeg') or file_name.endswith('.png'):
+                images.append(os.path.join(images_dir, file_name))
+        context['images'] = images
+    return render(request, 'supports/support_update.html', context)
 
 def create_ppp(request):
     profile = RouterProfile()

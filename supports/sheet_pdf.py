@@ -278,7 +278,7 @@ class Pdf:
     def fiber_optic_support(self):
         base = '/formatos/VISITA_TECNICA.pdf'
         
-         # COLOCANDO NUMERO DE CONTROL
+        # COLOCANDO NUMERO DE CONTROL
         self.control_number = str(self.order).rjust(5, '0')
         self.can.drawString(526, 779, f"{self.control_number}")
 

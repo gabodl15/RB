@@ -78,7 +78,7 @@ def show(request, id):
     client = Client.objects.get(id=id)
     coordinates = client.coordinates
     payments = Payment.objects.filter(client=client)
-    supports = Support.objects.filter(client=client, realized='NOT')
+    supports = Support.objects.filter(client=client)[:7]
     suspended_list = Suspended.objects.filter(profile__client=client)
     if coordinates:
         x = coordinates.split(',')

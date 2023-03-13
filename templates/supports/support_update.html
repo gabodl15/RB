@@ -1,0 +1,45 @@
+{% extends 'layouts/app.html' %}
+
+{% block 'content' %}
+<div class="row">
+    <div class="col s12">
+        <h6>SOPORTE</h6>
+    </div>
+</div>
+<div class="row">
+    <div class="col s12">
+        {% if images %}
+            <p>CARPETA DE DIRECCIONES</p>
+            {% load static %}
+            {% for image in images %}
+                <img src="{{image}}">
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+<div class="row">
+    <div class="col s12">
+
+        <p><b>Cliente: </b>{{ support }}</p>
+        <p><b>Soporte: </b>{{ support.support }}</p>
+        <p><b>Status:</b>{% if support.realized == 'YES' %} Realizado {% else %} PENDIENTE {% endif %}</p>
+        <div class="divider"></div>
+        {% if support.realized == 'NOT' or request.user.is_staff %}
+        <form action="{% url 'supports.update.support' support.id %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="file-field input-field">
+                <div class="btn">
+                    <span>File</span>
+                    <input type="file" name="images" multiple>
+                </div>
+                <div class="file-path-wrapper">
+                    <input class="file-path validate" type="text" placeholder="Upload one or more files">
+                </div>
+            </div>
+
+            <button class="btn btn-small">UPDATAE</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

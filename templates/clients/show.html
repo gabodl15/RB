@@ -113,7 +113,7 @@
         {% if supports %}
             <ul class="collection">
                 {% for support in supports %}
-                    <li class="collection-item">{{ support.support }} <span class="badge">{% if support.realized == 'NOT' %} PENDIENTE {% else %} REALIZADO {% endif %}</span></li>
+                    <li class="collection-item"><a href="{% url 'supports.update.support' support.id %}">{{ support.support }}</a> <span class="badge">{% if support.realized == 'NOT' %} PENDIENTE {% else %} REALIZADO {% endif %}</span></li>
                 {% endfor %}
             </ul>
         {% endif %}
