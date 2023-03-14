@@ -63,7 +63,7 @@ class Support(models.Model):
     support = models.TextField()
     order = models.IntegerField(unique=True)
     realized = models.CharField(max_length=3, choices=CHOICES, default=NOT)
-    images = models.CharField(max_length=20, null=True, blank=True)
+    images = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return self.client.name

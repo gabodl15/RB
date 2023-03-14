@@ -186,8 +186,8 @@ def support_update(request, id):
         # DESTINATION_IMAGES: DONDE GUARDAREMOS LAS IMAGENES, 
         # NEW_DIR: EL PATH DEL DIRECTORIO
         media = settings.MEDIA_ROOT
-        destination_images = f'/clients/{support.client}-{support.client.id}/'
-        image_folder = media + destination_images + 'support/' + str(support.order) + '/'
+        destination_images = f'/clients/{support.client}-{support.client.id}/' + 'support/' + str(support.order) + '/'
+        image_folder = media + destination_images 
 
         # DE NO EXISTIR EL DIRECTORIO LO CREAMOS
         if not os.path.exists(image_folder):
@@ -206,7 +206,7 @@ def support_update(request, id):
                 with open(image_folder + filename, 'wb+') as destination_folder:
                     for chunk in image.chunks():
                         destination_folder.write(chunk)
-            support.images = image_folder
+            support.images = destination_images
         support.realized = 'YES'
         support.save()
         messages.success(request, 'SE HA ACTUALIZADO EL SOPORTE')
@@ -216,11 +216,12 @@ def support_update(request, id):
         'support': support,
     }
     if support.images:
-        images_dir = support.images
+        images_dir = settings.MEDIA_ROOT + support.images
+        view_dir = '/media' + support.images
         images = []
         for file_name in os.listdir(images_dir):
             if file_name.endswith('.jpg') or file_name.endswith('.jpeg') or file_name.endswith('.png'):
-                images.append(os.path.join(images_dir, file_name))
+                images.append(os.path.join(view_dir, file_name))
         context['images'] = images
     return render(request, 'supports/support_update.html', context)
 

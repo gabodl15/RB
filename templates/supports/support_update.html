@@ -7,15 +7,18 @@
     </div>
 </div>
 <div class="row">
-    <div class="col s12">
-        {% if images %}
-            <p>CARPETA DE DIRECCIONES</p>
-            {% load static %}
-            {% for image in images %}
-                <img src="{{image}}">
-            {% endfor %}
-        {% endif %}
-    </div>
+    {% if images %}
+        <p>CARPETA DE DIRECCIONES</p>
+        {% for image in images %}
+            <div class="card">
+                <div class="card-image">
+                    <div class="col s12 m4">
+                        <img class="materialboxed" src="{{image}}" >
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
 </div>
 <div class="row">
     <div class="col s12">
@@ -42,4 +45,13 @@
         {% endif %}
     </div>
 </div>
+{% endblock %}
+
+{% block 'javascript' %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.materialboxed');
+        var instances = M.Materialbox.init(elems, {});
+    });
+</script>
 {% endblock %}
