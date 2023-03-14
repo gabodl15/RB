@@ -117,6 +117,14 @@ def show(request, id):
             x = coordinates.split(',')
             map = folium.Map(location=[float(x[0]), float(x[1])], zoom_start=16)
             folium.Marker([float(x[0]), float(x[1])], tooltip='Clip aqui').add_to(map)
+            folium.TileLayer(
+                tiles='https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+                attr='Google',
+                name='Google Satellite',
+                overlay=True,
+                control=False
+            ).add_to(map)
+
             map_render = map.get_root().render()
         else:
             map_render = None
