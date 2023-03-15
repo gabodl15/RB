@@ -29,18 +29,27 @@
         </div>
     </div>
     <div class="divider"></div>
+    <div class="switch">
+        <label>
+            Off
+            <input type="checkbox" id="material-switch" name="enable-form" checked/>
+            <span class="lever"></span>
+            On
+        </label>
+    </div>
     <br>
     <div class="row">
         <div class="col s12">
-            <form action="{% url 'supports.inspection.update' id=inspect.id %}" method="POST">
+            <form id="material-form" action="{% url 'supports.inspection.update' id=inspect.id %}" method="POST">
                 <div class="row">
                     {% csrf_token %}
+                    <input type="hidden" name="is_enabled" id="is_enabled" value="1">
                     <div class="col s12">
                         {% load materializecss %}
                         {{ form|materializecss }}
                     </div>
                     <div id="materials" class="col s12">    
-                        {# { material_form|materializecss:'m4' } #}    
+                        {{ material_form.as_p }}    
                     </div>
                     <div class="col s12">
                         <button type="submit" class="btn btn-small">Actualizar</button>
@@ -63,17 +72,27 @@
 </script>
 
 <!-- HABILITAR O DESHABILITAR FORMULARIO DE MATERIALES -->
-<script type="text/javascript">
+<script>
     cliente = document.getElementsByName('inspect');
     for (let el of cliente) { el.parentElement.hidden = true; }
-    function switchMaterials(value){
-        materials = document.querySelectorAll('#materials input, #materials textarea');
-        if (value == 'FEASIBLE'){
-            for (let el of materials) { el.disabled = false; }
-        }else{
-            for (let el of materials) { el.disabled = true; }
+
+    const materialSwitch = document.querySelector('#material-switch');
+    const materialForm = document.querySelector('#materials');
+    const isEnabledInput = document.querySelector('#is_enabled');
+
+    materialSwitch.addEventListener('change', function() {
+        if (this.checked) {
+            materialForm.querySelectorAll('input, select, textarea').forEach(function(el) {
+            el.disabled = false;
+            isEnabledInput.value = '1';
+            });
+        } else {
+            materialForm.querySelectorAll('input, select, textarea').forEach(function(el) {
+            el.disabled = true;
+            isEnabledInput.value = '0';
+            });
         }
-    }
+    });
 </script>
 <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function() {

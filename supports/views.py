@@ -76,20 +76,21 @@ def inspection_show(request, id):
     if request.method == 'POST':
         """ VALIDAMOS QUE EL FOR SEA VALIDO """
         form_feasible = FeasibleOrNotFeasibleForm(request.POST)
+        is_enable = request.POST['is_enabled']
 
         if form_feasible.is_valid():
             """ OBTENEMOS EL OBJECTO SIN GUARDARLO """
             support_feasible = form_feasible.save(commit=False)
-
-            # """ EN EL CASO DE QUE SEA FACTIBLE """
-            # if 'NOT' not in support_feasible.feasible:
-            #     material = MaterialFiberForm(request.POST) if support_inspection.inspect.inspection_type == "OF" else MaterialWirelessForm(request.POST)
-            #     if material.is_valid():
-            #         """ CREAR LISTA DE MATERIALES """
-            #         material.save()
-            #     else:
-            #         messages.error(request, 'FORMULARIO DE MATERIALES NO VALIDO')
-            #         return redirect('supports.inspection.update', id=id)
+            if is_enable == '1':
+                """ EN EL CASO DE QUE SEA FACTIBLE """
+                # if 'NOT' not in support_feasible.feasible:
+                material = MaterialFiberForm(request.POST) if support_inspection.inspect.inspection_type == "OF" else MaterialWirelessForm(request.POST)
+                if material.is_valid():
+                    """ CREAR LISTA DE MATERIALES """
+                    material.save()
+                else:
+                    messages.error(request, 'FORMULARIO DE MATERIALES NO VALIDO')
+                    return redirect('supports.inspection.update', id=id)
             """ GUARDO EL OBJECTO UNA VEZ VERIFICADO AMBOS FORMUARIOS """
             support_feasible.save()
 
