@@ -7,10 +7,20 @@
     </div>
 </div>
 <div class="divider"></div>
+<br>
 <div class="row">
-    <div class="col s12">
+    <div class="col s12 m6">
         <p><b>Cliente:</b> {{installation}}</p>
         <p><b>Direccion:</b> {{installation.inspect.inspect.address}}</p>
+    </div>
+    <div class="col s12 m6">
+        <div class="right">
+            <button class="btn btn-small blue" onclick="print_order({{ installation.id }})">IMPRIMIR</button>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col s12">
         <form action="{% url 'supports.intallation.realized' installation.id %}" method="POST">
             {% csrf_token %}
             <div class="input-field">
@@ -21,4 +31,40 @@
         </form>
     </div>
 </div>
+{% endblock %}
+
+{% block 'javascript' %}
+<script type="text/javascript">
+    
+    function print_order(support){
+        url = "{% url 'supports.print' support='installations' id=installation.id %}";
+
+        fetch(url, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+        }
+        })
+        .then(response => {
+            return response.json()
+        })
+        .then(data => {
+            console.log(data.support_sheet);
+            var iframe = document.createElement('iframe');
+            iframe.style.display = "none";
+            iframe.src =  data.support_sheet;
+            document.body.appendChild(iframe);
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+
+            // Do something with the result
+
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    }
+
+</script>
 {% endblock %}

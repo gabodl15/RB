@@ -52,11 +52,10 @@
                             {% endif %}
                             <p>{{ missing.inspect.address  }}</p>
                         </div>
-                        <div class="card-action center">
+                        <div class="card-action">
                             <!-- <a href="#supports" class="modal-trigger">VER</a> -->
                             <a href="{% url 'supports.installation.show' missing.id %}" class="btn btn-small blue" name="button">Ver</a>
-                            <button class="btn btn-small green" type="button" name="button">Factible</button>
-                            <button class="btn btn-small red" type="button" name="button">Eliminar</button>
+                            <button class="btn btn-small red right" type="button" name="button">Eliminar</button>
                         </div>
                     </div>
                 {% endfor %}
