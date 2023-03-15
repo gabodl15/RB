@@ -57,6 +57,13 @@ def show(request, id):
     }
     return render(request, 'supports/show.html', context)
 
+def installation_show(request, id):
+    installation = Install.objects.get(id=id)
+    context = {
+        'installation': installation,
+    }
+    return render(request, 'supports/installation_show.html', context)
+
 def installation_realized(request, id):
     installation = Install.objects.get(id=id)
     installation.realized = 'YES'
@@ -74,15 +81,15 @@ def inspection_show(request, id):
             """ OBTENEMOS EL OBJECTO SIN GUARDARLO """
             support_feasible = form_feasible.save(commit=False)
 
-            """ EN EL CASO DE QUE SEA FACTIBLE """
-            if 'NOT' not in support_feasible.feasible:
-                material = MaterialFiberForm(request.POST) if support_inspection.inspect.inspection_type == "OF" else MaterialWirelessForm(request.POST)
-                if material.is_valid():
-                    """ CREAR LISTA DE MATERIALES """
-                    material.save()
-                else:
-                    messages.error(request, 'FORMULARIO DE MATERIALES NO VALIDO')
-                    return redirect('supports.inspection.update', id=id)
+            # """ EN EL CASO DE QUE SEA FACTIBLE """
+            # if 'NOT' not in support_feasible.feasible:
+            #     material = MaterialFiberForm(request.POST) if support_inspection.inspect.inspection_type == "OF" else MaterialWirelessForm(request.POST)
+            #     if material.is_valid():
+            #         """ CREAR LISTA DE MATERIALES """
+            #         material.save()
+            #     else:
+            #         messages.error(request, 'FORMULARIO DE MATERIALES NO VALIDO')
+            #         return redirect('supports.inspection.update', id=id)
             """ GUARDO EL OBJECTO UNA VEZ VERIFICADO AMBOS FORMUARIOS """
             support_feasible.save()
 

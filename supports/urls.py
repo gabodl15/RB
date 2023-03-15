@@ -3,7 +3,7 @@ from . import views
 urlpatterns = [
     path('', views.index, name='supports.index'),
     path('inspection/show/<int:id>/', views.inspection_show, name='supports.inspection.update'),
-    path('installation/show/<int:id>', views.show, name='supports.installation.show'),
+    path('installation/show/<int:id>', views.installation_show, name='supports.installation.show'),
     path('installation/realized/<int:id>/', views.installation_realized, name='supports.intallation.realized'),
     path('support/add/<int:id>/', views.support_add, name='supports.add.support'),
     path('support/update/<int:id>/', views.support_update, name='supports.update.support'),
