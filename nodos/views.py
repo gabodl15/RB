@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from .models import Nodo, CompanyAntenna
-import paramiko, json
+from .models import State, Nodo, CompanyAntenna
+import paramiko, json, requests, folium
 
 # FUNCTIONS THAT ARE NOT A VIEW
 def ssh_connection(request, antenna):
@@ -27,8 +27,38 @@ def ssh_connection(request, antenna):
 
 # Create your views here.
 def index(request):
+    
+    states = State.objects.all().values_list('name', flat=True)
+    if states:
+        # Obtener los datos GeoJSON de los estados de Venezuela
+        geoven = "https://raw.githubusercontent.com/wmgeolab/geoBoundaries/a7fd934150a38de07d58f51dc5df51de914c9873/releaseData/gbOpen/VEN/ADM1/geoBoundaries-VEN-ADM1_simplified.geojson"
+        response = requests.get(geoven)
+        data = response.json()
+
+        # Crear un objeto GeoJSON que contenga los estados de Los Estados
+        geojson = {
+            "type": "FeatureCollection",
+            "features": []
+        }
+
+        for feature in data["features"]:
+            if feature["properties"]["shapeName"] in states:
+                geojson["features"].append(feature)
+
+        m = folium.Map(location=[8.000000, -66.000000], zoom_start=5.5)
+        # Agregar la capa de estados al mapa
+        folium.GeoJson(geojson).add_to(m)
+        map = m.get_root().render()
+    else:
+        map = None
+
     nodos = Nodo.objects.all()
-    return render(request, 'nodos/index.html', {'nodos': nodos})
+    context = {
+        'nodos': nodos,
+        'states': states,
+        'map': map,
+    }
+    return render(request, 'nodos/index.html', context)
 
 def show(request, id):
     nodo = Nodo.objects.get(id=id)

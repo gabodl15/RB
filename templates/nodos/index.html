@@ -9,24 +9,30 @@
 <div class="divider"></div>
 <div class="row">
     {% if nodos %}
-        <table class="responsive-table">
-            <thead>
-                <tr>
-                    <td>Nodo</td>
-                    <td>Antenas</td>
-                    <td>Dirección</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for nodo in nodos %}
+        <div class="col m6">
+            <table class="responsive-table">
+                <thead>
                     <tr>
-                        <td><a href="{% url 'nodos.show' nodo.id %}">{{ nodo }}</a></td>
-                        <td>{{ nodo.companyantenna_set.all | length }}</td>
-                        <td>{{ nodo.address }}</td>
+                        <td>Nodo</td>
+                        <td>Antenas</td>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for nodo in nodos %}
+                        <tr>
+                            <td><a href="{% url 'nodos.show' nodo.id %}">{{ nodo }}</a></td>
+                            <td>{{ nodo.companyantenna_set.all | length }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     {% endif %}
-  </div>
+    {% if map %}
+        <div class="col m6 s12">
+            <iframe srcdoc="{{ map }}" frameborder="0" width="100%" height='500px'>
+            </iframe>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}
