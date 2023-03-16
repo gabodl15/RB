@@ -47,13 +47,16 @@
     });
 </script>
 <script type="text/javascript">
+    function quitarAcentos(texto) {
+        return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
     function automatic_configuration(value){
         url_base = "{% url 'supports.ppp.conf.ajax' name='nombre' id=123 %}";
         unfiltered_ppp = "{{ client }} {% if client.last_name %}{{ client.last_name }} {% else  %} '' {% endif %}";
         nombres = "{{client}}".split(' ');
         apellidos = "{% if client.last_name %}{{ client.last_name }}{% else  %} '' {% endif %}".split(' ');
-        primer_nombre = nombres[0].toLowerCase();
-        primer_apellido = apellidos[0].toLowerCase();
+        primer_nombre = quitarAcentos(nombres[0].toLowerCase());
+        primer_apellido = quitarAcentos(apellidos[0].toLowerCase());
         ppp = primer_nombre + '_' + primer_apellido;
         url = url_base.replace('123', value).replace('nombre', ppp);
         div = document.getElementById('configuration_result');

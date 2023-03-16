@@ -1,7 +1,12 @@
 from django.contrib import admin
-from .models import Nodo, CompanyAntenna
+from .models import State, Nodo, CompanyAntenna
 from django import forms
 # Register your models here.
+
+class StateAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+
+admin.site.register(State, StateAdmin)
 
 class NodoAdmin(admin.ModelAdmin):
     list_display = ('name', 'address', 'comment')
