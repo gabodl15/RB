@@ -36,6 +36,10 @@ class RouterProfile:
     def cut(self):
         get_user = self.connection.name_query('/ppp/secret', self.profile.name)
         self.connection.set_query('/ppp/secret', get_user[0]['id'], 'profile', 'CORTADOS')
+        Suspended.objects.create(
+            profile=self.profile,
+            previus=self.profile.plan
+            )
         remove_from_active = self.connection.name_query('/ppp/active',self.profile.name)
         if remove_from_active:
                 self.connection.remove('/ppp/active', remove_from_active[0]['id'])
@@ -66,11 +70,13 @@ class RouterProfile:
         #     self.profile.router = new_router
 
         if self.profile.plan != new_plan:
-            if self.profile.plan.name == 'CORTADOS':
+            if self.profile.plan.name == 'CORTADOS' and new_plan.name != 'CORTADOS':
                 profile_suspended = Suspended.objects.filter(profile=self.profile, active_cutting=True)
                 if profile_suspended:
                     profile_suspended[0].active_cutting = False
                     profile_suspended[0].save()
+            if new_plan.name == 'CORTADOS' and self.profile.plan.name != 'CORTADOS':
+                self.cut()
             remove_from_active = self.connection.name_query('/ppp/active',self.profile.name)
             self.connection.set_query('/ppp/secret', get_user[0]['id'], 'profile', new_plan.name)
             if remove_from_active:
