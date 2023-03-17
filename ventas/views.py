@@ -43,7 +43,6 @@ def index(request):
     sales_of_the_month = Referred.objects.filter(created__gt=first_day).exclude(cancelled=None)
     user_referred = len(sales_of_the_month.filter(referred=request.user))
     other_referred = len(sales_of_the_month.exclude(referred=request.user))
-    print(f'\n MI REFERENCIA: {user_referred}, OTROS: {other_referred}')
     context ={
         'today': today,
         'this_month_inspections': this_month_inspections,
@@ -218,3 +217,9 @@ def updateInstallation(request, id):
         'form': form
     }
     return render(request, 'ventas/installation_update.html', context)
+
+def installation_decline(request, id):
+    installation = Installation.objects.get(id=id)
+    installation.payment = 'DEC'
+    installation.save()
+    return redirect('ventas.index')

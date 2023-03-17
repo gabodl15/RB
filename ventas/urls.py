@@ -10,4 +10,5 @@ urlpatterns = [
     path('inspection/inform/<int:id>/', views.informInspection, name='ventas.inspection.inform'),
     path('inspection/informed/', views.informedInspection, name='ventas.inspection.informed'),
     path('installation/update/<int:id>/', views.updateInstallation, name='ventas.installation.update'),
+    path('installation/decline/<int:id>/', views.installation_decline, name='ventas.installation.decline'),
 ]
