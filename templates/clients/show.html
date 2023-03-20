@@ -135,7 +135,7 @@
                         <tr>
                             <td>{{ suspended }}</td>
                             <td>{{ suspended.created }}</td>
-                            <td>{% if suspended.created != suspended.updated %} {{ suspended.updated }} {% else %} - {% endif %}</td>
+                            <td>{% if not suspended.active_cutting %} {{ suspended.updated }} {% else %} - {% endif %}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
