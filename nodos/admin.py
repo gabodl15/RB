@@ -42,5 +42,6 @@ admin.site.register(CompanyAntenna, CompanyAntennaAdmin)
 
 class ClientAntennaAdmin(admin.ModelAdmin):
     list_display = ('profile', 'nodo', 'ap', 'brand', 'model', 'firmware')
+    search_fields = ('profile__name', 'nodo__name', 'ap__name', 'brand', 'model')
 
 admin.site.register(ClientAntenna, ClientAntennaAdmin)

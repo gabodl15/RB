@@ -45,7 +45,8 @@
                         </tr>
                         {% if profile.clientantenna %}
                             <tr>
-                                <td>{{profile.clientantenna.model}}</td>
+                                <td><b>AP:</b> {{profile.clientantenna.ap}}</td>
+                                <td><b>Antena:</b> {{profile.clientantenna.model}}</td>
                                 <td>{{profile.clientantenna.firmware}}</td>
                             </tr>
                         {% endif %}
