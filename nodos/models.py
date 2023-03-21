@@ -48,7 +48,7 @@ class CompanyAntenna(models.Model):
 
 class ClientAntenna(models.Model):
     nodo = models.ForeignKey(Nodo, on_delete=models.SET_NULL, null=True)
-    ap = models.OneToOneField(CompanyAntenna, on_delete=models.SET_NULL, null=True)
+    ap = models.ForeignKey(CompanyAntenna, on_delete=models.SET_NULL, null=True)
     profile = models.OneToOneField('clients.Profile', on_delete=models.CASCADE, null=True, verbose_name='ppp')
     user = models.CharField(max_length=20, default='ubnt')
     password = EncryptedTextField()

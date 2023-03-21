@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import State, Nodo, CompanyAntenna
+from .models import State, Nodo, CompanyAntenna, ClientAntenna
 from django import forms
 # Register your models here.
 
@@ -39,3 +39,8 @@ class CompanyAntennaAdmin(admin.ModelAdmin):
         return super().get_queryset(request).order_by('nodo__name')
 
 admin.site.register(CompanyAntenna, CompanyAntennaAdmin)
+
+class ClientAntennaAdmin(admin.ModelAdmin):
+    list_display = ('profile', 'nodo', 'ap', 'brand', 'model', 'firmware')
+
+admin.site.register(ClientAntenna, ClientAntennaAdmin)
