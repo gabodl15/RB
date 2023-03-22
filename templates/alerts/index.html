@@ -43,6 +43,18 @@
             {% endfor %}
         {% endif %}
     </div>
+    <div class="row">
+        <div class="col s12">
+            {% for alert in company %}
+                <b>{{ alert.ap }}</b><span>{{ alert.alert }}</span>
+            {% endfor %}
+        </div>
+        <div class="col s12">
+            {% for alert in client %}
+                <p>{{ alert.ap }} {{ alert.alert }}</p>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}
 
 {% block 'javascript' %}

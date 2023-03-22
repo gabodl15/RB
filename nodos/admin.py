@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import State, Nodo, CompanyAntenna, ClientAntenna, CompanyAntennaAlert
+from .models import State, Nodo, CompanyAntenna, ClientAntenna, CompanyAntennaAlert, ClientAntennaAlert
 from django import forms
 # Register your models here.
 
@@ -51,3 +51,9 @@ class CompanyAntennaAlertAdmin(admin.ModelAdmin):
     search_fields = ('ap_name', 'alert')
 
 admin.site.register(CompanyAntennaAlert, CompanyAntennaAlertAdmin)
+
+class ClientAntennaAlertAdmin(admin.ModelAdmin):
+    list_display = ('ap', 'alert', 'solved')
+    search_fields = ('ap_name', 'alert')
+
+admin.site.register(ClientAntennaAlert, ClientAntennaAlertAdmin)
