@@ -58,3 +58,18 @@ class ClientAntenna(models.Model):
 
     def __str__(self):
         return self.profile.name
+    
+class CompanyAntennaAlert(models.Model):
+    ap = models.ForeignKey(CompanyAntenna, on_delete=models.CASCADE)
+    alert = models.CharField(max_length=200)
+    solved = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+class ClientAntennaAlert(models.Model):
+    ap = models.ForeignKey(ClientAntenna, on_delete=models.CASCADE)
+    profile = models.ForeignKey('clients.profile', on_delete=models.CASCADE, null=True)
+    alert = models.CharField(max_length=200)
+    solved = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)

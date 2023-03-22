@@ -69,3 +69,10 @@ class Log(models.Model):
 
     def __str__(self):
         return self.client.name
+
+class ProfileAlert(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    alert = models.CharField(max_length=200, verbose_name='Alerta')
+    solved = models.BooleanField(default=False, verbose_name='Solventado')
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
