@@ -68,7 +68,7 @@ class CompanyAntennaAlert(models.Model):
 
 class ClientAntennaAlert(models.Model):
     ap = models.ForeignKey(CompanyAntenna, on_delete=models.CASCADE)
-    profile = models.ForeignKey('clients.profile', on_delete=models.CASCADE, null=True)
+    profile = models.ForeignKey('clients.profile', on_delete=models.CASCADE, null=True, blank=True)
     alert = models.CharField(max_length=200)
     solved = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
