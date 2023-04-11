@@ -6,10 +6,15 @@ from routers.functions import Connection
 from .models import Client, Profile, Suspended
 from django import forms
 
+class ProfileInline(admin.StackedInline):
+    model = Profile
+    extra = 0
+
 class ClientAdmin(admin.ModelAdmin):
     list_display = ('name', 'last_name', 'dni', 'phone', 'email', 'address')
     search_fields = ('name', 'last_name', 'dni', 'email', 'address')
     ordering = ('name',)
+    inlines = [ ProfileInline, ]
 
 admin.site.register(Client, ClientAdmin)
 
