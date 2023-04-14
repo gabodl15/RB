@@ -35,10 +35,11 @@
             <table>
                 <tbody>
                     {% load check_profile %}
+                    {% load check_plan %}
                     {% for profile in client.profile_set.all %}
                         <tr>
                             <td><a href="{% url 'clients.profile.edit' id=profile.id %}">{{ profile }}</a></td>
-                            <td>{{ profile.plan }}</td>
+                            <td>{{ profile | check_plan }}</td>
                             <td>{{ profile.router }}</td>
                             <td>{{ profile.cutoff_date }}</td>
                             <td>{{ profile | check_profile | safe }}</td>
