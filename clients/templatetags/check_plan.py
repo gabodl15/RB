@@ -12,4 +12,4 @@ def check_plan(profile):
             if active[0]['profile'] != profile.plan.name:
                 return f"<span class='red-text'>{profile.plan.name}</span>"
     else:
-        return profile.plan.name
+        return f"<span class='gray-text'>{profile.plan.name}</span>"
