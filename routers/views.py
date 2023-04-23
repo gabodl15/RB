@@ -107,7 +107,7 @@ def show(request, id):
     users_not_registered = []
     for user in usuarios:
         try:
-            _user = Profile.objects.get(name=user['name'])
+            _user = Profile.objects.get(name=user['name'], router=id)
         except: 
             users_not_registered.append(user['name'])
 
