@@ -27,6 +27,33 @@
         </div>
     </div>
     <div class="row">
+        {% if users_not_registered %}
+            <div class="col s12">
+                <ul class="collapsible">
+                    <li>
+                        <div class="collapsible-header">USUARIOS NO REGISTRADOS EN EL SISTEMA <span class="badge">{{ users_not_registered | length }}</span></div>
+                        <div class="collapsible-body">
+                            <br>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>USUARIO</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in users_not_registered %}
+                                        <tr>
+                                            <td>{{ user }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        {% endif %}
+
         <div class="col s12">
             <ul class="collapsible">
                 <li>

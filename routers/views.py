@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+from clients.models import Profile
 from .models import Router, Plan
 from .forms import RouterForm, QueueForm, PppForm, AddressFrom
 
@@ -103,6 +104,12 @@ def show(request, id):
 
     ppp = api.get_resource('/ppp/secret')
     usuarios = order(ppp.get(), 'name')
+    users_not_registered = []
+    for user in usuarios:
+        try:
+            _user = Profile.objects.get(name=user['name'])
+        except: 
+            users_not_registered.append(user['name'])
 
     queues_query = api.get_resource('/queue/simple')
     queues = order(queues_query.get(), 'name')
@@ -138,6 +145,7 @@ def show(request, id):
         'health': health,
         'resource': resource,
         'usuarios': usuarios,
+        'users_not_registered': users_not_registered,
         'queues': queues,
         'ips': ips,
         'map': map_render
