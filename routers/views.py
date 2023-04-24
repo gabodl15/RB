@@ -108,8 +108,9 @@ def show(request, id):
     for user in usuarios:
         try:
             _user = Profile.objects.get(name=user['name'], router=id)
-        except: 
-            users_not_registered.append(user['name'])
+        except:
+            if user['disabled'] == 'false':
+                users_not_registered.append(user['name'])
 
     queues_query = api.get_resource('/queue/simple')
     queues = order(queues_query.get(), 'name')
