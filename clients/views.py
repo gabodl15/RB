@@ -25,6 +25,7 @@ ORDEN DEL ARCHIVO
     - search_client
     - index
     - show
+    - viewProfile
     - addProfile
     - editProfile
 """
@@ -110,6 +111,13 @@ def show(request, id):
         'suspended_list': suspended_list
     }
     return render(request, 'clients/show.html', context)
+
+def viewProfile(request, id):
+    profile = Profile.objects.get(id=id)
+    context = {
+        'profile': profile
+    }
+    return render(request, 'clients/view_profile.html', context)
 
 def addProfile(request, id):
     client = Client.objects.get(id=id)

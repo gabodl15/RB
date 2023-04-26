@@ -37,34 +37,42 @@
             </div>
         {% endif %}
     </div>
-    <div class="row">
-        <div class="col s12">
-            {% if client.profile_set %}
-            <table>
-                <tbody>
-                    {% load check_profile %}
-                    {% load check_plan %}
+    {% if client.profile_set %}
+        <div class="row">
+            <div class="col s12">
+                <h6>USUARIOS EN MIKROTIK</h6>
+                <ul class="collapsible">
                     {% for profile in client.profile_set.all %}
-                        <tr>
-                            <td><a href="{% url 'clients.profile.edit' id=profile.id %}">{{ profile }}</a></td>
-                            <td>{{ profile | check_plan | safe }}</td>
-                            <td>{{ profile.router }}</td>
-                            <td>{{ profile.cutoff_date }}</td>
-                            <td>{{ profile | check_profile | safe }}</td>
-                        </tr>
-                        {% if profile.clientantenna %}
-                            <tr>
-                                <td><b>AP:</b> {{profile.clientantenna.ap}}</td>
-                                <td><b>Antena:</b> {{profile.clientantenna.model}}</td>
-                                <td>{{profile.clientantenna.firmware}}</td>
-                            </tr>
-                        {% endif %}
+                        <li>
+                            <div class="collapsible-header">
+                                {{ profile | upper }}
+                                {% if profile.plan.name == 'CORTADOS' %}
+                                    <span class="badge red-text">CORTADO</span>
+                                {% endif %}
+                            </div>
+                            <div class="collapsible-body">
+                                <div class="row">
+                                    <div class="col s12 m10">
+                                        {% load check_profile %}
+                                        {% load check_plan %}
+                                        <p><b>NODO:</b> {{ profile.router.nodo }}</p>
+                                        <p><b>AP:</b> {{profile.clientantenna.ap}}</p>
+                                        <p><b>Antena:</b> {{profile.clientantenna.model}}</p>
+                                        <p><b>Plan:</b> {{ profile | check_plan | safe }}</p>
+                                        <p><b>IP:</b> {{ profile | check_profile | safe}}</p>
+                                        <h6>Fecha de corte: {{ profile.cutoff_date }}</h6>
+                                    </div>
+                                    <div class="col s12 m2">
+                                        <a class="btn btn-small blue right" href="{% url 'clients.profile.edit' id=profile.id %}">Editar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
                     {% endfor %}
-                </tbody>
-            </table>
-            {% endif %}
+                </ul>
+            </div>
         </div>
-    </div>
+    {% endif %}
     <div class="row">
         {% if payments %}
         <div class="col s12">
