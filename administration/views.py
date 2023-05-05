@@ -1,9 +1,10 @@
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import FileResponse
 from django.conf import settings
 from clients.models import Client, Profile, Suspended
+from clients.functions import RouterProfile
 from routers.models import Plan
 from datetime import date, datetime, timedelta, time
 from dateutil.relativedelta import relativedelta
@@ -84,6 +85,8 @@ def index(request):
         profiles = Profile.objects.filter(cutoff_date=search_day).filter(~Q(plan=cortados.id)).exclude(name__in=[name for name in not_suspend]).order_by('client__name')
 
     payments = Payment.objects.all().order_by('-id')[:10]
+    received_d = Payment.objects.all().aggregate(Sum('dolars'))
+    received_b = Payment.objects.all().aggregate(Sum('bolivares'))
 
     context = {
         'profiles': profiles,
@@ -91,10 +94,28 @@ def index(request):
         'not_suspend': not_suspend,
         'not_suspended': not_suspended,
         'suspended': suspended,
+        'received_d': received_d,
+        'received_b': received_b
     }
 
 
     return render(request, 'administration/index.html', context)
+
+def inputs_and_outputs(request):
+    today = datetime.now().date()
+    last_week = today - timedelta(days=7)
+
+    data = Payment.objects.filter(created__gte=last_week, created__lte=today).values('created').annotate(total=Sum('dolars'))
+    totals = []
+    for i in range(7):
+        date = last_week + timedelta(days=i)
+        total = data.filter(created=date).values_list('total', flat=True).first() or 0
+        totals.append(total)
+
+    context = {
+        'totals': totals
+    }
+    return render(request, 'administration/inputs_and_outputs.html', context)
 
 def payment(request, id):
     client = Client.objects.get(id=id)
@@ -152,6 +173,17 @@ def payment(request, id):
         if operation == 'payment':
             for p in profiles_id:
                 profile = Profile.objects.get(id=p)
+                if profile.plan.name == 'CORTADOS':
+                    profile_suspended = Suspended.objects.filter(profile=profile, active_cutting=True)
+                    if len(profile_suspended) and len(profile_suspended) == 1:
+                        router_profile = RouterProfile(profile)
+                        if router_profile.connection.active:
+                            previus = profile_suspended[0].previus
+                            plan = Plan.objects.get(name=previus)
+                            router_profile.activate(plan)
+                            profile.plan = plan
+                            profile.save()
+
                 _from = profile.cutoff_date
                 profile.cutoff_date = profile.cutoff_date + relativedelta(months=1)
                 if profile.cutoff_date.day > 20:
@@ -192,10 +224,15 @@ def payment(request, id):
         return redirect('administrations.index')
 
     profiles = Profile.objects.filter(client_id=client)
-    
+    suspended_active = Suspended.objects.filter(profile__in=profiles, active_cutting=True)
+    if suspended_active:
+        suspended = suspended_active
+    else:
+        suspended = 0
     context = {
         'client': client,
         'profiles': profiles,
+        'suspended': suspended,
     }
     return render(request, 'administration/client/payment.html', context)
 

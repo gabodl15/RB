@@ -10,4 +10,5 @@ urlpatterns = [
     path('debts/delete/<int:id>/', views.debts_delete, name='administrations.clients.debt.delete'),
     path('payment/support/<int:id>/', views.payment_support, name='administrations.clients.payment.support'),
     path('payment/support/history/', views.payment_history, name='administrations.payments.history'),
+    path('inputsandoutputs/', views.inputs_and_outputs, name='administrations.inputs.and.outputs'),
 ]

@@ -12,6 +12,9 @@
             <tr>
                 <th>Usuario</th>
                 <th>Plan</th>
+                {% if suspended %}
+                    <th>Plan previo</th>
+                {% endif %}                    
                 <th>Fecha</th>
                 <th>Monto</th>
             </tr>
@@ -28,6 +31,13 @@
                         </p>
                     </td>
                     <td>{{ profile.plan.name }}</td>
+                    {% if suspended %}
+                        {% for sus in suspended %}
+                            {% if sus.profile == profile %}
+                                <td>{{sus.previus}}</td>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}   
                     <td>{{ profile.cutoff_date }}</td>
                     <td>{{ profile.plan.price }}</td>
                 </tr>

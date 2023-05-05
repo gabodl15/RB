@@ -1,0 +1,26 @@
+{% extends 'layouts/app.html' %}
+
+{% block 'content' %}
+
+<div class="row">
+    <div class="col s12">
+        <p>{{ profile.client.name }} {% if profile.client.last_name %} {{ profile.client.last_name }} {% endif %}</p>
+        <p>Profile: {{ profile.name }}</p>
+    </div>
+</div>
+<div class="divider"></div>
+{% if profile.clientantenna %}
+    <div class="row">
+        <div class="col s12 m6">
+            <p>Antena: {{ profile.clientantenna.brand }}</p>
+            <p>Modelo: {{ profile.clientantenna.model }}</p>
+            <p>Firmware: {{ profile.clientantenna.firmware}} </p>
+        </div>
+        <div class="col s12 m6">
+            <p>Nodo: {{ profile.clientantenna.nodo }}</p>
+            <p>AP: {{ profile.clientantenna.ap }}</p>
+        </div>
+    </div>
+{% endif %}
+
+{% endblock %}

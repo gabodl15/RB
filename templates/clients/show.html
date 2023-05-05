@@ -66,6 +66,17 @@
                                         <a class="btn btn-small blue right" href="{% url 'clients.profile.edit' id=profile.id %}">Editar</a>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col s12">
+                                        <button class="btn btn-small" onclick="check_ajax('{{ profile.name}}', '{{ profile.router }}')">CHEQUEAR</button>
+                                    </div>
+                                    <div class="col s12" id="check-proccess">
+
+                                    </div>
+                                    <div class="col s12" id="result-check">
+
+                                    </div>
+                                </div>
                             </div>
                         </li>
                     {% endfor %}
@@ -169,5 +180,18 @@
             var elems = document.querySelectorAll('.collapsible');
             var instances = M.Collapsible.init(elems, {});
         });
+    </script>
+    <script type="text/javascript">
+        function check_ajax(name, router){
+            url_base = ''
+            url_name = url_base.replace('name', name)
+            url = url_name = url_name.replace('router', router)
+
+            proccess = document.getElementById('check-proccess')
+            checking = document.createElement('p')
+            checking.innerText = 'Verificando...'
+            proccess.appendChild(checking)
+            
+        }
     </script>
 {% endblock %}

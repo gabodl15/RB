@@ -11,6 +11,7 @@
             <h6>Administraci&oacute;n</h6>
         </div>
         <div class="col s12 m8">
+            <a href="{% url 'administrations.inputs.and.outputs' %}" class="btn-flat">ENTRADAS Y SALIDAS</a>
             <a href="{% url 'administration.suspend.not' %}" class="btn-flat right">No suspender</a>
             <a href="{% url 'administrations.clients.debts' %}" class="btn-flat right">Deudas Clientes</a>
             <button data-target="modal_search_for_customer" class="btn-flat modal-trigger right">Pago</button>
@@ -58,6 +59,11 @@
             </div>
         {% endif %}
         <div class="col s12 m4">
+            {% if request.user.is_staff %}
+                <p>Recibido Dolares: ${{ received_d.dolars__sum }}</p>
+                <p>Recibido Bolivares: {{ received_b.bolivares__sum |floatformat:2 }} bs</p>
+                <div class="divider"></div>
+            {% endif %}
             <h6>Resumen</h6>
             <p>Clientes a pagar: {{ profiles | length }}</p>
             {% load sum_price %}

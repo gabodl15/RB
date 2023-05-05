@@ -234,3 +234,6 @@ def editProfile(request, id):
         'form': form
     }
     return render(request, 'clients/edit_profile.html', context)
+
+def checkProfileAntena(request, profile, router):
+    return ''

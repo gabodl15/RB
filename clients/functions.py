@@ -15,6 +15,16 @@ class RouterProfile:
         self.connection = Connection(profile.router)
         return self.connection.active
 
+    def activate(self, plan):
+        get_user = self.connection.name_query('/ppp/secret', self.profile.name)
+        if get_user:
+            self.connection.set_query('/ppp/secret', get_user[0]['id'], 'profile', plan.name)
+            remove_from_active = self.connection.name_query('/ppp/active',self.profile.name)    
+            if remove_from_active:
+                self.connection.remove('/ppp/active', remove_from_active[0]['id'])
+            return True
+        return False
+
     def create(self, request):
         form = ProfileForm(request.POST)
         _profile = form.save(commit=False)
