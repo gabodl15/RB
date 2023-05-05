@@ -183,6 +183,8 @@ def payment(request, id):
                             router_profile.activate(plan)
                             profile.plan = plan
                             profile.save()
+                            profile_suspended.active_cutting = False
+                            profile_suspended.save()
 
                 _from = profile.cutoff_date
                 profile.cutoff_date = profile.cutoff_date + relativedelta(months=1)
