@@ -116,7 +116,7 @@ class Pdf:
             if check:
                 return self.obj.wirelesssupportsheet.sheet
             
-            record = Support.objects.last()
+            record = WirelessSupportSheet.objects.last()
             self.order = (record.order + 1) if record is not None else 1
             destination_sheet = f'clients/{self.client}-{self.client.id}/{self.support}/{self.order}.pdf'
             
@@ -176,7 +176,7 @@ class Pdf:
         self.can.drawString(526, 776, f"{self.control_number}")
 
         # FECHA CUANDO SE IMPRIME
-        self.can.drawString(500, 745, f"{self.today}")
+        # self.can.drawString(500, 745, f"{self.today}")
 
         # NOMBRE Y APRELLIDO
         self.can.drawString(109, 609, f"{self.client} {self.last_name}")
@@ -202,7 +202,7 @@ class Pdf:
         self.can.drawString(526, 766, f"{self.control_number}")
 
         # FECHA CUANDO SE IMPRIME
-        self.can.drawString(500, 722, f"{self.today}")
+        # self.can.drawString(500, 722, f"{self.today}")
 
         # NOMBRE Y APRELLIDO
         self.can.drawString(115, 639, f"{self.client} {self.last_name}")
@@ -228,7 +228,7 @@ class Pdf:
         self.can.drawString(526, 776, f"{self.control_number}")
 
         # FECHA CUANDO SE IMPRIME
-        self.can.drawString(500, 745, f"{self.today}")
+        # self.can.drawString(500, 745, f"{self.today}")
 
         # NOMBRE Y APRELLIDO
         self.can.drawString(109, 609, f"{self.client} {self.last_name}")
@@ -254,7 +254,7 @@ class Pdf:
         self.can.drawString(526, 766, f"{self.control_number}")
 
         # FECHA CUANDO SE IMPRIME
-        self.can.drawString(500, 722, f"{self.today}")
+        # self.can.drawString(500, 722, f"{self.today}")
 
         # MARCANDO CASILLA DE FIBRA
         self.can.drawString(465, 674, 'XXX')
@@ -283,7 +283,7 @@ class Pdf:
         self.can.drawString(526, 779, f"{self.control_number}")
 
         # FECHA CUANDO SE IMPRIME
-        self.can.drawString(500, 748, f"{self.today}")
+        # self.can.drawString(500, 748, f"{self.today}")
 
         # MARCANDO CASILLA DE FIBRA
         self.can.drawString(462, 687, 'XXX')
@@ -311,7 +311,7 @@ class Pdf:
         self.can.drawString(526, 779, f"{self.control_number}")
 
         # FECHA CUANDO SE IMPRIME
-        self.can.drawString(500, 748, f"{self.today}")
+        # self.can.drawString(500, 748, f"{self.today}")
 
         # MARCANDO CASILLA DE FIBRA
         self.can.drawString(462, 687, 'XXX')
