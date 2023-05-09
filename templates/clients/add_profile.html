@@ -79,7 +79,7 @@
                 ppp_name.name = 'name'
                 ppp_name.readonly = true;
                 ppp_name.classList.add('col', 's12', 'm6')
-                ppp_password.value = data.password;
+                ppp_password.value = "{{ client.dni}}".match(/[0-9]+/g).join("");
                 ppp_password.name = 'password';
                 ppp_password.readonly = true;
                 ppp_password.classList.add('col', 's12', 'm6');
