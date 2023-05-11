@@ -31,8 +31,22 @@
                         <div class="card-action">
                             <!-- <a href="#supports" class="modal-trigger">VER</a> -->
                             <button class="btn btn-small blue" onclick="window.location='{% url 'supports.inspection.update' id=missing.id %}'" type="button" name="button">VER</button>
-                            <button class="btn btn-small red right" type="button" name="button">Eliminar</button>
+                            <button class="btn btn-small red right modal-trigger" type="button" name="button" data-target="delete-inspection">Eliminar</button>
                         </div>
+                    </div>
+                    <!-- Modal Structure -->
+                    <div id="delete-inspection" class="modal">
+                        <form action="{% url 'supports.inspection.delete' id=missing.id %}" method="POST">
+                            {% csrf_token %}
+                            <div class="modal-content">
+                                <h4>Eliminar Inspección.</h4>
+                                <p>SEGURO DESEA ELIMINAR LA INSPECCIÓN PARA:</p>
+                                <p>{{ missing }} {% if missing.last_name %} {{ missing.last_name }} {% endif %}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="modal-close waves-effect waves-green btn-flat">Agree</button>
+                            </div>
+                        </form>
                     </div>
                 {% endfor %}
             {% endif %}

@@ -71,6 +71,11 @@ def installation_realized(request, id):
     messages.success(request, 'SE HA REALIZADO LA INSTALACIÓN')
     return redirect('supports.index')
 
+def installation_delete(request, id):
+    installation = Install.objects.get(id=id)
+    installation.delete()
+    return redirect('support.index')
+
 def inspection_show(request, id):
     support_inspection = Inspect.objects.get(id=id)
     if request.method == 'POST':
@@ -130,6 +135,16 @@ def inspection_show(request, id):
         'material_form': material_form,
     }
     return render(request, 'supports/inspection_show.html', context)
+
+def inspection_delete(request, id):
+    if request.method == 'POST':
+        inspect = Inspect.objects.get(id=id)
+        client = inspect.inspect.client.name
+        inspect.inspect.delete()
+        messages.success(request, f'LA INSPECCION DE {client.upper()} HA SIDO ELIMINADA')
+    else:
+        messages.error(request, 'METODO NO PERMITIDO')
+    return redirect('supports.index')
 
 def support_print(request, support, id):
     if support == 'installations':
