@@ -48,6 +48,7 @@
                                 <td>
                                     {{profile}}
                                 </td>
+                                <td>{{ profile.client.dni }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -60,7 +61,7 @@
         {% endif %}
         <div class="col s12 m4">
             {% if request.user.is_staff %}
-                <p>Recibido Dolares: ${{ received_d.dolars__sum }}</p>
+                <p>Recibido Dolares: ${% if received_d.dolars__sum %} {{ received_d.dolars__sum }} {% endif%}</p>
                 <p>Recibido Bolivares: {{ received_b.bolivares__sum |floatformat:2 }} bs</p>
                 <div class="divider"></div>
             {% endif %}
