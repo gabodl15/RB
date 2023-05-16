@@ -1,0 +1,43 @@
+{% extends 'layouts/app.html' %}
+
+{% block 'content' %}
+<div class="row">
+    <div class="col s12 m6">
+        <h6>MENSAJES</h6>
+    </div>
+</div>
+<div class="divider"></div>
+<br>
+<div class="row">
+    <h6 class="center">NO FUNCIONA AUN, ESTOY PROBANDO</h6>
+    <div class="col s12 center">
+        <form action="{% url 'text_messages.send' %}" method="POST">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col s12">
+                    <p class="left">Seleccione a quien va dirigido el mensaje:</p>
+                </div>
+                {% for client in clients %}
+                    <p class="col s12 m3 l2">
+                        <label>
+                            <input type="checkbox" />
+                            <span>{{ client }} {% if client.last_name %} {{ client.last_name }} {% endif %}</span>
+                        </label>
+                    </p>
+                {% endfor %}
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input id='user' type="text" value="{{ request.user }}" readonly>
+                    <label for="user">Usuario:</label>
+                </div>
+                <div class="input-field col s12">
+                  <textarea id="message" class="materialize-textarea"></textarea>
+                  <label for="message">Mensaje</label>
+                </div>
+              </div>
+            <button class="btn btn-small" type="submit">Enviar</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
