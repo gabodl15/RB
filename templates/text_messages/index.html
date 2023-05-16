@@ -18,14 +18,16 @@
                     <p class="left">Seleccione a quien va dirigido el mensaje:</p>
                 </div>
                 {% for client in clients %}
-                    <div class="row">
-                        <p class="col s12 m3 l2">
-                            <label>
-                                <input type="checkbox" />
-                                <span>{{ client }} {% if client.last_name %} {{ client.last_name }} {% endif %}</span>
-                            </label>
-                        </p>
-                    </div>
+                    <p class="col s12 m3">
+                        <label>
+                            <input type="checkbox" />
+                            <span>{{ client }} {% if client.last_name %} {{ client.last_name }} {% endif %}</span>
+                        </label>
+                    </p>
+                    {% if forloop.counter|divisibleby:4 and not forloop.last %}
+                        </div>
+                        <div class="row">
+                    {% endif %}
                 {% endfor %}
             </div>
             <div class="row">
