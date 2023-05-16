@@ -18,12 +18,14 @@
                     <p class="left">Seleccione a quien va dirigido el mensaje:</p>
                 </div>
                 {% for client in clients %}
-                    <p class="col s12 m3 l2">
-                        <label>
-                            <input type="checkbox" />
-                            <span>{{ client }} {% if client.last_name %} {{ client.last_name }} {% endif %}</span>
-                        </label>
-                    </p>
+                    <div class="row">
+                        <p class="col s12 m3 l2">
+                            <label>
+                                <input type="checkbox" />
+                                <span>{{ client }} {% if client.last_name %} {{ client.last_name }} {% endif %}</span>
+                            </label>
+                        </p>
+                    </div>
                 {% endfor %}
             </div>
             <div class="row">
