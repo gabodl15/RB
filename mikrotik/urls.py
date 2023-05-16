@@ -26,6 +26,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
     path('clients/', include('clients.urls')),
+    path('inventories/', include('inventories.urls')),
     path('nodos/', include('nodos.urls')),
     path('routers/', include('routers.urls')),
     path('users/', include('users.urls')),
@@ -33,6 +34,7 @@ urlpatterns = [
     path('alerts/', include('alerts.urls')),
     path('ventas/', include('ventas.urls')),
     path('supports/', include('supports.urls')),
+    path('text_messages/', include('text_messages.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
