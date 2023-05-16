@@ -13,7 +13,7 @@
     <div class="col s12 center">
         <form action="{% url 'text_messages.send' %}" method="POST">
             {% csrf_token %}
-            <div class="row">
+            <div class="row left">
                 <div class="col s12">
                     <p class="left">Seleccione a quien va dirigido el mensaje:</p>
                 </div>
@@ -21,7 +21,7 @@
                     <p class="col s12 m3">
                         <label>
                             <input type="checkbox" />
-                            <span>{{ client }} {% if client.last_name %} {{ client.last_name }} {% endif %}</span>
+                            <span class="truncate">{{ client }} {% if client.last_name %} {{ client.last_name }} {% endif %}</span>
                         </label>
                     </p>
                     {% if forloop.counter|divisibleby:4 and not forloop.last %}
