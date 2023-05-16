@@ -10,18 +10,18 @@
 <br>
 <div class="row">
     <h6 class="center">NO FUNCIONA AUN, ESTOY PROBANDO</h6>
-    <div class="col s12 center">
+    <div class="col s12">
         <form action="{% url 'text_messages.send' %}" method="POST">
             {% csrf_token %}
-            <div class="row left">
+            <div class="row">
                 <div class="col s12">
-                    <p class="left">Seleccione a quien va dirigido el mensaje:</p>
+                    <p>Seleccione a quien va dirigido el mensaje:</p>
                 </div>
                 {% for client in clients %}
                     <p class="col s12 m3">
                         <label>
                             <input type="checkbox" />
-                            <span class="truncate">{{ client }} {% if client.last_name %} {{ client.last_name }} {% endif %}</span>
+                            <span>{{ client }} {% if client.last_name %} {{ client.last_name }} {% endif %}</span>
                         </label>
                     </p>
                     {% if forloop.counter|divisibleby:4 and not forloop.last %}
