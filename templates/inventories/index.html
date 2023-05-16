@@ -1,0 +1,45 @@
+{% extends 'layouts/app.html' %}
+
+{% block 'content' %}
+<div class="row">
+    <div class="col s12 m8">
+        <h6>Inventario</h6>
+    </div>
+    <div class="col s12 m4">
+        {% if request.user.is_staff %}
+            <div class="right">
+                <p><a href="{% url 'admin:inventories_inventory_add' %}">Agregar Producto al inventario</a></p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+<div class="row">
+    {% if inventories %}
+        {% for inventory in inventories %}
+            <table>
+                <thead>
+                    <th></th>
+                    <th>Nombre</th>
+                    <th>Marca</th>
+                    <th>Descripcion</th>
+                    <td>Cantidad</td>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><img src="{{ inventory.image.url }}" class="responsive-img" width="100"></td>
+                        <td>{{ inventory.name }}</td>
+                        <td>{{ inventory.brand }}</td>
+                        <td>{{ inventory.description }}</td>
+                        <td>{{ inventory.stored }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        {% endfor %}
+    {% else %}
+        <div class="col s12 m8">
+            <p>NO EXISTE NINGUN REGISTRO EN EL INVENTARIO</p>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django_crontab',
     'routers',
     'clients',
+    'inventories',
     'logs',
     'nodos',
     'users',
