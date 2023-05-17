@@ -17,18 +17,22 @@
                 <div class="col s12">
                     <p>Seleccione a quien va dirigido el mensaje:</p>
                 </div>
-                {% for client in clients %}
-                    <p class="col s12 m3">
-                        <label>
-                            <input type="checkbox" />
-                            <span>{{ client }} {% if client.last_name %} {{ client.last_name }} {% endif %}</span>
-                        </label>
-                    </p>
-                    {% if forloop.counter|divisibleby:4 and not forloop.last %}
-                        </div>
-                        <div class="row">
-                    {% endif %}
-                {% endfor %}
+                <div class="">
+                    <div class="row scrollable" style="max-height: 400px">
+                        {% for client in clients %}
+                            <p class="col s12 m3">
+                                <label>
+                                    <input type="checkbox" name="phones" value="{{ client.phone }}"/>
+                                    <span>{{ client }} {% if client.last_name %} {{ client.last_name }} {% endif %}</span>
+                                </label>
+                            </p>
+                            {% if forloop.counter|divisibleby:4 and not forloop.last %}
+                                </div>
+                                <div class="row">
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="input-field col s12">
@@ -36,7 +40,7 @@
                     <label for="user">Usuario:</label>
                 </div>
                 <div class="input-field col s12">
-                  <textarea id="message" class="materialize-textarea"></textarea>
+                  <textarea name='message' id="message" class="materialize-textarea"></textarea>
                   <label for="message">Mensaje</label>
                 </div>
               </div>
