@@ -200,6 +200,12 @@ def support_add(request, id):
     }
     return render(request, 'supports/support_add.html', context)
 
+def support_delete(request, id):
+    if request.method == 'POST':
+        support = Support.objects.get(id=id)
+        support.support.delete()
+    return redirect('supports.index')
+
 def support_update(request, id):
     support = Support.objects.get(id=id)
     # VERIFICAMOS EL METODO DEL FORMULARIO
