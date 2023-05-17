@@ -9,6 +9,8 @@ class Router(models.Model):
     user = models.CharField(max_length=100, verbose_name='Usuario')
     password = EncryptedTextField()
     port = models.IntegerField(default=8728)
+    sms = models.BooleanField(default=False, verbose_name='Mensajes SMS.')
+    ssh_port = models.IntegerField(default=None, null=True, blank=True)
     nodo = models.ForeignKey(Nodo, blank=True, null=True, on_delete=models.RESTRICT)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
