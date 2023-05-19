@@ -27,10 +27,10 @@
                 </div>
                 <div class="">
                     <div class="row clients">
-                        {% for client in clients %}
+                        {% for client, phone in clients.items %}
                             <p class="col s12 m3">
                                 <label class="client">
-                                    <input type="checkbox" name="phones" value="{{ client.phone }}"/>
+                                    <input type="checkbox" name="phones" value="{{ phone }}"/>
                                     <span>{{ client }} {% if client.last_name %} {{ client.last_name }} {% endif %}</span>
                                 </label>
                             </p>
