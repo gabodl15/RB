@@ -1,5 +1,12 @@
 {% extends 'layouts/app.html' %}
-
+{% block 'head' %}
+<style>
+    .scrollable{
+        overflow: scroll;
+        height:400px;
+    }
+</style>
+{% endblock %}
 {% block 'content' %}
 <div class="row">
     <div class="col s12 m6">
@@ -13,23 +20,21 @@
     <div class="col s12">
         <form action="{% url 'text_messages.send' %}" method="POST">
             {% csrf_token %}
-            <div class="row">
+            <input type="text" id="searchInput" placeholder="Buscar">
+            <div class="row scrollable">
                 <div class="col s12">
                     <p>Seleccione a quien va dirigido el mensaje:</p>
                 </div>
                 <div class="">
-                    <div class="row scrollable" style="max-height: 400px">
+                    <div class="row clients">
                         {% for client in clients %}
                             <p class="col s12 m3">
-                                <label>
+                                <label class="client">
                                     <input type="checkbox" name="phones" value="{{ client.phone }}"/>
                                     <span>{{ client }} {% if client.last_name %} {{ client.last_name }} {% endif %}</span>
                                 </label>
                             </p>
-                            {% if forloop.counter|divisibleby:4 and not forloop.last %}
-                                </div>
-                                <div class="row">
-                            {% endif %}
+
                         {% endfor %}
                     </div>
                 </div>
@@ -48,4 +53,28 @@
         </form>
     </div>
 </div>
+{% endblock %}
+
+{% block 'javascript' %}
+<script type="text/javascript">
+    const searchInput = document.getElementById('searchInput');
+    const clientLabels = document.querySelectorAll('.client');
+
+    searchInput.addEventListener('input', function() {
+        const searchValue = this.value.toLowerCase();
+
+        clientLabels.forEach(label => {
+            const clientName = label.querySelector('span').textContent.toLowerCase();
+            
+            if (clientName.includes(searchValue)) {
+                
+                label.parentNode.style.display = 'block';
+            } else {
+                
+                    label.parentNode.style.display = 'none';
+                
+            }
+        });
+    });
+</script>
 {% endblock %}
