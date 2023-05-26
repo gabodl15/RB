@@ -19,8 +19,9 @@ def index(request):
 def send(request):
     if request.method == 'POST':
         if request.user.userprofile.messages:
-            routers = Router.objects.filter(sms__isnull=False)
+            routers = Router.objects.filter(sms=True)
             router = routers[0]
+            print(router.name)
             ssh = paramiko.client.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             ssh.connect(router.ip, username=router.user, password=router.password, allow_agent=False, look_for_keys=False)
