@@ -11,10 +11,16 @@ class ProfileInline(admin.StackedInline):
     extra = 0
 
 class ClientAdmin(admin.ModelAdmin):
-    list_display = ('name', 'last_name', 'dni', 'phone', 'email', 'address')
+    list_display = ('name', 'last_name', 'display_profiles', 'dni', 'phone', 'email', 'address')
     search_fields = ('name', 'last_name', 'dni', 'email', 'address')
     ordering = ('name',)
     inlines = [ ProfileInline, ]
+
+    def display_profiles(self, obj):
+        profiles = obj.profile_set.all()
+        return ", ".join(str(profile) for profile in profiles)
+    
+    display_profiles.short_description = 'Profiles'
 
 admin.site.register(Client, ClientAdmin)
 
