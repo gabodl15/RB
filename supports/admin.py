@@ -9,7 +9,7 @@ class FeasibleOrNotFeasibleInLine(admin.StackedInline):
 class InspectAdmin(admin.ModelAdmin):
     model = Inspect
     list_display = ['inspect','inspection_type','inspection']
-    search_fields = ('inspect',)
+    search_fields = ('inspect__client__name',)
     inlines = [FeasibleOrNotFeasibleInLine]
 
     def inspection(self, obj):
@@ -21,7 +21,6 @@ admin.site.register(Inspect, InspectAdmin)
 
 class MaterialAdmin(admin.ModelAdmin):
     model = Material
-    search_fields = ('inspect',)
     list_display = (
         'inspect',
         'cabling',
@@ -46,7 +45,7 @@ class WirelessInstallationSheetInLine(admin.StackedInline):
 class InstallAdmin(admin.ModelAdmin):
     model = Install
     list_display = ['inspect', 'realized']
-    search_fields = ('inspect',)
+    search_fields = ('inspect__inspect__client__name',)
     inlines = [WirelessInstallationSheetInLine]
 
 admin.site.register(Install, InstallAdmin)
@@ -54,6 +53,6 @@ admin.site.register(Install, InstallAdmin)
 class SupportAdmin(admin.ModelAdmin):
     model = Support
     list_display = ['client', 'profile', 'support', 'realized']
-    search_fields = ('inspect',)
+    search_fields = ('client__name',)
 
 admin.site.register(Support, SupportAdmin)
