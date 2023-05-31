@@ -3,6 +3,15 @@ from fernet_fields import EncryptedTextField
 
 from nodos.models import Nodo
 
+class Olt(models.Model):
+    name = models.CharField(max_length=30)
+    user = models.CharField(max_length=20)
+    password = EncryptedTextField()
+    ip = models.GenericIPAddressField(protocol='both', unpack_ipv4=False)
+    
+    def __str__(self):
+        return self.name
+    
 class Router(models.Model):
     name = models.CharField(max_length=50, verbose_name='Nombre del Router')
     ip = models.GenericIPAddressField(protocol='both', unpack_ipv4=False)

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Router, Plan
+from .models import Router, Plan, Olt
 
 class RouterAdmin(admin.ModelAdmin):
     list_display = ("name","ip",)
@@ -15,3 +15,10 @@ class PlanAdmin(admin.ModelAdmin):
         return ", ".join([r.name for r in obj.routers.all()])
 
 admin.site.register(Plan, PlanAdmin)
+
+class OltAdmin(admin.ModelAdmin):
+    list_display = ('name', 'ip', 'user', 'password')
+    ordering = ('name',)
+    search_fields = ('name',)
+
+admin.site.register(Olt, OltAdmin)
